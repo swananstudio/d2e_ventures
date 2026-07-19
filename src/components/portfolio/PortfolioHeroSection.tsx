@@ -10,27 +10,31 @@ import {
 } from "@chakra-ui/react";
 import { GoArrowLeft, GoArrowRight } from "react-icons/go";
 import Navbar from "../../layout/Navbar";
+import { Swiper, SwiperSlide } from "swiper/react";
+// import { Navigation } from "swiper/modules";
 
+import "swiper/css";
 import {
     portfolioherosection,
+    portfolio_hero_section_swiper1, portfolio_hero_section_swiper2, portfolio_hero_section_swiper3, portfolio_hero_section_swiper4, portfolio_hero_section_swiper5,
     maps,
     areasize,
 } from "../../assets/assets";
 import { useState, type Dispatch, type SetStateAction } from "react";
 
 const PortfolioHeroSection = () => {
-    // "main" | "section1" | "section2" | "section3"
     const [currentSection, setCurrentSection] = useState<string>("main");
-
+    const [swiper, setSwiper] = useState<any>(null);
     const projectThumbnails = [
-        { image: portfolioherosection, section: "section1" },
-        { image: portfolioherosection, section: "section2" },
-        { image: portfolioherosection, section: "section3" },
+        { image: portfolio_hero_section_swiper1, section: "section1" },
+        { image: portfolio_hero_section_swiper2, section: "section2" },
+        { image: portfolio_hero_section_swiper3, section: "section3" },
+        { image: portfolio_hero_section_swiper4, section: "section4" },
+        { image: portfolio_hero_section_swiper5, section: "section5" },
     ];
 
     return (
         <>
-            {/* MAIN HERO */}
             <Flex
                 minH={{ base: "900px", md: "1000px", lg: "100vh" }}
                 h={{ base: "auto", lg: "100vh" }}
@@ -51,18 +55,19 @@ const PortfolioHeroSection = () => {
 
                     <Flex
                         flex={1}
-                        px={{ base: "6%", md: "5%", lg: "3%" }}
-                        pb={{ base: 10, lg: 12 }}
+                        pl={{ base: "6%", md: "5%", lg: "3%" }}
+                        pr={{ base: "6%", md: "4%", lg: "0%" }}
+                        pb={{ base: "8%", lg: "4%" }}
                         direction={{ base: "column", lg: "row" }}
-                        justify={{ base: "center", lg: "space-between" }}
+                        justify="space-between"
                         align={{ base: "flex-start", lg: "flex-end" }}
-                        gap={{ base: 12, md: 16, lg: 0 }}
+                        gap={{ base: "8%", md: "6%", lg: "3%" }}
                     >
                         {/* LEFT */}
                         <Box
                             color="white"
-                            w="100%"
-                            maxW={{ base: "100%", md: "700px", lg: "560px" }}
+                            w={{ base: "100%", lg: "45%" }}
+                            maxW="45%"
                         >
                             <Text
                                 fontSize={{ base: "42px", sm: "54px", md: "68px", lg: "82px" }}
@@ -126,40 +131,56 @@ const PortfolioHeroSection = () => {
                             </Button>
                         </Box>
 
-                        {/* RIGHT */}
                         <Flex
                             direction="column"
-                            align={{ base: "flex-start", lg: "center" }}
-                            w="100%"
-                            gap={8}
+                            w={{ base: "100%", lg: "50%" }}
+                            maxW={{ base: "100%", lg: "50%" }}
+                            overflow="hidden"
+                            gap={{ base: "5%", lg: "6%" }}
                         >
-                            <Flex
-                                w="100%"
-                                gap={4}
-                                overflowX={{ base: "auto", lg: "visible" }}
-                                justify={{ base: "flex-start", lg: "center" }}
-                                css={{ "&::-webkit-scrollbar": { display: "none" } }}
+                            <Swiper
+                                className="portfolioThumbSwiper"
+                                onSwiper={setSwiper}
+                                slidesPerView="auto"
+                                spaceBetween={16}
                             >
                                 {projectThumbnails.map((img) => (
-                                    <Box
+                                    <SwiperSlide
                                         key={img.section}
-                                        onClick={() => setCurrentSection(img.section)}
-                                        cursor="pointer"
-                                        w={{ base: "160px", sm: "180px", md: "200px", lg: "190px" }}
-                                        flexShrink={0}
-                                        h={{ base: "220px", sm: "250px", md: "280px", lg: "290px" }}
-                                        overflow="hidden"
-                                        borderRadius="20px"
-                                        bg="rgba(255,255,255,.25)"
-                                        backdropFilter="blur(12px)"
-                                        border="1px solid rgba(255,255,255,.2)"
+                                        style={{
+                                            width: "42%",
+                                        }}
                                     >
-                                        <Image src={img.image} w="100%" h="100%" objectFit="cover" />
-                                    </Box>
+                                        <Box
+                                            w="100%"
+                                            h="42vh"
+                                            minH="220px"
+                                            maxH="290px"
+                                            cursor="pointer"
+                                            onClick={() => setCurrentSection(img.section)}
+                                            overflow="hidden"
+                                            borderRadius="20px"
+                                            bg="rgba(255,255,255,.25)"
+                                            backdropFilter="blur(12px)"
+                                            border="1px solid rgba(255,255,255,.2)"
+                                        >
+                                            <Image
+                                                src={img.image}
+                                                w="100%"
+                                                h="100%"
+                                                objectFit="cover"
+                                            />
+                                        </Box>
+                                    </SwiperSlide>
                                 ))}
-                            </Flex>
+                            </Swiper>
 
-                            <Flex justify="center" w="100%" gap={5}>
+                            <Flex
+                                justify="center"
+                                w="100%"
+                                gap={4}
+                                mt={5}
+                            >
                                 <Flex
                                     w="60px"
                                     h="60px"
@@ -170,8 +191,9 @@ const PortfolioHeroSection = () => {
                                     align="center"
                                     cursor="pointer"
                                     transition=".3s"
-                                    onClick={() => setCurrentSection("section3")}
+                                    onClick={() => swiper?.slidePrev()}
                                     _hover={{ bg: "#C8A96B", color: "#000" }}
+                                    color={'#fff'}
                                 >
                                     <GoArrowLeft size={22} />
                                 </Flex>
@@ -179,6 +201,7 @@ const PortfolioHeroSection = () => {
                                 <Flex
                                     w="60px"
                                     h="60px"
+                                    color={'#fff'}
                                     borderRadius="50%"
                                     bg="rgba(255,255,255,.15)"
                                     backdropFilter="blur(8px)"
@@ -186,7 +209,7 @@ const PortfolioHeroSection = () => {
                                     align="center"
                                     cursor="pointer"
                                     transition=".3s"
-                                    onClick={() => setCurrentSection("section1")}
+                                    onClick={() => swiper?.slideNext()}
                                     _hover={{ bg: "#C8A96B", color: "#000" }}
                                 >
                                     <GoArrowRight size={22} />
@@ -197,7 +220,6 @@ const PortfolioHeroSection = () => {
                 </Flex>
             </Flex>
 
-            {/* DETAIL SECTIONS - state passed down as props, each controls its own visibility */}
             <FirstSection
                 currentSection={currentSection}
                 setCurrentSection={setCurrentSection}
@@ -230,7 +252,7 @@ type SectionProps = {
     setCurrentSection: Dispatch<SetStateAction<string>>;
 };
 
-const FirstSection = ({ currentSection, setCurrentSection, onBack, onNext }: SectionProps) => {
+const FirstSection = ({ currentSection, setCurrentSection }: SectionProps) => {
     return (
         <Flex
             // position="relative"
@@ -247,10 +269,7 @@ const FirstSection = ({ currentSection, setCurrentSection, onBack, onNext }: Sec
             {/* Overlay */}
             <Box position="absolute" inset={0} bg="rgba(0,0,0,.15)" />
 
-            {/* Navbar */}
-            <Box position="absolute" top={0} left={0} right={0} zIndex={5}>
-                <Navbar />
-            </Box>
+
 
             <Grid
                 position="relative"
@@ -270,23 +289,6 @@ const FirstSection = ({ currentSection, setCurrentSection, onBack, onNext }: Sec
                         bg="rgba(0,0,0,.72)"
                         backdropFilter="blur(16px)"
                     >
-                        {/* Back button */}
-                        <Flex
-                            align="center"
-                            gap={2}
-                            color="white"
-                            cursor="pointer"
-                            mb={8}
-                            onClick={onBack}
-                            _hover={{ color: "#D6B46A" }}
-                        >
-                            <GoArrowLeft />
-                            <Text>Back to Gallery</Text>
-                        </Flex>
-
-                        {/* Logo */}
-                        <Image src={portfolioherosection} w="130px" mb={12} />
-
                         {/* Heading */}
                         <Text color="white" fontWeight="700" lineHeight="1" fontSize={{ base: "42px", lg: "54px" }}>
                             PROJECT 1
@@ -351,20 +353,7 @@ const FirstSection = ({ currentSection, setCurrentSection, onBack, onNext }: Sec
                             </Text>
                         </Box>
 
-                        {/* Next project */}
-                        <Flex
-                            mt={10}
-                            align="center"
-                            gap={2}
-                            color="white"
-                            cursor="pointer"
-                            alignSelf="flex-end"
-                            onClick={onNext}
-                            _hover={{ color: "#D6B46A" }}
-                        >
-                            <Text>Next Project</Text>
-                            <GoArrowRight />
-                        </Flex>
+
                     </Flex>
                 </GridItem>
                 <GridItem>
@@ -409,7 +398,7 @@ const FirstSection = ({ currentSection, setCurrentSection, onBack, onNext }: Sec
     );
 };
 
-const SecondSection = ({ currentSection, setCurrentSection, onBack }: SectionProps) => {
+const SecondSection = ({ currentSection, setCurrentSection }: SectionProps) => {
     return (
         <Flex
             // position="relative"
@@ -449,22 +438,6 @@ const SecondSection = ({ currentSection, setCurrentSection, onBack }: SectionPro
                         bg="rgba(0,0,0,.72)"
                         backdropFilter="blur(16px)"
                     >
-                        {/* Back button */}
-                        <Flex
-                            align="center"
-                            gap={2}
-                            color="white"
-                            cursor="pointer"
-                            mb={8}
-                            onClick={onBack}
-                            _hover={{ color: "#D6B46A" }}
-                        >
-                            <GoArrowLeft />
-                            <Text>Back to Gallery</Text>
-                        </Flex>
-
-                        <Image src={portfolioherosection} w="130px" mb={12} />
-
                         <Text color="white" fontWeight="700" lineHeight="1" fontSize={{ base: "42px", lg: "54px" }}>
                             CLIENT
                         </Text>
@@ -555,7 +528,7 @@ const SecondSection = ({ currentSection, setCurrentSection, onBack }: SectionPro
     );
 };
 
-const ThirdSection = ({ currentSection, setCurrentSection, onBack, onNext }: SectionProps) => {
+const ThirdSection = ({ currentSection, setCurrentSection }: SectionProps) => {
     return (
         <Flex
             position="relative"
@@ -566,16 +539,12 @@ const ThirdSection = ({ currentSection, setCurrentSection, onBack, onNext }: Sec
             bgSize="cover"
             backgroundPosition="center"
             bgRepeat="no-repeat"
-            overflow="hidden"
+            // overflow="hidden"
             display={currentSection === "section3" ? "flex" : "none"}
         >
             {/* Overlay */}
             <Box position="absolute" inset={0} bg="rgba(0,0,0,.15)" />
 
-            {/* Navbar */}
-            <Box position="absolute" top={0} left={0} right={0} zIndex={5}>
-                <Navbar />
-            </Box>
 
             <Grid
                 // position="relative"
@@ -595,22 +564,6 @@ const ThirdSection = ({ currentSection, setCurrentSection, onBack, onNext }: Sec
                         bg="rgba(0,0,0,.72)"
                         backdropFilter="blur(16px)"
                     >
-                        {/* Back button */}
-                        <Flex
-                            align="center"
-                            gap={2}
-                            color="white"
-                            cursor="pointer"
-                            mb={8}
-                            onClick={onBack}
-                            _hover={{ color: "#D6B46A" }}
-                        >
-                            <GoArrowLeft />
-                            <Text>Back to Gallery</Text>
-                        </Flex>
-
-                        {/* Logo */}
-                        <Image src={portfolioherosection} w="130px" mb={12} />
 
                         {/* Heading */}
                         <Text color="white" fontWeight="700" lineHeight="1" fontSize={{ base: "42px", lg: "54px" }}>
@@ -676,20 +629,6 @@ const ThirdSection = ({ currentSection, setCurrentSection, onBack, onNext }: Sec
                             </Text>
                         </Box>
 
-                        {/* Next project (wraps back to Project 1) */}
-                        <Flex
-                            mt={10}
-                            align="center"
-                            gap={2}
-                            color="white"
-                            cursor="pointer"
-                            alignSelf="flex-end"
-                            onClick={onNext}
-                            _hover={{ color: "#D6B46A" }}
-                        >
-                            <Text>Next Project</Text>
-                            <GoArrowRight />
-                        </Flex>
                     </Flex>
                 </GridItem>
 

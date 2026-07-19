@@ -93,3 +93,21 @@ html {
 .reviewCreativeSwiper .swiper-slide-shadow {
   border-radius: 18px;
 }
+
+
+
+
+/* Portfolio Page */
+.portfolioThumbSwiper {
+  width: 100%;
+  overflow: visible;
+}
+
+.portfolioThumbSwiper .swiper-wrapper {
+  align-items: center;
+}
+
+.portfolioThumbSwiper .swiper-slide {
+  width: 240px !important;
+  flex-shrink: 0;
+}

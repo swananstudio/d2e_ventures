@@ -41,7 +41,7 @@ const IntroSection = () => {
             px={{ base: "5%", xl: "7%" }}
             bg="white"
             mb={'2.47%'}
-        w='100%'
+            w='100%'
         >
             <Grid
                 maxW="1500px"
@@ -183,25 +183,21 @@ const IntroSection = () => {
                         color="#555"
                         fontSize="17px"
                         lineHeight="1.9"
-                        maxW="760px"
+                        maxW="750px"
                     >
                         D2E Ventures Private Limited is an integrated
                         development consultancy specializing in premium
                         land development, luxury residences,
                         farmhouse projects, plotted developments,
-                        and turnkey execution.
-
-                        <br />
-                        <br />
-
-                        By bringing architecture, planning,
+                        and turnkey execution.By bringing architecture, planning,
                         engineering, and construction under one roof,
                         <Text
                             as="span"
                             fontWeight="700"
                             color="#222"
+                            
                         >
-                            {" "}
+                            {" "}{" "}
                             we transform ideas into
                             high-value developments{" "}
                         </Text>

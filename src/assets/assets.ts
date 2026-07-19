@@ -77,6 +77,11 @@ import premium_project from './services/client_trust/premium_project.png'
 import transparent_coordination from './services/client_trust/transparent_coordination.png'
 
 import portfolioherosection from './portfolio/herosection/heroimage.png'
+import portfolio_hero_section_swiper1 from './portfolio/herosection/swiper1.webp'
+import portfolio_hero_section_swiper2 from './portfolio/herosection/swiper2.webp'
+import portfolio_hero_section_swiper3 from './portfolio/herosection/swiper3.webp'
+import portfolio_hero_section_swiper4 from './portfolio/herosection/swiper4.webp'
+import portfolio_hero_section_swiper5 from './portfolio/herosection/swiper5.webp'
 
 import architecture from './services/development_stage/architecture.png'
 import areasize from './portfolio/herosection/areasize.png'
@@ -95,5 +100,5 @@ export {
     servicesdemo, homeservicesarchitecture, homeservicesinterior, homeserviceslandscape, homeservicesplotting, homeservicespremium_villa, homeservicesturnkey_execution,
     service_client, design_execution, integrated_development, land_values, premium_project, transparent_coordination,
     architecture,
-    portfolioherosection, areasize
+    portfolioherosection, areasize, portfolio_hero_section_swiper1, portfolio_hero_section_swiper2, portfolio_hero_section_swiper3, portfolio_hero_section_swiper4, portfolio_hero_section_swiper5
 }

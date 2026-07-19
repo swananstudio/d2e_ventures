@@ -130,7 +130,7 @@ const ProjectLocations = () => {
                         lineHeight="1.05"
                         fontWeight="700"
                     >
-                        Maharashtra
+                        Maharashtra,
                         <br />
                         Growing
                         <br />
