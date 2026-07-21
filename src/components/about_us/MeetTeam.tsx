@@ -1,5 +1,8 @@
+import { useRef } from "react";
+import { useState } from "react";
 import { Box, Flex, Grid, Image, Text } from "@chakra-ui/react";
-
+import { motion, useScroll, useMotionValueEvent, useTransform } from "motion/react";
+// import { useRef } from "react";
 import {
     aman_bhagwan,
     omkar_dhende,
@@ -9,6 +12,11 @@ import {
     philosophy as philosophyIcon,
 } from "../../assets/assets";
 
+const MotionBox = motion.create(Box);
+const MotionFlex = motion.create(Flex);
+const MotionText = motion.create(Text);
+const MotionGrid = motion.create(Grid);
+const MotionImage = motion.create(Image);
 type Detail = {
     icon: string;
     title: string;
@@ -21,103 +29,11 @@ type TeamMemberProps = {
     image: string;
     reverse?: boolean;
     details: Detail[];
-    index: number;
+    // index: number;
 };
 
-const TeamMember = ({
-    name,
-    role,
-    image,
-    reverse = false,
-    details,
-    index,
-}: TeamMemberProps) => {
-    return (
-        <Grid
-            templateColumns={{ base: "1fr", lg: "0.8fr 1.2fr" }}
-            gap={{ base: 6, md: 8, lg: 10 }}
-            alignItems="center"
-        >
-            <Flex
-                justifyContent={{
-                    base: "center",
-                    lg: index % 2 === 0 ? "flex-start" : "flex-end",
-                }}
-                order={{ base: 1, lg: reverse ? 2 : 1 }}
-            >
-                <Image
-                    src={image}
-                    w={{ base: "240px", sm: "280px", md: "320px", lg: "340px" }}
-                    h={{ base: "300px", sm: "350px", md: "400px", lg: "420px" }}
-                    objectFit="cover"
-                    borderRadius="16px"
-                />
-            </Flex>
 
-            <Flex
-                flexDirection="column"
-                order={{ base: 2, lg: reverse ? 1 : 2 }}
-            >
-                <Text
-                    fontSize={{ base: "25px", md: "30px", lg: "34px" }}
-                    fontWeight="600"
-                    lineHeight="1.2"
-                >
-                    {name}
-                </Text>
-
-                <Text mt={1} fontSize={{ base: "12px", md: "13px" }} color="#555">
-                    {role}
-                </Text>
-
-                <Flex mt={{ base: 7, md: 10 }} flexDirection="column" gap={{ base: 4, md: 6 }}>
-                    {details.map((detail) => (
-                        <Grid
-                            key={detail.title}
-                            templateColumns="45px 1fr"
-                            gap={3}
-                            alignItems="center"
-                            borderLeft={index % 2 === 0 ? '2px solid #0000001A' : "none"}
-                            borderRight={index % 2 === 0 ? 'none' : "2px solid #0000001A"}
-                            pr={index % 2 === 0 ? 'none' : "10%"}
-                            pl={index % 2 === 0 ? '10%' : "none "}
-                        >
-                            <Flex
-                                w="42px"
-                                h="42px"
-                                bg="#0000000D"
-                                borderRadius="8px"
-                                justifyContent="center"
-                                alignItems="center"
-                                flexShrink={0}
-                            >
-                                <Image src={detail.icon} w="20px" h="20px" objectFit={'contain'} />
-                            </Flex>
-
-                            <Box>
-                                <Text fontSize="14px" fontWeight="600">
-                                    {detail.title}
-                                </Text>
-
-                                <Text
-                                    mt={2}
-                                    fontSize={{ base: "12px", md: "13px" }}
-                                    lineHeight="1.5"
-                                    color="#555"
-                                    maxW="500px"
-                                >
-                                    {detail.description}
-                                </Text>
-                            </Box>
-                        </Grid>
-                    ))}
-                </Flex>
-            </Flex>
-        </Grid >
-    );
-};
-
-const teamMembers: Omit<TeamMemberProps, "index">[] = [
+const teamMembers: TeamMemberProps[] = [
     {
         name: "Ar. Omkar Keshav Dhende",
         role: "Project & Construction Management Specialist",
@@ -152,6 +68,94 @@ const teamMembers: Omit<TeamMemberProps, "index">[] = [
 ];
 
 const MeetTeam = () => {
+    const sectionRef = useRef<HTMLDivElement>(null);
+    const { scrollYProgress } = useScroll({
+        target: sectionRef,
+        offset: ["start start", "end end"],
+    });
+    const rotateX = useTransform(
+        scrollYProgress,
+        [0, 0.30],
+        [0, 180]
+    );
+
+    const imageScale = useTransform(
+        scrollYProgress,
+        [0, 0.30],
+        [0.95, 1]
+    );
+
+    const imageOpacity = useTransform(
+        scrollYProgress,
+        [0.28, 0.35],
+        [1, 0]
+    );
+
+    const contentY = useTransform(
+        scrollYProgress,
+        [0.05, 0.25],
+        [100, 0]
+    );
+
+    const contentOpacity = useTransform(
+        scrollYProgress,
+        [0.05, 0.25],
+        [0, 1]
+    );
+
+    const headingY = useTransform(
+        scrollYProgress,
+        [0.08, 0.20],
+        [70, 0]
+    );
+
+    const headingOpacity = useTransform(
+        scrollYProgress,
+        [0.08, 0.20],
+        [0, 1]
+    );
+
+    const detailY = useTransform(
+        scrollYProgress,
+        [0.12, 0.30],
+        [80, 0]
+    );
+
+    const detailOpacity = useTransform(
+        scrollYProgress,
+        [0.12, 0.30],
+        [0, 1]
+    );
+    // const rotateX = useTransform(
+    //     scrollYProgress,
+    //     [0, 0.35, 0.65, 1],
+    //     [0, 0, 180, 180]
+    // );
+
+    // const scale = useTransform(
+    //     scrollYProgress,
+    //     [0, 0.3],
+    //     [0.95, 1]
+    // );
+
+    // const opacity = useTransform(
+    //     scrollYProgress,
+    //     [0.45, 0.55],
+    //     [1, 0]
+    // );
+
+
+    const [activeIndex, setActiveIndex] = useState(0);
+    useMotionValueEvent(scrollYProgress, "change", (latest) => {
+        if (latest < 0.33) {
+            setActiveIndex(0);
+        } else if (latest < 0.66) {
+            setActiveIndex(1);
+        } else {
+            setActiveIndex(2);
+        }
+    });
+    const member = teamMembers[activeIndex];
     return (
         <Box
             w="100%"
@@ -169,21 +173,137 @@ const MeetTeam = () => {
                 MEET THE TEAM
             </Text>
 
-            <Flex
-                maxW="1300px"
-                mx="auto"
+
+            <Box
+                ref={sectionRef}
+                h="500vh"
+                position="relative"
                 mt={{ base: 12, md: 16 }}
-                flexDirection="column"
-                gap={{ base: 16, md: 20, lg: 24 }}
             >
-                {teamMembers.map((member, index) => (
-                    <TeamMember
-                        key={member.name}
-                        {...member}
-                        index={index}
-                    />
-                ))}
-            </Flex>
+                <Flex
+                    position="sticky"
+                    top={0}
+                    h="100vh"
+                    align="center"
+                    justify="center"
+                >
+                    <Grid
+                        maxW="1300px"
+                        w="100%"
+                        templateColumns={{
+                            base: "1fr",
+                            lg: "0.8fr 1.2fr",
+                        }}
+                        gap={10}
+                        alignItems="center"
+                    >
+
+                        {/* LEFT IMAGE */}
+
+                        <MotionBox
+                            justifySelf="center"
+                            w={{ base: "280px", md: "320px", lg: "380px" }}
+                            h={{ base: "360px", md: "420px", lg: "500px" }}
+                            style={{
+                                rotateX,
+                                scale: imageScale,
+                                opacity: imageOpacity,
+                                transformPerspective: 1500,
+                                transformStyle: "preserve-3d",
+                            }}
+                        >
+                            <MotionImage
+                                key={member.name}
+                                style={{
+                                    backfaceVisibility: "hidden",
+                                }} />
+                        </MotionBox>
+
+
+                        <MotionFlex
+                            direction="column"
+                            style={{
+                                y: contentY,
+                                opacity: contentOpacity,
+                            }}
+                        >
+
+                            <MotionText
+                                fontSize={{ base: "28px", md: "34px", lg: "42px" }}
+                                style={{
+                                    y: headingY,
+                                    opacity: headingOpacity,
+                                }}
+                                fontWeight="600"
+                            >
+                                {member.name}
+                            </MotionText>
+
+                            <Text
+                                mt={2}
+                                color="#555"
+                            >
+                                {member.role}
+                            </Text>
+
+                            <MotionFlex
+                                mt={10}
+                                direction="column"
+                                gap={6}
+                                style={{
+                                    y: detailY,
+                                    opacity: detailOpacity,
+                                }}
+                            >
+                                {member.details.map((detail) => (
+
+                                    <MotionGrid
+                                        key={detail.title}
+                                        templateColumns="45px 1fr"
+                                        gap={3}
+                                    >
+
+                                        <Flex
+                                            w="42px"
+                                            h="42px"
+                                            bg="#0000000D"
+                                            borderRadius="8px"
+                                            justify="center"
+                                            align="center"
+                                        >
+                                            <Image
+                                                src={detail.icon}
+                                                w="20px"
+                                            />
+                                        </Flex>
+
+                                        <Box>
+
+                                            <Text fontWeight="600">
+                                                {detail.title}
+                                            </Text>
+
+                                            <Text
+                                                mt={2}
+                                                color="#555"
+                                                fontSize="13px"
+                                            >
+                                                {detail.description}
+                                            </Text>
+
+                                        </Box>
+
+                                    </MotionGrid>
+
+                                ))}
+                            </MotionFlex>
+
+                        </MotionFlex>
+
+                    </Grid>
+                </Flex>
+            </Box>
+
         </Box>
     );
 };

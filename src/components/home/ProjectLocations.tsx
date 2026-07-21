@@ -242,7 +242,7 @@ const ProjectLocations = () => {
                         </Box>
 
                         {/* Nashik */}
-                        <Box
+                        {/* <Box
                             position="absolute"
                             left={{ base: "16%", md: "16%" }}
                             top={{ base: "20%", md: "20%" }}
@@ -297,7 +297,7 @@ const ProjectLocations = () => {
                             >
                                 Nashik
                             </MotionText>
-                        </Box>
+                        </Box> */}
 
                         {/* Konkan */}
                         <Box

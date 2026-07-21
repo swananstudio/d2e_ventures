@@ -17,8 +17,8 @@ import {
     timing,
     instagram,
     linkidin,
-    facebook,
-    twitter,
+    // facebook,
+    // twitter,
     youtube,
 } from "../assets/assets";
 
@@ -117,7 +117,7 @@ const Footer = () => {
                             </Text>
                         </Flex>
 
-                        <Flex gap={4} align="flex-start">
+                        <Flex gap={4} align="center">
 
                             <Flex bgColor={'#FFFFFF0D'} p={2} border={'1px solid #FFFFFF1A'} borderRadius={'50%'}>
                                 <Image
@@ -131,10 +131,10 @@ const Footer = () => {
                                 <Text color="#D2D2D2">
                                     +91 82650 68887
                                 </Text>
-
+                                {/* 
                                 <Text color="#D2D2D2">
                                     +91 80802 00814
-                                </Text>
+                                </Text> */}
                             </Flex>
                         </Flex>
 
@@ -188,13 +188,11 @@ const Footer = () => {
                             fontSize="14px"
                         >
                             <Text>
-                                Monday - Friday:
-                                09:00 AM - 08:00 PM
+                                Monday to Friday 10.30 AM- 7.30 PM
                             </Text>
-
+ 
                             <Text mt={1}>
-                                Sunday & Saturday:
-                                10:30 AM - 10:30 PM
+                                Saturday 10.30 AM - 2.00 PM
                             </Text>
                         </Flex>
                     </Flex>
@@ -203,9 +201,9 @@ const Footer = () => {
                         {[
                             { icon: instagram, link: 'https://www.instagram.com/d2e_ventures_designtoexecution/' },
                             { icon: linkidin, link: 'https://www.linkedin.com/company/d2eventures/' },
-                            { icon: facebook, link: '' },
-                            { icon: twitter, link: '' },
-                            { icon: youtube, link: '' },
+                            // { icon: facebook, link: '' },
+                            // { icon: twitter, link: '' },
+                            { icon: youtube, link: 'https://youtube.com/@d2eventuresprivatelimited?si=9c1OirBxoocuZURd' },
                         ].map((icon, index) => (
 
                             <Flex onClick={() => window.open(icon.link)} key={index} bgColor={'#FFFFFF0D'} p={2} border={'1px solid #FFFFFF1A'} borderRadius={'50%'}>

@@ -42,11 +42,11 @@ const Projects = () => {
                 <Box
                     position="relative"
                     w="100%"
-                    h={{
-                        base: "280px",
-                        md: "420px",
-                        lg: "520px",
-                    }}
+                    // h={{
+                    //     base: "280px",
+                    //     md: "420px",
+                    //     lg: "520px",
+                    // }}
                     overflow="hidden"
                 >
                     <Box

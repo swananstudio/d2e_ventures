@@ -158,7 +158,7 @@ const Navbar = () => {
             < Drawer.Root
                 open={open}
                 onOpenChange={(e) => setOpen(e.open)}
-                placement="end"
+                placement="top"
             >
                 <Portal>
                     <Drawer.Backdrop />
