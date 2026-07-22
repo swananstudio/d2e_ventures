@@ -1,8 +1,6 @@
 import { useRef } from "react";
-import { useState } from "react";
 import { Box, Flex, Grid, Image, Text } from "@chakra-ui/react";
-import { motion, useScroll, useMotionValueEvent, useTransform } from "motion/react";
-// import { useRef } from "react";
+import { motion, useScroll, useTransform, MotionValue } from "motion/react";
 import {
     aman_bhagwan,
     omkar_dhende,
@@ -17,6 +15,7 @@ const MotionFlex = motion.create(Flex);
 const MotionText = motion.create(Text);
 const MotionGrid = motion.create(Grid);
 const MotionImage = motion.create(Image);
+
 type Detail = {
     icon: string;
     title: string;
@@ -29,43 +28,260 @@ type TeamMemberProps = {
     image: string;
     reverse?: boolean;
     details: Detail[];
-    // index: number;
 };
-
 
 const teamMembers: TeamMemberProps[] = [
     {
         name: "Ar. Omkar Keshav Dhende",
-        role: "Project & Construction Management Specialist",
+        role: "Projects & Business Development Lead",
         image: omkar_dhende,
         details: [
-            { icon: expertiseIcon, title: "Expertise", description: "Bringing over 6 years of expertise in architecture, execution, and construction to create functional, well-crafted, and lasting design solutions." },
-            { icon: responsibilitiesIcon, title: "Responsibilities", description: "Leading projects from concept to completion by coordinating design, construction, execution, quality, and timely delivery." },
-            { icon: philosophyIcon, title: "Philosophy", description: "Believing that great spaces are built through collaboration, attention to detail, and an unwavering commitment to quality." },
+            {
+                icon: expertiseIcon,
+                title: "Expertise",
+                description:
+                    "Bringing over eight years of industry experience in project management, construction execution, and business development, with a focus on delivering projects efficiently while upholding the highest standards of quality.",
+            },
+            {
+                icon: responsibilitiesIcon,
+                title: "Responsibilities",
+                description:
+                    "Leading project execution from planning to completion, overseeing client coordination, multidisciplinary team collaboration, quality control, and strategic business development to ensure seamless project delivery.",
+            },
+            {
+                icon: philosophyIcon,
+                title: "Philosophy",
+                description:
+                    "Successful projects are driven by thoughtful planning, transparent communication, and uncompromising attention to quality.",
+            },
         ],
     },
     {
-        name: "Ar. Pranjal Pralhad Patil",
-        role: "Project & Construction Management Specialist",
+        name: "Ar. Pranjal Prahlad Patil",
+        role: "Design Head | Landscape Design Specialist",
         image: pranjal_patil,
         reverse: true,
         details: [
-            { icon: expertiseIcon, title: "Expertise", description: "Experienced in construction management, turnkey execution, and delivering projects with efficiency and precision." },
-            { icon: responsibilitiesIcon, title: "Responsibilities", description: "Overseeing site operations, project execution, vendor coordination, and quality control to ensure timely project delivery." },
-            { icon: philosophyIcon, title: "Philosophy", description: "I believe design is about creating meaningful experiences through intelligent planning and flawless execution." },
+            {
+                icon: expertiseIcon,
+                title: "Expertise",
+                description:
+                    "Specializes in landscape design and construction-ready documentation, transforming concepts into detailed, buildable solutions that seamlessly blend creativity with technical precision.",
+            },
+            {
+                icon: responsibilitiesIcon,
+                title: "Responsibilities",
+                description:
+                    "Leading the design process through detailed drawings, GFC (Good for Construction) documentation, and design coordination to ensure every project is executed with accuracy and intent.",
+            },
+            {
+                icon: philosophyIcon,
+                title: "Philosophy",
+                description:
+                    "Exceptional landscapes are created when creative vision is supported by precision, functionality, and meticulous attention to detail.",
+            },
         ],
     },
     {
         name: "Ar. Amaan Asif Bagwan",
-        role: "Project & Construction Management Specialist",
+        role: "Interior Design & Execution Lead",
         image: aman_bhagwan,
         details: [
-            { icon: expertiseIcon, title: "Expertise", description: "Specializing in residential architecture and interior design with a focus on thoughtful planning and functional spaces." },
-            { icon: responsibilitiesIcon, title: "Responsibilities", description: "Leading residential design, interior planning, and design coordination to deliver cohesive living environments." },
-            { icon: philosophyIcon, title: "Philosophy", description: "Believing every home should reflect its purpose, personality, and the people who live in it." },
+            {
+                icon: expertiseIcon,
+                title: "Expertise",
+                description:
+                    "Specializes in interior design and on-site execution, creating functional, refined spaces while ensuring every design is translated seamlessly into reality.",
+            },
+            {
+                icon: responsibilitiesIcon,
+                title: "Responsibilities",
+                description:
+                    "Managing interior planning, material selection, execution coordination, and site supervision to deliver cohesive spaces with exceptional attention to detail and craftsmanship.",
+            },
+            {
+                icon: philosophyIcon,
+                title: "Philosophy",
+                description:
+                    "Great interiors are defined by thoughtful design, purposeful functionality, and flawless execution.",
+            },
         ],
     },
 ];
+
+const clamp01 = (value: number) => Math.min(1, Math.max(0, value));
+
+// WAAPI/native scroll-timeline offsets must fall strictly within [0, 1] and
+// be monotonically increasing, so raw segment math has to be sanitized
+// before being handed to useTransform as an inputRange.
+const buildInputRange = (values: number[]) => {
+    const clamped = values.map(clamp01);
+    for (let i = 1; i < clamped.length; i++) {
+        if (clamped[i] <= clamped[i - 1]) {
+            clamped[i] = Math.min(1, clamped[i - 1] + 0.0001);
+        }
+    }
+    return clamped;
+};
+
+const useCardTransforms = (
+    scrollYProgress: MotionValue<number>,
+    index: number,
+    total: number,
+    reverse?: boolean
+) => {
+    const segment = 1 / total;
+    const segmentStart = index * segment;
+    const segmentEnd = segmentStart + segment;
+    const overlap = segment * 0.35;
+
+    const inputRange = buildInputRange([
+        segmentStart - overlap,
+        segmentStart + overlap,
+        segmentEnd - overlap,
+        segmentEnd + overlap,
+    ]);
+
+    const isFirst = index === 0;
+
+    const opacity = useTransform(
+        scrollYProgress,
+        inputRange,
+        isFirst ? [1, 1, 1, 0] : [0, 1, 1, 0]
+    );
+
+    const scale = useTransform(
+        scrollYProgress,
+        inputRange,
+        isFirst ? [1, 1, 1, 0.92] : [0.92, 1, 1, 0.92]
+    );
+
+    const y = useTransform(
+        scrollYProgress,
+        inputRange,
+        isFirst ? [0, 0, 0, 80] : [80, 0, 0, 80]
+    );
+
+    const x = useTransform(
+        scrollYProgress,
+        inputRange,
+        isFirst
+            ? [0, 0, 0, reverse ? 50 : -50]
+            : reverse
+                ? [-50, 0, 0, 50]
+                : [50, 0, 0, -50]
+    );
+
+    const rotateX = useTransform(
+        scrollYProgress,
+        inputRange,
+        isFirst ? [0, 0, 0, -12] : [12, 0, 0, -12]
+    );
+
+    const blurAmount = useTransform(
+        scrollYProgress,
+        inputRange,
+        isFirst ? [0, 0, 0, 10] : [10, 0, 0, 10]
+    );
+    const filter = useTransform(blurAmount, (value) => `blur(${value}px)`);
+    const zIndex = useTransform(scrollYProgress, inputRange, [0, total, total, 0]);
+
+    return { opacity, scale, y, x, rotateX, filter, zIndex };
+};
+
+type TeamMemberCardProps = {
+    member: TeamMemberProps;
+    index: number;
+    total: number;
+    scrollYProgress: MotionValue<number>;
+};
+
+const TeamMemberCard = ({ member, index, total, scrollYProgress }: TeamMemberCardProps) => {
+    const { opacity, scale, y, x, rotateX, filter, zIndex } = useCardTransforms(
+        scrollYProgress,
+        index,
+        total,
+        member.reverse
+    );
+
+    return (
+        <MotionGrid
+            position="absolute"
+            inset={0}
+            templateColumns={{
+                base: "1fr",
+                lg: "0.8fr 1.2fr",
+            }}
+            gap={10}
+            alignItems="center"
+            style={{
+                opacity,
+                scale,
+                y,
+                x,
+                rotateX,
+                filter,
+                zIndex,
+                transformPerspective: 1500,
+                transformStyle: "preserve-3d",
+            }}
+        >
+            <MotionBox
+                justifySelf="center"
+                w={{ base: "280px", md: "320px", lg: "380px" }}
+                h={{ base: "360px", md: "420px", lg: "500px" }}
+            >
+                <MotionImage
+                    src={member.image}
+                    w="100%"
+                    h="100%"
+                    objectFit="cover"
+                    borderRadius="16px"
+                    style={{
+                        backfaceVisibility: "hidden",
+                    }}
+                />
+            </MotionBox>
+
+            <MotionFlex direction="column">
+                <MotionText
+                    fontSize={{ base: "28px", md: "34px", lg: "42px" }}
+                    fontWeight="600"
+                >
+                    {member.name}
+                </MotionText>
+
+                <Text mt={2} color="#555">
+                    {member.role}
+                </Text>
+
+                <Flex mt={10} direction="column" gap={6}>
+                    {member.details.map((detail) => (
+                        <Grid key={detail.title} templateColumns="45px 1fr" gap={3}>
+                            <Flex
+                                w="42px"
+                                h="42px"
+                                bg="#0000000D"
+                                borderRadius="8px"
+                                justify="center"
+                                align="center"
+                            >
+                                <Image src={detail.icon} w="20px" />
+                            </Flex>
+
+                            <Box>
+                                <Text fontWeight="600">{detail.title}</Text>
+                                <Text mt={2} color="#555" fontSize="13px">
+                                    {detail.description}
+                                </Text>
+                            </Box>
+                        </Grid>
+                    ))}
+                </Flex>
+            </MotionFlex>
+        </MotionGrid>
+    );
+};
 
 const MeetTeam = () => {
     const sectionRef = useRef<HTMLDivElement>(null);
@@ -73,89 +289,7 @@ const MeetTeam = () => {
         target: sectionRef,
         offset: ["start start", "end end"],
     });
-    const rotateX = useTransform(
-        scrollYProgress,
-        [0, 0.30],
-        [0, 180]
-    );
 
-    const imageScale = useTransform(
-        scrollYProgress,
-        [0, 0.30],
-        [0.95, 1]
-    );
-
-    const imageOpacity = useTransform(
-        scrollYProgress,
-        [0.28, 0.35],
-        [1, 0]
-    );
-
-    const contentY = useTransform(
-        scrollYProgress,
-        [0.05, 0.25],
-        [100, 0]
-    );
-
-    const contentOpacity = useTransform(
-        scrollYProgress,
-        [0.05, 0.25],
-        [0, 1]
-    );
-
-    const headingY = useTransform(
-        scrollYProgress,
-        [0.08, 0.20],
-        [70, 0]
-    );
-
-    const headingOpacity = useTransform(
-        scrollYProgress,
-        [0.08, 0.20],
-        [0, 1]
-    );
-
-    const detailY = useTransform(
-        scrollYProgress,
-        [0.12, 0.30],
-        [80, 0]
-    );
-
-    const detailOpacity = useTransform(
-        scrollYProgress,
-        [0.12, 0.30],
-        [0, 1]
-    );
-    // const rotateX = useTransform(
-    //     scrollYProgress,
-    //     [0, 0.35, 0.65, 1],
-    //     [0, 0, 180, 180]
-    // );
-
-    // const scale = useTransform(
-    //     scrollYProgress,
-    //     [0, 0.3],
-    //     [0.95, 1]
-    // );
-
-    // const opacity = useTransform(
-    //     scrollYProgress,
-    //     [0.45, 0.55],
-    //     [1, 0]
-    // );
-
-
-    const [activeIndex, setActiveIndex] = useState(0);
-    useMotionValueEvent(scrollYProgress, "change", (latest) => {
-        if (latest < 0.33) {
-            setActiveIndex(0);
-        } else if (latest < 0.66) {
-            setActiveIndex(1);
-        } else {
-            setActiveIndex(2);
-        }
-    });
-    const member = teamMembers[activeIndex];
     return (
         <Box
             w="100%"
@@ -173,10 +307,9 @@ const MeetTeam = () => {
                 MEET THE TEAM
             </Text>
 
-
             <Box
                 ref={sectionRef}
-                h="500vh"
+                h={`${teamMembers.length * 200}vh`}
                 position="relative"
                 mt={{ base: 12, md: 16 }}
             >
@@ -184,126 +317,29 @@ const MeetTeam = () => {
                     position="sticky"
                     top={0}
                     h="100vh"
-                    align="center"
+                    w="100%"
                     justify="center"
+                    align="center"
+                    overflow="hidden"
                 >
                     <Grid
                         maxW="1300px"
                         w="100%"
-                        templateColumns={{
-                            base: "1fr",
-                            lg: "0.8fr 1.2fr",
-                        }}
-                        gap={10}
-                        alignItems="center"
+                        position="relative"
+                        minH={{ base: "560px", md: "460px", lg: "520px" }}
                     >
-
-                        {/* LEFT IMAGE */}
-
-                        <MotionBox
-                            justifySelf="center"
-                            w={{ base: "280px", md: "320px", lg: "380px" }}
-                            h={{ base: "360px", md: "420px", lg: "500px" }}
-                            style={{
-                                rotateX,
-                                scale: imageScale,
-                                opacity: imageOpacity,
-                                transformPerspective: 1500,
-                                transformStyle: "preserve-3d",
-                            }}
-                        >
-                            <MotionImage
+                        {teamMembers.map((member, index) => (
+                            <TeamMemberCard
                                 key={member.name}
-                                style={{
-                                    backfaceVisibility: "hidden",
-                                }} />
-                        </MotionBox>
-
-
-                        <MotionFlex
-                            direction="column"
-                            style={{
-                                y: contentY,
-                                opacity: contentOpacity,
-                            }}
-                        >
-
-                            <MotionText
-                                fontSize={{ base: "28px", md: "34px", lg: "42px" }}
-                                style={{
-                                    y: headingY,
-                                    opacity: headingOpacity,
-                                }}
-                                fontWeight="600"
-                            >
-                                {member.name}
-                            </MotionText>
-
-                            <Text
-                                mt={2}
-                                color="#555"
-                            >
-                                {member.role}
-                            </Text>
-
-                            <MotionFlex
-                                mt={10}
-                                direction="column"
-                                gap={6}
-                                style={{
-                                    y: detailY,
-                                    opacity: detailOpacity,
-                                }}
-                            >
-                                {member.details.map((detail) => (
-
-                                    <MotionGrid
-                                        key={detail.title}
-                                        templateColumns="45px 1fr"
-                                        gap={3}
-                                    >
-
-                                        <Flex
-                                            w="42px"
-                                            h="42px"
-                                            bg="#0000000D"
-                                            borderRadius="8px"
-                                            justify="center"
-                                            align="center"
-                                        >
-                                            <Image
-                                                src={detail.icon}
-                                                w="20px"
-                                            />
-                                        </Flex>
-
-                                        <Box>
-
-                                            <Text fontWeight="600">
-                                                {detail.title}
-                                            </Text>
-
-                                            <Text
-                                                mt={2}
-                                                color="#555"
-                                                fontSize="13px"
-                                            >
-                                                {detail.description}
-                                            </Text>
-
-                                        </Box>
-
-                                    </MotionGrid>
-
-                                ))}
-                            </MotionFlex>
-
-                        </MotionFlex>
-
+                                member={member}
+                                index={index}
+                                total={teamMembers.length}
+                                scrollYProgress={scrollYProgress}
+                            />
+                        ))}
                     </Grid>
                 </Flex>
             </Box>
-
         </Box>
     );
 };

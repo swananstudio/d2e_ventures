@@ -8,6 +8,9 @@ import aboutoverview1 from './aboutoverview1.svg'
 import aboutoverview2 from './aboutoverview2.svg'
 import aboutoverview3 from './aboutoverview3.svg'
 import aboutoverview4 from './aboutoverview4.svg'
+import about_hero_section from './about/about_hero_section.webp'
+import services_hero_section from './services/services_hero_section.webp'
+import contact_hero_section from './contact/contact_hero_section.webp'
 
 import omkar_dhende from './about/omkar_dhende.svg'
 import pranjal_patil from './about/pranjal_patil.svg'
@@ -86,7 +89,7 @@ import portfolio_hero_section_swiper5 from './portfolio/herosection/swiper5.webp
 import architecture from './services/development_stage/architecture.png'
 import areasize from './portfolio/herosection/areasize.png'
 export {
-    herosection, herosectiongif, homeherosectionvideo,
+    herosection, herosectiongif, homeherosectionvideo, about_hero_section, services_hero_section, contact_hero_section,
     logo, footerlogo,
     services, homereview1, homereview2, homereview3, homereview4,
     aboutoverview1, aboutoverview2, aboutoverview3, aboutoverview4,

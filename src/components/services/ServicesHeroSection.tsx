@@ -1,13 +1,13 @@
 import Navbar from "../../layout/Navbar";
-import { services } from "../../assets/assets";
+import { services_hero_section } from "../../assets/assets";
 import { Flex, Text } from "@chakra-ui/react";
 
 const ServicesHeroSection = () => {
     return (
         <Flex
-            h="55vh"
+            h="300px"
             w="100%"
-            bgImage={`url(${services})`}
+            bgImage={`url(${services_hero_section})`}
             bgSize="cover"
             backgroundPosition="center"
             bgRepeat="no-repeat"
@@ -39,6 +39,7 @@ const ServicesHeroSection = () => {
                             lineHeight="1.15"
                             color="white"
                             fontWeight="800"
+                            mb={'20%'}
                         >
                             Services
                         </Text>

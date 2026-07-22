@@ -1,13 +1,13 @@
 import Navbar from "../../layout/Navbar";
-import { services } from "../../assets/assets";
+import { about_hero_section } from "../../assets/assets";
 import { Flex, Text } from "@chakra-ui/react";
 
 const InnerHeroSection = () => {
     return (
         <Flex
-            h="50vh"
+            h="300px"
             w="100%"
-            bgImage={`url(${services})`}
+            bgImage={`url(${about_hero_section})`}
             bgSize="cover"
             backgroundPosition="center"
             bgRepeat="no-repeat"
@@ -32,6 +32,7 @@ const InnerHeroSection = () => {
                         align="center"
                         gap={5}
                         maxW="900px"
+                        mb={'2%'}
                     >
                         <Text
                             className="michroma_font"

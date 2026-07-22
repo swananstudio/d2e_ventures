@@ -1,8 +1,12 @@
 import {
     Box,
     Button,
+    createListCollection,
+    Field,
     Flex,
     Input,
+    Portal,
+    Select,
     Text,
 } from "@chakra-ui/react";
 import { useForm } from "react-hook-form";
@@ -10,42 +14,56 @@ import { useForm } from "react-hook-form";
 type FormValues = {
     fullName: string;
     phone: string;
+    city: string;
+    requirement: string;
 };
 const ChooseUs = () => {
     const {
         register,
         handleSubmit,
-        // formState: { errors },
+        formState: { errors },
         reset,
     } = useForm<FormValues>();
 
     const onSubmit = (data: FormValues) => {
+        console.log(data);
+
         const businessPhone = ["8265068887"];
         // const businessPhone = ["8265068887", '8080200814'];
 
         const message = `Hello D2E Ventures,
 
-I would like to receive complete project details.
+I am interested in your services and would like to receive complete project details.
 
-Name: ${data.fullName}
-Phone: ${data.phone}
+📌 Name: ${data.fullName}
+📞 Phone: ${data.phone}
+📍 City of Project/Land: ${data.city}
+🏡 Requirement: ${data.requirement || "Not specified"}
 
-Please share the floor plans, brochure, pricing and site visit details.
+Looking forward to your response.
 
-Thank you.`;
+Thank you!`;
 
         businessPhone.map(bp =>
 
             window.open(
-                `https://wa.me/${bp}?text=${encodeURIComponent(
-                    message
-                )}`,
+                `https://wa.me/${bp}?text=${encodeURIComponent(message)}`,
                 "_blank"
-            )
-        )
+            ))
 
         reset();
     };
+
+    const frameworks = createListCollection({
+        items: [
+            { label: "Architecture", value: "architecture" },
+            { label: "Landscape", value: "landscape" },
+            { label: "Interior", value: "interior" },
+            { label: "Plotting", value: "plotting" },
+            { label: "Premium Villas", value: "villas" },
+            { label: "Turnkey Execution", value: "turnkey" },
+        ],
+    })
     return (
         <Box
             w="100%"
@@ -131,15 +149,7 @@ Thank you.`;
                         letterSpacing="0.2px"
                         color="#333333"
                     >
-                        Building a home or commercial space should be exciting,
-                        not overwhelming. At D2E Venture, we bring together
-                        architecture, interior design, landscape planning,
-                        plotting, premium villas, and turnkey execution to
-                        provide a complete, hassle-free experience. With expert
-                        planning, transparent communication, and quality
-                        craftsmanship, we transform your vision into spaces that
-                        are timeless, functional, and built to exceed
-                        expectations.
+                       Building a home or commercial space should be exciting, notoverwhelming. At D2E Venture, we bring together architecture,interior design, landscape planning, plotting, premium villas,and turnkey execution to provide a complete, hassle-freeexperience. With expert planning, transparent communication,and quality craftsmanship, we transform your vision intospaces that are timeless, functional, and built to exceedexpectations. 
                     </Text>
                 </Box>
 
@@ -167,7 +177,12 @@ Thank you.`;
                         md: 7,
                     }}
                     as="form"
-                    onSubmit={handleSubmit(onSubmit)}
+                    onSubmit={handleSubmit(
+                        onSubmit,
+                        (errors) => {
+                            console.log(errors);
+                        }
+                    )}
                 >
                     <Text
                         fontSize={{
@@ -179,9 +194,7 @@ Thank you.`;
                         lineHeight="1.05"
                         color="#1E1E1E"
                     >
-                        Get Complete Project
-                        <br />
-                        Details
+                       Book Your Free Consultation
                     </Text>
 
                     <Text
@@ -191,35 +204,25 @@ Thank you.`;
                             md: "14px",
                         }}
                         lineHeight="1.4"
-                        color="#444444"
+                        color="#666666"
                     >
-                        Fill In Your Details To Receive{" "}
-                        <Text
-                            as="span"
-                            color="#C8A96B"
-                        >
-                            Floor Plans Details,
-                            <br />
-                            E Brochure, And Site Visit Assistance.
-                        </Text>
+                        Connect with our experts to explore the potential of your land.
                     </Text>
 
                     <Box
-                        mt={5}
+                        mt={3}
                         borderTop="1px dashed #777777"
                     />
 
-                    {/* FULL NAME */}
 
-                    <Box mt={5}>
-                        <Text
-                            mb={2}
-                            fontSize="12px"
+                    <Field.Root mt={3} invalid={!!errors.fullName}>
+                        <Field.Label
+                            fontSize="14px"
                             fontWeight="500"
                             color="#1E1E1E"
                         >
                             Full Name
-                        </Text>
+                        </Field.Label>
 
                         <Input
                             placeholder="Enter Full Name"
@@ -227,7 +230,7 @@ Thank you.`;
                                 base: "45px",
                                 md: "48px",
                             }}
-                            border="1px solid #555555"
+                            border="1px solid #1C1B1A"
                             borderRadius="30px"
                             px={5}
                             fontSize="13px"
@@ -235,22 +238,22 @@ Thank you.`;
                             _placeholder={{
                                 color: "#777777",
                             }}
-                            _focus={{
-                                borderColor: "#C8A96B",
-                                boxShadow: "none",
-                            }}
+                            // _focus={{
+                            //     borderColor: "#C8A96B",
+                            //     boxShadow: "none",
+                            // }}
                             {...register("fullName", {
                                 required: "Full Name is required",
                             })}
                         />
-                    </Box>
+                        <Field.ErrorText>{errors.fullName?.message}</Field.ErrorText>
+                    </Field.Root>
 
-                    {/* PHONE */}
 
-                    <Box mt={4}>
+                    <Field.Root mt={4} invalid={!!errors.phone}>
                         <Text
-                            mb={2}
-                            fontSize="12px"
+                            // mb={2}
+                            fontSize="14px"
                             fontWeight="500"
                             color="#1E1E1E"
                         >
@@ -264,7 +267,7 @@ Thank you.`;
                                 base: "45px",
                                 md: "48px",
                             }}
-                            border="1px solid #555555"
+                            border="1px solid #1C1B1A"
                             borderRadius="30px"
                             px={5}
                             fontSize="13px"
@@ -272,10 +275,10 @@ Thank you.`;
                             _placeholder={{
                                 color: "#777777",
                             }}
-                            _focus={{
-                                borderColor: "#C8A96B",
-                                boxShadow: "none",
-                            }}
+                            // _focus={{
+                            //     borderColor: "#C8A96B",
+                            //     boxShadow: "none",
+                            // }}
                             {...register("phone", {
                                 required: "Phone Number is required",
                                 pattern: {
@@ -285,9 +288,104 @@ Thank you.`;
                                 },
                             })}
                         />
-                    </Box>
+                        <Field.ErrorText>{errors.phone?.message}</Field.ErrorText>
+                    </Field.Root>
 
-                    {/* BUTTON */}
+                    <Field.Root mt={4} invalid={!!errors.city}>
+                        <Text
+                            // mb={2}
+                            fontSize="14px"
+                            fontWeight="500"
+                            color="#1E1E1E"
+                        >
+                            City of Your Land
+                        </Text>
+
+                        <Input
+                            placeholder="E.g. Pune, Mumbai, Konkan"
+                            h={{
+                                base: "45px",
+                                md: "48px",
+                            }}
+                            border="1px solid #1C1B1A"
+                            borderRadius="30px"
+                            px={5}
+                            fontSize="13px"
+                            color="#1E1E1E"
+                            _placeholder={{
+                                color: "#777777",
+                            }}
+                            // _focus={{
+                            //     borderColor: "#C8A96B",
+                            //     boxShadow: "none",
+                            // }}
+                            {...register("city", {
+                                required: "City of your land is required",
+                            })}
+                        />
+                        <Field.ErrorText>{errors.city?.message}</Field.ErrorText>
+                    </Field.Root>
+
+                    <Field.Root mt={4} invalid={!!errors.requirement}>
+                        <Text
+                            // mb={2}
+                            fontSize="14px"
+                            fontWeight="500"
+                            color="#1E1E1E"
+                        >
+                            Tell Us About Your Requirement <Text as={'span'} color={'#666666'}> (Optional)</Text>
+                        </Text>
+
+                        <Select.Root collection={frameworks} w='100%' >
+                            <Select.HiddenSelect />
+                            <Select.Control >
+                                <Select.Trigger
+                                    border="1px solid #1C1B1A"
+                                    h={{
+                                        base: "45px",
+                                        md: "48px",
+                                    }}
+
+                                    borderRadius="30px"
+                                    px={5}
+                                    fontSize="13px"
+                                    color="#1E1E1E"
+                                    _placeholder={{
+                                        color: "#666666",
+                                    }}
+                                // _focus={{
+                                //     borderColor: "#C8A96B",
+                                //     boxShadow: "none",
+                                // }}
+                                >
+                                    <Select.ValueText
+                                        placeholder="Select Your Requirement"
+                                        _placeholder={{color:'#666666'}}
+
+                                    />
+                                </Select.Trigger>
+                                <Select.IndicatorGroup>
+                                    <Select.ClearTrigger />
+                                    <Select.Indicator />
+                                </Select.IndicatorGroup>
+                            </Select.Control>
+                            <Portal>
+                                <Select.Positioner>
+                                    <Select.Content>
+                                        {frameworks.items.map((framework) => (
+                                            <Select.Item item={framework} key={framework.value}>
+                                                {framework.label}
+                                                <Select.ItemIndicator />
+                                            </Select.Item>
+                                        ))}
+                                    </Select.Content>
+                                </Select.Positioner>
+                            </Portal>
+                        </Select.Root>
+
+                        <Field.ErrorText>{errors.requirement?.message}</Field.ErrorText>
+                    </Field.Root>
+
 
                     <Flex
                         mt={5}
@@ -302,20 +400,20 @@ Thank you.`;
                                 sm: "auto",
                             }}
                             type="submit"
-                            bg="#1E1E1E"
+                            bg="#1C1B1A"
                             color="#FFFFFF"
                             h="45px"
                             px={7}
                             borderRadius="10px"
                             fontSize="13px"
                             fontWeight="500"
-                            _hover={{
-                                bg: "#C8A96B",
-                                color: "#1E1E1E",
-                            }}
+                            // _hover={{
+                            //     bg: "#C8A96B",
+                            //     color: "#1C1B1A",
+                            // }}
                             transition="all 0.3s ease"
                         >
-                            Request Details Now
+                            Book Now
                         </Button>
                     </Flex>
                 </Box>

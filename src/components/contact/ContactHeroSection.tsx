@@ -1,4 +1,4 @@
-import { services } from "../../assets/assets";
+import { contact_hero_section } from "../../assets/assets";
 import Navbar from "../../layout/Navbar";
 import { Flex, Text } from "@chakra-ui/react";
 
@@ -6,9 +6,9 @@ import { Flex, Text } from "@chakra-ui/react";
 const ContactHeroSection = () => {
     return (
         <Flex
-            h="55vh"
+            h="300px"
             w="100%"
-            bgImage={`url(${services})`}
+            bgImage={`url(${contact_hero_section})`}
             bgSize="cover"
             backgroundPosition="center"
             bgRepeat="no-repeat"
@@ -40,6 +40,7 @@ const ContactHeroSection = () => {
                             lineHeight="1.15"
                             color="white"
                             fontWeight="800"
+                            mb={'20%'}
                         >
                             Contact Us
                         </Text>

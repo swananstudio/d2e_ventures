@@ -259,7 +259,7 @@ const Footer = () => {
                     </Link>
                 </Flex>
             </Flex>
-            <Text textAlign={'center'} color={'#FCFBF8'} mt={4} fontWeight={200} pb={1} fontSize={'11px'}>Designed & built by Swanan Studio.</Text>
+            <Text textAlign={'center'} color={'#FCFBF8'} mt={4} fontWeight={200} pb={1} fontSize={'11px'}>Designed & Built by Swanan Studio.</Text>
         </Box>
     );
 };

@@ -29,33 +29,42 @@ const Navbar = () => {
         { label: "CONTACT US", path: "/contact-us" },
     ];
     const navigate = useNavigate()
+    const isHomePage = location.pathname === "/";
     return (
         <>
             <MotionFlex
-                initial={{
-                    y: -100,
-                    opacity: 0.5,
-                    transition: {
-                        duration: 1,
-                        ease: "easeInOut",
-                    }
-                }}
-                animate={{
-                    y: 0,
-                    opacity: 2,
-                    transition: {
-                        duration: 1,
-                        ease: "easeInOut",
-                    }
-                }}
-                exit={{
-                    y: -100,
-                    opacity: 0,
-                    transition: {
-                        duration: 3,
-                        ease: "easeInOut",
-                    }
-                }}
+                initial={
+                    isHomePage
+                        ? {
+                            y: -100,
+                            opacity: 0.5,
+                        }
+                        : false
+                }
+                animate={
+                    isHomePage
+                        ? {
+                            y: 0,
+                            opacity: 1,
+                            transition: {
+                                duration: 1,
+                                ease: "easeInOut",
+                            },
+                        }
+                        : {}
+                }
+                exit={
+                    isHomePage
+                        ? {
+                            y: -100,
+                            opacity: 0,
+                            transition: {
+                                duration: 0.8,
+                                ease: "easeInOut",
+                            },
+                        }
+                        : {}
+                }
 
 
                 w="100%"
