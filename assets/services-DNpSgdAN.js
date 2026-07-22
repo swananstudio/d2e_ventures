@@ -1,1 +1,0 @@
-var e=`/d2e_ventures/assets/services-D4O9uptS.svg`;export{e as t};
