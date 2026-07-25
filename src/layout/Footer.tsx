@@ -9,6 +9,9 @@ import {
     Text,
 } from "@chakra-ui/react";
 
+import PrivacyPolicy from "./PrivacyPolicy";
+import TermsCondition from "./TermsCondition";
+
 import {
     footerlogo,
     maps,
@@ -250,13 +253,22 @@ const Footer = () => {
                     gap={8}
                     fontSize="14px"
                 >
+                    <TermsCondition
+                    trigger ={
                     <Link cursor={'pointer'} textDecoration={'underline'} color="#CCCCCC">
                         Terms & Condition
                     </Link>
-
+                    }
+                    />
+                    
+                    <PrivacyPolicy 
+                    trigger={
                     <Link cursor={'pointer'} color="#CCCCCC" textDecoration={'underline'}>
                         Privacy Policy
                     </Link>
+                    }
+                    />
+                    
                 </Flex>
             </Flex>
             <Text textAlign={'center'} color={'#FCFBF8'} mt={4} fontWeight={200} pb={1} fontSize={'11px'}>Designed & Built by Swanan Studio.</Text>
