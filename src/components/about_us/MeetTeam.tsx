@@ -206,6 +206,7 @@ const TeamMemberCard = ({ member, index, total, scrollYProgress }: TeamMemberCar
 
     return (
         <MotionGrid
+          
             position="absolute"
             inset={0}
             templateColumns={{
@@ -292,6 +293,7 @@ const MeetTeam = () => {
 
     return (
         <Box
+        position={'relative'}
             w="100%"
             bg="#FAF9F6"
             px={{ base: "5%", md: "8%", lg: "10%" }}

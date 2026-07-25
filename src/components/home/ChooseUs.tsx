@@ -17,12 +17,14 @@ type FormValues = {
     phone: string;
     city: string;
     requirement: string[];
+    otherRequirement: string;
 };
 const ChooseUs = () => {
     const {
         register,
         handleSubmit,
         control,
+        watch,
         formState: { errors },
         reset,
     } = useForm<FormValues>({
@@ -31,19 +33,27 @@ const ChooseUs = () => {
             phone: "",
             city: "",
             requirement: [],
+            otherRequirement: "",
         },
     });
-
+    const selectedRequirements = watch("requirement");
+    const showOther =
+        selectedRequirements?.includes("others") ?? false;
     const onSubmit = (data: FormValues) => {
-        console.log(data);
+        // console.log(data);
 
         const businessPhone = ["8265068887"];
         // const businessPhone = ["8265068887", "8080200814"];
 
         const requirement =
-            data.requirement?.length > 0
-                ? data.requirement.join(", ")
-                : "Not specified";
+            data.requirement
+                .map((item) =>
+                    item === "others"
+                        ? data.otherRequirement
+                        : frameworks.find(f => f.value === item)?.label ?? item
+                )
+                .filter(Boolean)
+                .join(", ") || "Not specified";
 
         const message = `Hello D2E Team,
 
@@ -82,6 +92,7 @@ Thank you!`;
         { label: "Plotting", value: "plotting" },
         { label: "Premium Villas", value: "villas" },
         { label: "Turnkey Execution", value: "turnkey" },
+        { label: "Others", value: "others" },
     ]
     return (
         <Box
@@ -412,6 +423,38 @@ Thank you!`;
                         <Field.ErrorText>{errors.requirement?.message}</Field.ErrorText>
                     </Field.Root>
 
+                    {showOther && (
+                        <Field.Root mt={4} invalid={!!errors.otherRequirement}>
+                            <Field.Label
+                                fontSize="14px"
+                                fontWeight="500"
+                            >
+                                Please specify
+                            </Field.Label>
+
+                            <Input
+                                placeholder="Enter your requirement"
+                                h={{
+                                    base: "45px",
+                                    md: "48px",
+                                }}
+                                border="1px solid #1C1B1A"
+                                borderRadius="30px"
+                                px={5}
+                                fontSize="13px"
+                                {...register("otherRequirement", {
+                                    validate: (value) =>
+                                        !showOther ||
+                                        value.trim() !== "" ||
+                                        "Please specify your requirement",
+                                })}
+                            />
+
+                            <Field.ErrorText>
+                                {errors.otherRequirement?.message}
+                            </Field.ErrorText>
+                        </Field.Root>
+                    )}
 
                     <Flex
                         mt={5}

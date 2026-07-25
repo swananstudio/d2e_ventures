@@ -134,11 +134,16 @@ Thank you!`;
                     base: 14,
                     lg: 16,
                 }}
-                alignItems="center"
+                alignItems="flex-start"
             >
                 {/* LEFT */}
 
-                <Box>
+                <Box
+                  pt={{
+                        base: 6,
+                        md: 8,
+                    }}
+                >
                     <Text
                         fontSize={{
                             base: "34px",
@@ -333,8 +338,8 @@ Thank you!`;
                         </Field.Root>
 
                         {/* Terms */}
-                        <Field.Root invalid={!!errors.acceptTerms}>
-                            <Checkbox.Root>
+                        <Field.Root  invalid={!!errors.acceptTerms}>
+                            <Checkbox.Root checked>
                                 <Checkbox.HiddenInput
                                     {...register("acceptTerms", {
                                         required: "Please accept the terms and privacy policy.",

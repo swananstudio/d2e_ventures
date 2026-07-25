@@ -1,6 +1,34 @@
 import { Flex, Grid, GridItem } from "@chakra-ui/react";
 import { contact_office_surrounding } from '../../assets/assets'
+import { useEffect, useRef } from "react";
+import { useInView } from "framer-motion";
 const ContactMap = () => {
+
+
+    const videoRef = useRef<HTMLVideoElement>(null);
+    const containerRef = useRef<HTMLDivElement>(null);
+
+    const isInView = useInView(containerRef, {
+        once: false,
+        amount: 0.5, // 50% visible
+    });
+
+    useEffect(() => {
+        const video = videoRef.current;
+
+        if (!video) return;
+
+        if (isInView) {
+            if (video.currentTime < 6.5) {
+                video.currentTime = 6.5;
+            }
+
+            video.play().catch(() => { });
+        } else {
+            video.pause();
+        }
+    }, [isInView]);
+
     return (
         <Flex
             w="100%"
@@ -12,22 +40,24 @@ const ContactMap = () => {
         // flexDirection={'column'}
         >
             <Grid w='100%' gapY={14} gapX={'50px'} templateColumns={{ base: 'repeat(1, 1fr)', md: 'repeat(2, 1fr)', lg: 'repeat(3, 1fr)' }}>
-                <GridItem >
+                <GridItem ref={containerRef}>
                     <video
-                        // ref={videoRef}
-                        autoPlay
+                        ref={videoRef}
                         muted
                         loop
                         playsInline
-                        preload="auto"
+                        preload="metadata"
                         style={{
                             width: "100%",
                             height: "350px",
                             objectFit: "cover",
-                            borderRadius: "20px"
+                            borderRadius: "20px",
                         }}
                     >
-                        <source src={contact_office_surrounding} type="video/webm" />
+                        <source
+                            src={contact_office_surrounding}
+                            type="video/webm"
+                        />
                     </video>
                 </GridItem>
                 <GridItem

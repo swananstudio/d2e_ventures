@@ -5,7 +5,6 @@ import {
   useListCollection,
   useFieldContext,
 } from "@chakra-ui/react"
-import { useEffect } from "react"
 import {
   Controller,
   type Control,
@@ -18,7 +17,7 @@ type ValueType = {
   label: string
   value: string
 }
-
+import { useEffect, useState } from "react";
 type CustomComboboxProps<T extends FieldValues = FieldValues> = {
   values: ValueType[]
   name: Path<T>
@@ -39,16 +38,15 @@ const CustomCombobox = <T extends FieldValues>({
   disabled = false,
   placeholder = "Type to search",
   onValueChange,
-
 }: CustomComboboxProps<T>) => {
   const { contains } = useFilter({ sensitivity: "base" })
   const { collection, filter, set } = useListCollection<ValueType>({
-    initialItems: [],
+    initialItems: values,
     filter: contains,
   })
-
   const fieldContext = useFieldContext()
   const isInvalid = fieldContext?.invalid ?? false
+  const [searchValue, setSearchValue] = useState("");
 
   useEffect(() => {
     if (values.length > 0) set(values)
@@ -60,36 +58,60 @@ const CustomCombobox = <T extends FieldValues>({
       control={control}
       rules={rules}
       render={({ field }) => {
-        // ✅ Build displayed text based on selection
-        const inputValue = Array.isArray(field.value)
-          ? field.value.length === 0
-            ? ""
-            : field.value.length === 1
-              ? collection.items.find((i) => i.value === field.value[0])?.label ?? ""
-              : `${field.value.length} selected`
-          : collection.items.find((i) => i.value === field.value)?.label ?? ""
+        const selectedValues: string[] = Array.isArray(field.value)
+          ? field.value
+          : field.value
+          ? [field.value]
+          : []
+
+        // Keep the displayed input text in sync with field.value, no matter
+        // how it changed (user click, defaultValues, reset(), setValue()...).
+        useEffect(() => {
+          if (selectedValues.length === 0) {
+            setSearchValue("")
+          } else if (selectedValues.length === 1) {
+            setSearchValue(
+              values.find((i) => i.value === selectedValues[0])?.label ?? ""
+            )
+          } else {
+            setSearchValue(`${selectedValues.length} selected`)
+          }
+          // eslint-disable-next-line react-hooks/exhaustive-deps
+        }, [JSON.stringify(selectedValues), values])
 
         return (
           <Combobox.Root
             collection={collection}
-            onInputValueChange={(e) => filter(e.inputValue)}
-            // onValueChange={(e) => field.onChange(e.value)}
-            onValueChange={(e) => {
-              field.onChange(e.value);
-              onValueChange?.(e.value);
-            }}
-            value={Array.isArray(field.value) ? field.value : [field.value]}
-            inputValue={inputValue}
+            value={selectedValues}
+            inputValue={searchValue}
             width="100%"
             openOnClick
             multiple={multiple}
             disabled={disabled}
             invalid={isInvalid}
+            onInputValueChange={(e) => {
+              // Chakra/Ark also calls this right after a selection or clear,
+              // to resync its own internal input state. If we don't filter
+              // that out, it overwrites the label we just set above with "".
+              // Only real user typing should update the search/filter state.
+              if (e.reason !== "input-change") return
 
+              setSearchValue(e.inputValue)
+
+              if (e.inputValue.trim() === "") {
+                set(values)
+              } else {
+                filter(e.inputValue)
+              }
+            }}
+            onValueChange={(e) => {
+              const nextValue = multiple ? e.value : e.value[0] ?? ""
+              field.onChange(nextValue)
+              onValueChange?.(e.value)
+            }}
           >
             <Combobox.Control>
               <Combobox.Input
-                // borderColor="border.secondary"
                 placeholder={placeholder}
                 border="1px solid #1C1B1A"
                 borderRadius="30px"
@@ -105,7 +127,15 @@ const CustomCombobox = <T extends FieldValues>({
                 }}
               />
               <Combobox.IndicatorGroup>
-                {field.value && field.value.length > 0 && <Combobox.ClearTrigger />}
+                {selectedValues.length > 0 && (
+                  <Combobox.ClearTrigger
+                    onClick={() => {
+                      field.onChange(multiple ? [] : "");
+                      setSearchValue("");
+                      set(values);
+                    }}
+                  />
+                )}
                 <Combobox.Trigger />
               </Combobox.IndicatorGroup>
             </Combobox.Control>
@@ -132,8 +162,7 @@ const CustomCombobox = <T extends FieldValues>({
 
 export default CustomCombobox
 
-
-// Add this at the bottom of CustomCombobox.tsx
+// ---------------------------------------------------------------------------
 
 type StandaloneComboboxProps = {
   values: ValueType[];
@@ -152,23 +181,43 @@ export const StandaloneCombobox = ({
 }: StandaloneComboboxProps) => {
   const { contains } = useFilter({ sensitivity: "base" });
   const { collection, filter, set } = useListCollection<ValueType>({
-    initialItems: values,   // 👈 pass directly, don't rely on useEffect timing
+    initialItems: values,
     filter: contains,
   });
+
+  const [searchValue, setSearchValue] = useState(
+    values.find((i) => i.value === value)?.label ?? ""
+  );
 
   useEffect(() => {
     if (values.length > 0) set(values);
   }, [values, set]);
 
-  const inputValue = values.find((i) => i.value === value)?.label ?? "";  // 👈 use values directly, not collection.items
+  // Keep the input text in sync with `value` whenever it changes from
+  // outside (parent re-render, programmatic update), not just user selection.
+  useEffect(() => {
+    setSearchValue(values.find((i) => i.value === value)?.label ?? "");
+  }, [value, values]);
 
   return (
     <Combobox.Root
       collection={collection}
-      onInputValueChange={(e) => filter(e.inputValue)}
+      onInputValueChange={(e) => {
+        // Ignore the internal resync Chakra/Ark fires right after a
+        // selection/clear — only react to actual user typing.
+        if (e.reason !== "input-change") return;
+
+        setSearchValue(e.inputValue);
+
+        if (e.inputValue.trim() === "") {
+          set(values);
+        } else {
+          filter(e.inputValue);
+        }
+      }}
       onValueChange={(e) => onChange(e.value?.[0] ?? "")}
       value={value ? [value] : []}
-      inputValue={inputValue}
+      inputValue={searchValue}
       width="100%"
       openOnClick
       multiple={false}
@@ -180,7 +229,15 @@ export const StandaloneCombobox = ({
           placeholder={placeholder}
         />
         <Combobox.IndicatorGroup>
-          {value && <Combobox.ClearTrigger onClick={() => onChange("")} />}
+          {value && (
+            <Combobox.ClearTrigger
+              onClick={() => {
+                onChange("");
+                setSearchValue("");
+                set(values);
+              }}
+            />
+          )}
           <Combobox.Trigger />
         </Combobox.IndicatorGroup>
       </Combobox.Control>
