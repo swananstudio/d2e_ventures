@@ -1,12 +1,13 @@
+import CustomCombobox from "../../custom/CustomCombobox";
 import {
     Box,
     Button,
-    createListCollection,
+    // createListCollection,
     Field,
     Flex,
     Input,
-    Portal,
-    Select,
+    // Portal,
+    // Select,
     Text,
 } from "@chakra-ui/react";
 import { useForm } from "react-hook-form";
@@ -15,55 +16,73 @@ type FormValues = {
     fullName: string;
     phone: string;
     city: string;
-    requirement: string;
+    requirement: string[];
 };
 const ChooseUs = () => {
     const {
         register,
         handleSubmit,
+        control,
         formState: { errors },
         reset,
-    } = useForm<FormValues>();
+    } = useForm<FormValues>({
+        defaultValues: {
+            fullName: "",
+            phone: "",
+            city: "",
+            requirement: [],
+        },
+    });
 
     const onSubmit = (data: FormValues) => {
         console.log(data);
 
         const businessPhone = ["8265068887"];
-        // const businessPhone = ["8265068887", '8080200814'];
+        // const businessPhone = ["8265068887", "8080200814"];
 
-        const message = `Hello D2E Ventures,
+        const requirement =
+            data.requirement?.length > 0
+                ? data.requirement.join(", ")
+                : "Not specified";
 
-I am interested in your services and would like to receive complete project details.
+        const message = `Hello D2E Team,
 
-📌 Name: ${data.fullName}
-📞 Phone: ${data.phone}
-📍 City of Project/Land: ${data.city}
-🏡 Requirement: ${data.requirement || "Not specified"}
+I would like to book a free consultation to discuss my land and explore its development potential.
 
-Looking forward to your response.
+My details are as follows:
+
+ Full Name: ${data.fullName}
+ Phone Number: ${data.phone}
+ City of Land: ${data.city}
+ Consultation Requirement: ${requirement}
+
+I look forward to connecting with you. Please get in touch at your earliest convenience.
 
 Thank you!`;
 
-        businessPhone.map(bp =>
-
+        businessPhone.forEach((bp) => {
             window.open(
                 `https://wa.me/${bp}?text=${encodeURIComponent(message)}`,
                 "_blank"
-            ))
+            );
+        });
 
-        reset();
+        reset({
+            fullName: "",
+            phone: "",
+            city: "",
+            requirement: [],
+        });
     };
 
-    const frameworks = createListCollection({
-        items: [
-            { label: "Architecture", value: "architecture" },
-            { label: "Landscape", value: "landscape" },
-            { label: "Interior", value: "interior" },
-            { label: "Plotting", value: "plotting" },
-            { label: "Premium Villas", value: "villas" },
-            { label: "Turnkey Execution", value: "turnkey" },
-        ],
-    })
+    const frameworks = [
+        { label: "Architecture", value: "architecture" },
+        { label: "Landscape", value: "landscape" },
+        { label: "Interior", value: "interior" },
+        { label: "Plotting", value: "plotting" },
+        { label: "Premium Villas", value: "villas" },
+        { label: "Turnkey Execution", value: "turnkey" },
+    ]
     return (
         <Box
             w="100%"
@@ -149,7 +168,7 @@ Thank you!`;
                         letterSpacing="0.2px"
                         color="#333333"
                     >
-                       Building a home or commercial space should be exciting, notoverwhelming. At D2E Venture, we bring together architecture,interior design, landscape planning, plotting, premium villas,and turnkey execution to provide a complete, hassle-freeexperience. With expert planning, transparent communication,and quality craftsmanship, we transform your vision intospaces that are timeless, functional, and built to exceedexpectations. 
+                        Building a home or commercial space should be exciting, notoverwhelming. At D2E Venture, we bring together architecture,interior design, landscape planning, plotting, premium villas,and turnkey execution to provide a complete, hassle-freeexperience. With expert planning, transparent communication,and quality craftsmanship, we transform your vision intospaces that are timeless, functional, and built to exceedexpectations.
                     </Text>
                 </Box>
 
@@ -194,7 +213,7 @@ Thank you!`;
                         lineHeight="1.05"
                         color="#1E1E1E"
                     >
-                       Book Your Free Consultation
+                        Book Your Free Consultation
                     </Text>
 
                     <Text
@@ -336,7 +355,14 @@ Thank you!`;
                             Tell Us About Your Requirement <Text as={'span'} color={'#666666'}> (Optional)</Text>
                         </Text>
 
-                        <Select.Root collection={frameworks} w='100%' >
+                        <CustomCombobox
+                            values={frameworks}
+                            control={control}
+                            multiple
+                            name="requirement"
+                        />
+
+                        {/* <Select.Root collection={frameworks} w='100%' >
                             <Select.HiddenSelect />
                             <Select.Control >
                                 <Select.Trigger
@@ -360,7 +386,7 @@ Thank you!`;
                                 >
                                     <Select.ValueText
                                         placeholder="Select Your Requirement"
-                                        _placeholder={{color:'#666666'}}
+                                        _placeholder={{ color: '#666666' }}
 
                                     />
                                 </Select.Trigger>
@@ -381,7 +407,7 @@ Thank you!`;
                                     </Select.Content>
                                 </Select.Positioner>
                             </Portal>
-                        </Select.Root>
+                        </Select.Root> */}
 
                         <Field.ErrorText>{errors.requirement?.message}</Field.ErrorText>
                     </Field.Root>

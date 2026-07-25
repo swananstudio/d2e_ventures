@@ -12,18 +12,18 @@ interface TermsConditionProps {
 }
 
 const TermsCondition = ({ trigger }: TermsConditionProps) => {
-    const bodyText = {
-  fontSize: "15px",
-  lineHeight: "1.9",
-  color: "gray.700",
-};
+  const bodyText = {
+    fontSize: "15px",
+    lineHeight: "1.9",
+    color: "gray.700",
+  };
 
-const sectionHeading = {
-  fontSize: "18px",
-  fontWeight: "700",
-  color: "gray.900",
-  mt: 2,
-};
+  const sectionHeading = {
+    fontSize: "18px",
+    fontWeight: "700",
+    color: "gray.900",
+    mt: 2,
+  };
 
   return (
     <Dialog.Root size="xl" scrollBehavior="inside">
@@ -34,55 +34,55 @@ const sectionHeading = {
 
         <Dialog.Positioner>
           <Dialog.Content
-  maxH="80vh"
-  maxW="750px"
-  borderRadius="20px"
-  overflow="hidden"
->
+            maxH="80vh"
+            maxW="750px"
+            borderRadius="20px"
+            overflow="hidden"
+          >
             <Dialog.CloseTrigger asChild>
               <CloseButton />
             </Dialog.CloseTrigger>
 
-          <Dialog.Header
-  borderBottom="1px solid"
-  borderColor="gray.200"
-  pb={4}
->
-  <Dialog.Title
-    textAlign="center"
-    w="100%"
-    fontSize="30px"
-    fontWeight="700"
-    color="gray.800"
-  >
-    Terms & Conditions
-  </Dialog.Title>
-</Dialog.Header>
+            <Dialog.Header
+              borderBottom="1px solid"
+              borderColor="gray.200"
+              pb={4}
+            >
+              <Dialog.Title
+                textAlign="center"
+                w="100%"
+                fontSize="30px"
+                fontWeight="700"
+                color="gray.800"
+              >
+                Terms & Conditions
+              </Dialog.Title>
+            </Dialog.Header>
 
-          <Dialog.Body py={6} px={8}
-          className="hide-scrollbar">
+            <Dialog.Body py={6} px={8}
+              className="hide-scrollbar">
               <VStack align="start" gap={5}>
 
-                   <Text
-  fontSize="15px"
-  color="gray.600"
-  fontWeight="500"
-  
->
+                <Text
+                  fontSize="15px"
+                  color="gray.600"
+                  fontWeight="500"
+
+                >
                   <b>Effective Date:</b> July 2026
                 </Text>
-                
-                    <Text {...bodyText}>
+
+                <Text {...bodyText}>
                   Welcome to the website of D2E Ventures Pvt. Ltd. By accessing
                   or using this website, you agree to comply with these Terms &
                   Conditions.
                 </Text>
 
-                 <Text {...sectionHeading}>
+                <Text {...sectionHeading}>
                   Company Information
                 </Text>
 
-                    <Text {...bodyText}>
+                <Text {...bodyText}>
                   D2E Ventures Pvt. Ltd.
                   <br />
                   Shop No. G2, Classic Gloria Commercial Complex,
@@ -97,20 +97,20 @@ const sectionHeading = {
                   Email: d2eventurespvtltd@gmail.com
                 </Text>
 
-                 <Text {...sectionHeading}>
+                <Text {...sectionHeading}>
                   Website Usage
                 </Text>
 
-                   <Text {...bodyText}>
+                <Text {...bodyText}>
                   The information provided on this website is for general
                   informational purposes only.
                 </Text>
 
-                  <Text {...bodyText}>
+                <Text {...bodyText}>
                   You agree not to:
                 </Text>
 
-                    <Text {...bodyText}>
+                <Text {...bodyText}>
                   • Misuse or attempt to hack the website.
                   <br />
                   • Copy or reproduce website content without written permission.
@@ -124,11 +124,11 @@ const sectionHeading = {
                   Intellectual Property
                 </Text>
 
-                    <Text {...bodyText}>
+                <Text {...bodyText}>
                   All content including:
                 </Text>
 
-                    <Text {...bodyText}>
+                <Text {...bodyText}>
                   • Logo
                   <br />
                   • Images
@@ -148,17 +148,17 @@ const sectionHeading = {
                   • Brand Identity
                 </Text>
 
-                  <Text {...bodyText}>
+                <Text {...bodyText}>
                   are the intellectual property of D2E Ventures Pvt. Ltd.
                   unless otherwise stated.
                 </Text>
 
-                   <Text {...bodyText}>
+                <Text {...bodyText}>
                   No material may be copied, reproduced or distributed without
                   prior written consent.
                 </Text>
 
-                 <Text {...sectionHeading}>
+                <Text {...sectionHeading}>
                   Project Information
                 </Text>
 
@@ -168,26 +168,26 @@ const sectionHeading = {
                   only.
                 </Text>
 
-                    <Text {...bodyText}>
+                <Text {...bodyText}>
                   Actual designs, dimensions, materials and specifications may
                   change depending on site conditions, client requirements and
                   approvals.
                 </Text>
 
-                 <Text {...sectionHeading}>
+                <Text {...sectionHeading}>
                   Quotations & Estimates
                 </Text>
 
-                    <Text {...bodyText}>
+                <Text {...bodyText}>
                   Any estimate, quotation or consultation provided through the
                   website does not constitute a legally binding agreement.
                 </Text>
 
-                    <Text {...bodyText}>
+                <Text {...bodyText}>
                   Final pricing shall be based on:
                 </Text>
 
-                   <Text {...bodyText}>
+                <Text {...bodyText}>
                   • Site Visit
                   <br />
                   • Scope of Work
@@ -199,29 +199,29 @@ const sectionHeading = {
                   • Written Agreement
                 </Text>
 
-                 <Text {...sectionHeading}>
+                <Text {...sectionHeading}>
                   Third-Party Links
                 </Text>
 
-                    <Text {...bodyText}>
+                <Text {...bodyText}>
                   Our website may contain links to third-party websites.
                 </Text>
 
-                   <Text {...bodyText}>
+                <Text {...bodyText}>
                   We are not responsible for the content, privacy practices or
                   availability of such websites.
                 </Text>
 
-                 <Text {...sectionHeading}>
+                <Text {...sectionHeading}>
                   Limitation of Liability
                 </Text>
 
-                    <Text {...bodyText}>
+                <Text {...bodyText}>
                   D2E Ventures Pvt. Ltd. shall not be liable for any direct,
                   indirect or consequential damages arising from:
                 </Text>
 
-                   <Text {...bodyText}>
+                <Text {...bodyText}>
                   • Use of this website
                   <br />
                   • Reliance on website information
@@ -235,11 +235,11 @@ const sectionHeading = {
                   Governing Law
                 </Text>
 
-                    <Text {...bodyText}>
+                <Text {...bodyText}>
                   These Terms shall be governed by the laws of India.
                 </Text>
 
-                    <Text {...bodyText}>
+                <Text {...bodyText}>
                   Any disputes shall be subject to the exclusive jurisdiction of
                   the courts of Pune, Maharashtra.
                 </Text>
@@ -248,7 +248,7 @@ const sectionHeading = {
                   Changes
                 </Text>
 
-                    <Text {...bodyText}>
+                <Text {...bodyText}>
                   We reserve the right to modify these Terms & Conditions at any
                   time without prior notice.
                 </Text>
@@ -257,23 +257,23 @@ const sectionHeading = {
             </Dialog.Body>
 
             <Dialog.Footer
-  borderTop="1px solid"
-  borderColor="gray.200"
-  pt={4}
->
-  <Dialog.ActionTrigger asChild>
-    <Button
-      bg="black"
-      color="white"
-      px={8}
-      _hover={{
-        bg: "gray.800",
-      }}
-    >
-      Close
-    </Button>
-  </Dialog.ActionTrigger>
-</Dialog.Footer>
+              borderTop="1px solid"
+              borderColor="gray.200"
+              pt={4}
+            >
+              <Dialog.ActionTrigger asChild>
+                <Button
+                  bg="black"
+                  color="white"
+                  px={8}
+                  _hover={{
+                    bg: "gray.800",
+                  }}
+                >
+                  Close
+                </Button>
+              </Dialog.ActionTrigger>
+            </Dialog.Footer>
           </Dialog.Content>
         </Dialog.Positioner>
       </Portal>

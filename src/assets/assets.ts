@@ -89,6 +89,8 @@ import portfolio_hero_section_swiper5 from './portfolio/herosection/swiper5.webp
 import architecture from './services/development_stage/architecture.png'
 import areasize from './portfolio/herosection/areasize.png'
 import QualitySectionImg from './about/QualitySectionImg.png'
+
+import contact_office_surrounding from './contact/office_surrounding.webm'
 export {
     herosection, herosectiongif, homeherosectionvideo, about_hero_section, services_hero_section, contact_hero_section,
     logo, footerlogo,
@@ -104,5 +106,6 @@ export {
     servicesdemo, homeservicesarchitecture, homeservicesinterior, homeserviceslandscape, homeservicesplotting, homeservicespremium_villa, homeservicesturnkey_execution,
     service_client, design_execution, integrated_development, land_values, premium_project, transparent_coordination,
     architecture,
-    portfolioherosection, areasize, portfolio_hero_section_swiper1, portfolio_hero_section_swiper2, portfolio_hero_section_swiper3, portfolio_hero_section_swiper4, portfolio_hero_section_swiper5, QualitySectionImg
+    portfolioherosection, areasize, portfolio_hero_section_swiper1, portfolio_hero_section_swiper2, portfolio_hero_section_swiper3, portfolio_hero_section_swiper4, portfolio_hero_section_swiper5, QualitySectionImg,
+    contact_office_surrounding
 }

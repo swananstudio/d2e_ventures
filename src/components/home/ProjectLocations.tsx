@@ -10,7 +10,7 @@ import {
 import {
     maharashtraMap,
     projectCompleted,
-    locationIcon,
+    // locationIcon,
     clientsIcon,
     areaIcon,
 } from "../../assets/assets";
@@ -21,27 +21,28 @@ import { motion } from "motion/react";
 const stats = [
     {
         icon: projectCompleted,
-        end: 30,
+        end: 50,
         suffix: "+",
-        label: "Projects\nCompleted",
+        label: "Projects Completed",
     },
-    {
-        icon: locationIcon,
-        end: 12,
-        suffix: "+",
-        label: "Cities\nTouched",
-    },
+    // {
+    //     icon: locationIcon,
+    //     end: 12,
+    //     suffix: "+",
+    //     label: "Cities\nTouched",
+    // },
     {
         icon: clientsIcon,
-        end: 500,
+        end: 50,
         suffix: "+",
-        label: "Happy\nClients",
+        label: "Happy Clients",
     },
     {
         icon: areaIcon,
-        end: 10,
-        suffix: "M+",
-        label: "Sq. Ft. Developed\n& Delivered",
+        end: 50,
+        suffix: "K+",
+        label: "Sq. Ft. Developed & Delivered",
+        // label: "Sq. Ft. Developed\n& Delivered",
     },
 ];
 const pulse = keyframes`
@@ -142,18 +143,10 @@ const ProjectLocations = () => {
                         lineHeight="1.9"
                         maxW="600px"
                     >
-                        From Pune to Mumbai, Nashik to Konkan,
-                        D2E Ventures is shaping premium developments
-                        across Maharashtra with a commitment to quality,
-                        thoughtful planning, and exceptional execution.
-
-                        As our footprint continues to grow,
-                        we're extending the same integrated expertise
-                        to landmark developments across India.
+                        From Pune to Mumbai, Nagpur to Konkan & Chandrapur, D2E Ventures is shaping premium developments across Maharashtra with a commitment to quality, thoughtful planning, and exceptional execution. As our footprint continues to grow, we're extending the same integrated expertise to landmark developments across India.
                     </Text>
                 </Flex>
 
-                {/* Right */}
                 <Flex justify="center">
                     <Box
                         position="relative"
@@ -415,6 +408,156 @@ const ProjectLocations = () => {
                                 Pune
                             </MotionText>
                         </Box>
+
+                        {/* Jalgaon */}
+                        <Box
+                            position="absolute"
+                            left={{ base: "33%", md: "33%" }}
+                            top={{ base: "18%", md: "18%" }}
+                        >
+                            <MotionBox
+                                initial={{
+                                    scale: 0,
+                                    opacity: 0,
+                                }}
+                                whileInView={{
+                                    scale: 1,
+                                    opacity: 1,
+                                    transition: {
+                                        duration: 0.7,
+                                        delay: 2.5,
+                                    },
+                                }}
+                                viewport={{ once: true }}
+                                w={{ base: "10px", md: "14px" }}
+                                h={{ base: "10px", md: "14px" }}
+                                bg="#C8A96B"
+                                borderRadius="full"
+                                animation={`${pulse} 1.2s ease-in-out infinite`}
+                            />
+
+                            <MotionText
+                                initial={{ opacity: 0, x: 20 }}
+                                whileInView={{
+                                    opacity: 1,
+                                    x: 0,
+                                    transition: {
+                                        duration: 0.5,
+                                        delay: 2.5,
+                                    },
+                                }}
+                                viewport={{ once: true }}
+                                position="absolute"
+                                left={{ base: "16px", md: "20px" }}
+                                top="-8px"
+                                whiteSpace="nowrap"
+                                fontSize={{ base: "11px", md: "13px" }}
+                                color="#1E1E1E"
+                                fontWeight="500"
+                            >
+                                Jalgaon
+                            </MotionText>
+                        </Box>
+
+                        {/* Nagpur */}
+                        <Box
+                            position="absolute"
+                            left={{ base: "75%", md: "75%" }}
+                            top={{ base: "13%", md: "13%" }}
+                        >
+                            <MotionBox
+                                initial={{
+                                    scale: 0,
+                                    opacity: 0,
+                                }}
+                                whileInView={{
+                                    scale: 1,
+                                    opacity: 1,
+                                    transition: {
+                                        duration: 0.7,
+                                        delay: 3,
+                                    },
+                                }}
+                                viewport={{ once: true }}
+                                w={{ base: "10px", md: "14px" }}
+                                h={{ base: "10px", md: "14px" }}
+                                bg="#C8A96B"
+                                borderRadius="full"
+                                animation={`${pulse} 1.2s ease-in-out infinite`}
+                            />
+
+                            <MotionText
+                                initial={{ opacity: 0, x: 20 }}
+                                whileInView={{
+                                    opacity: 1,
+                                    x: 0,
+                                    transition: {
+                                        duration: 0.5,
+                                        delay: 3,
+                                    },
+                                }}
+                                viewport={{ once: true }}
+                                position="absolute"
+                                left={{ base: "16px", md: "20px" }}
+                                top="-8px"
+                                whiteSpace="nowrap"
+                                fontSize={{ base: "11px", md: "13px" }}
+                                color="#1E1E1E"
+                                fontWeight="500"
+                            >
+                                Nagpur
+                            </MotionText>
+                        </Box>
+
+                        {/* Chandrapur */}
+                        <Box
+                            position="absolute"
+                            left={{ base: "76%", md: "76%" }}
+                            top={{ base: "30%", md: "30%" }}
+                        >
+                            <MotionBox
+                                initial={{
+                                    scale: 0,
+                                    opacity: 0,
+                                }}
+                                whileInView={{
+                                    scale: 1,
+                                    opacity: 1,
+                                    transition: {
+                                        duration: 0.7,
+                                        delay: 3.5,
+                                    },
+                                }}
+                                viewport={{ once: true }}
+                                w={{ base: "10px", md: "14px" }}
+                                h={{ base: "10px", md: "14px" }}
+                                bg="#C8A96B"
+                                borderRadius="full"
+                                animation={`${pulse} 1.2s ease-in-out infinite`}
+                            />
+
+                            <MotionText
+                                initial={{ opacity: 0, x: 20 }}
+                                whileInView={{
+                                    opacity: 1,
+                                    x: 0,
+                                    transition: {
+                                        duration: 0.5,
+                                        delay: 3.5,
+                                    },
+                                }}
+                                viewport={{ once: true }}
+                                position="absolute"
+                                left={{ base: "16px", md: "20px" }}
+                                top="-8px"
+                                whiteSpace="nowrap"
+                                fontSize={{ base: "11px", md: "13px" }}
+                                color="#1E1E1E"
+                                fontWeight="500"
+                            >
+                                Chandrapur
+                            </MotionText>
+                        </Box>
                     </Box>
                 </Flex>
             </Grid>
@@ -429,8 +572,9 @@ const ProjectLocations = () => {
                     lg: 20,
                 }}
                 templateColumns={{
-                    base: "repeat(2, 1fr)",
-                    md: "repeat(4, 1fr)",
+                    base: "repeat(1, 1fr)",
+                    sm: "repeat(2, 1fr)",
+                    md: "repeat(3, 1fr)",
                 }}
                 gap={{
                     base: 8,
@@ -448,10 +592,10 @@ const ProjectLocations = () => {
                     <Flex
                         key={i}
                         justify="center"
-                        align="flex-start"
+                        align="center"
                         gap={{
                             base: 3,
-                            md: 4,
+                            md: 6,
                         }}
                         py={{
                             base: 2,
@@ -494,7 +638,7 @@ const ProjectLocations = () => {
 
                         {/* Text */}
                         <Box
-                            flex={1}
+                            flex={{ base: 1, md: 0 }}
                             textAlign="left"
                         >
                             <Text
@@ -525,6 +669,7 @@ const ProjectLocations = () => {
                                     md: "14px",
                                     lg: "15px",
                                 }}
+                                w='max-content'
                             >
                                 {item.label}
                             </Text>

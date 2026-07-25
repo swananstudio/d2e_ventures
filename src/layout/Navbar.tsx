@@ -23,9 +23,9 @@ const Navbar = () => {
     const MotionFlex = chakra(motion(Flex))
     const routes = [
         { label: "HOME", path: "/" },
-        { label: "ABOUT US", path: "/about-us" },
         { label: "PORTFOLIO", path: "/portfolio" },
         { label: "SERVICES", path: "/services" },
+        { label: "ABOUT US", path: "/about-us" },
         { label: "CONTACT US", path: "/contact-us" },
     ];
     const navigate = useNavigate()

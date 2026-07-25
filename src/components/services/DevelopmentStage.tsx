@@ -5,10 +5,11 @@ import {
     Image,
     Text,
 } from "@chakra-ui/react";
-import { GoArrowUpRight } from "react-icons/go";
+// import { GoArrowUpRight } from "react-icons/go";
 
 import {
-    architecture,
+    // architecture,
+    homeservicesarchitecture, homeservicesinterior, homeserviceslandscape, homeservicesplotting, homeservicespremium_villa, homeservicesturnkey_execution,
 } from "../../assets/assets";
 
 type ServiceType = {
@@ -22,37 +23,37 @@ const services: ServiceType[] = [
         title: "Architecture",
         description:
             "Detailed architecture that balances design, functionality, and compliance.",
-        image: architecture,
+        image: homeservicesarchitecture,
     },
     {
         title: "Landscape",
         description:
             "Crafting outdoor environments that enhance beauty and usability.",
-        image: architecture,
+        image: homeserviceslandscape,
     },
     {
         title: "Interior",
         description:
             "Creating elegant interiors tailored to your lifestyle and needs.",
-        image: architecture,
+        image: homeservicesinterior,
     },
     {
         title: "Plotting",
         description:
             "Strategic land planning for optimized layouts and maximum value.",
-        image: architecture,
+        image: homeservicesplotting,
     },
     {
         title: "Premium Villas",
         description:
             "Designing and building bespoke villas with refined craftsmanship.",
-        image: architecture,
+        image: homeservicespremium_villa,
     },
     {
         title: "Turnkey Execution",
         description:
             "End-to-end project delivery with quality, precision, and accountability.",
-        image: architecture,
+        image: homeservicesturnkey_execution,
     },
 ];
 
@@ -181,7 +182,8 @@ const DevelopmentStage = () => {
                     }}
                 >
                     {services.map((service) => (
-                        <Box
+                        <Flex
+                        flexDirection={'column'}
                             key={service.title}
                             bg="#FFFFFF"
                             p={{
@@ -197,14 +199,15 @@ const DevelopmentStage = () => {
                                 boxShadow:
                                     "0px 12px 25px rgba(0, 0, 0, 0.18)",
                             }}
+                            gap={5}
                         >
                             {/* CARD CONTENT */}
 
                             <Flex
-                                minH={{
-                                    base: "95px",
-                                    md: "105px",
-                                }}
+                                // minH={{
+                                //     base: "95px",
+                                //     md: "105px",
+                                // }}
                                 justifyContent="space-between"
                                 alignItems="flex-start"
                                 gap={3}
@@ -238,7 +241,7 @@ const DevelopmentStage = () => {
 
                                 {/* ARROW */}
 
-                                <Flex
+                                {/* <Flex
                                     w="34px"
                                     h="34px"
                                     bg="#F1F1EF"
@@ -254,13 +257,13 @@ const DevelopmentStage = () => {
                                     }}
                                 >
                                     <GoArrowUpRight size={18} />
-                                </Flex>
+                                </Flex> */}
                             </Flex>
 
                             {/* IMAGE */}
 
                             <Box
-                                mt={2}
+                                // mt={2}
                                 w="100%"
                                 h={{
                                     base: "250px",
@@ -282,7 +285,7 @@ const DevelopmentStage = () => {
                                     }}
                                 />
                             </Box>
-                        </Box>
+                        </Flex>
                     ))}
                 </Grid>
             </Box>

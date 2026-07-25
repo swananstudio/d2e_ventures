@@ -112,7 +112,7 @@ const Footer = () => {
                                 color="#D2D2D2"
                                 fontSize="14px"
                             >
-                                Shop no.62, Classic Gloria,
+                                Shop no.G2, Classic Gloria,
                                 <br />
                                 Near MNGL CNG Pump,
                                 <br />
