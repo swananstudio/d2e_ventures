@@ -44,14 +44,7 @@ const InnerHeroSection = () => {
                             About Us
                         </Text>
 
-                        <Text
-                            color="whiteAlpha.900"
-                            // fontSize="20px"
-                            fontWeight="400"
-                        >
-                            At D2E Ventures, we transform land into high-value developments through innovative design, strategic planning, and seamless execution. From concept to completion, we deliver premium projects that combine quality, functionality, and long-term value.
-                        </Text>
-
+                      
                     </Flex>
                 </Flex>
             </Flex>
