@@ -67,7 +67,7 @@ const Overview = () => {
                 md: "70px",
                 lg: "100px",
             }}
-            height="750px"
+            height="750p"
            
             
         >
@@ -76,8 +76,8 @@ const Overview = () => {
                 mx="auto"
                 templateColumns={{
                     base: "1fr",
-                    md: "1fr",
-                    lg: "1fr 1.3fr",
+                    
+                    lg: "1fr 1.3fr 1fr",
                     xl: "1fr 1fr 1fr",
                 }}
                 justifyContent = "space-between"
@@ -95,7 +95,8 @@ const Overview = () => {
                     flexDirection="column"
                     alignItems={{
                         base: "center",
-                        md: "flex-start",
+                        md: "stretch",
+                        lg: "flex-start",
                     }}
                     textAlign={{
                         base: "center",
@@ -124,11 +125,17 @@ const Overview = () => {
 
                     <Text
                         mt={6}
-                        maxW="380px"
+                         maxW={{
+    base: "100%",
+    md: "100%",
+    lg: "380px",
+  }}
                         fontSize={{
-                            base: "14px",
-                            md: "15px",
-                        }}
+    base: "14px",
+    sm: "16px",
+    md: "18px",
+    lg: "15px",   // restore desktop
+  }}
                         lineHeight="1.4"
                         color="#444"
                     >
@@ -139,24 +146,38 @@ const Overview = () => {
                     </Text>
 
                     <SimpleGrid
-                        columns={2}
-                        gapX={{
-                            base: 8,
-                            md: 10,
-                        }}
-                        gapY={10}
-                        mt={10}
-                        w="100%"
-                        maxW="350px"
-                    >
+  columns={{
+    base: 2,
+    md: 3,
+    lg: 2,
+  }}
+  gapX={{
+    base: 8,
+    md: 16,
+    lg: 10,
+  }}
+  gapY={{
+    base: 8,
+    md: 12,
+    lg: 10,
+  }}
+  mt={10}
+  w="100%"
+  maxW={{
+    base: "350px",
+    md: "100%",
+    lg: "350px",   // restore desktop
+  }}
+>
                         
                         {stats.map((stat) => (
     <Box key={stat.key}>
         <Text
-            fontSize={{
-                base: "22px",
-                md: "26px",
-            }}
+           fontSize={{
+  base: "22px",
+  md: "28px",
+  lg: "26px",   // restore
+}}
             fontWeight="700"
             color="#080808"
         >
@@ -168,7 +189,12 @@ const Overview = () => {
 
         <Text
             mt={1}
-            fontSize="13px"
+            fontSize={{
+  base: "14px",
+  sm: "16px",
+  md: "18px",
+  lg: "13px",   // restore
+}}
             lineHeight="1.2"
             color="#555"
             whiteSpace="pre-line"
@@ -183,24 +209,29 @@ const Overview = () => {
                 {/* IMAGE COLLAGE */}
 <Box
     position="relative"
-    w={{
-        base: "280px",
-        sm: "320px",
-        md: "380px",
-        lg: "450px",
-    }}
-    h={{
-        base: "250px",
-        sm: "300px",
-        md: "350px",
-        lg: "450px",
-    }}
-    mt={{
-        base: "20px",
-        sm: "30px",
-        md: "40px",
-        lg: "50px",
-    }}
+   w={{
+  base: "300px",
+  md: "550px",
+  lg: "450px",
+}}
+
+h={{
+  base: "260px",
+  md: "450px",
+  lg: "450px",
+}}
+   mt={{
+  base: "20px",
+  sm: "30px",
+  md: "40px",
+  lg: "50px",
+}}
+
+mb={{
+  base: "60px",
+  md: "70px",
+  lg: "0",
+}}
     mx="auto"
     mr={{
         base: "auto",
@@ -229,32 +260,31 @@ const Overview = () => {
 
              <Flex
     direction="column"
-    h={{
-        base: "auto",
-        sm: "auto",
-        md: "300px",
-        lg: "300px",
-    }}
+   h={{
+  base: "auto",
+  md: "auto",
+  lg: "300px",
+}}
     mb={{
-        base: "0",
-        sm: "10px",
-        md: "20px",
-        lg: "55px",
-    }}
+  base: "0",
+  md: "30px",
+  lg: "55px",
+}}
     justifyContent="space-between"
-    alignItems={{
-        base: "center",
-        md: "flex-start",
-    }}
+   alignItems={{
+  base: "center",
+  md: "stretch",
+  lg: "flex-start",
+}}
     textAlign={{
         base: "center",
         md: "left",
     }}
-    maxW={{
-        base: "100%",
-        sm: "450px",
-        md: "380px",
-    }}
+  maxW={{
+  base: "100%",
+  md: "100%",
+  lg: "380px",
+}}
     mx={{
         base: "auto",
         md: "0",
@@ -263,14 +293,14 @@ const Overview = () => {
 >
     <Box>
         <Text
-            fontSize={{
-                base: "28px",
-                sm: "30px",
-                md: "34px",
-                lg: "36px",
-                xl: "38px",
-            }}
-            fontWeight="500"
+            
+           fontSize={{
+  base: "28px",
+  sm: "30px",
+  md: "34px",
+  lg: "36px",
+  xl: "38px",
+}}
             lineHeight="1.15"
             color="#080808"
         >
@@ -284,16 +314,21 @@ const Overview = () => {
         <Text
             mt={4}
             mb={6}
-            fontSize={{
-                base: "14px",
-                md: "15px",
-            }}
+           fontSize={{
+  base: "14px",
+  sm: "16px",
+  md: "18px",
+  lg: "15px",   // restore
+}}
+
+maxW={{
+  base: "100%",
+  md: "100%",
+  lg: "380px",   // restore
+}}
             lineHeight="1.4"
             color="#444"
-            maxW={{
-                base: "100%",
-                md: "380px",
-            }}
+           
         >
            Every successful project is built on trust, precision, and collaboration.
             From the first sketch to the final handover, 
@@ -302,32 +337,47 @@ const Overview = () => {
         </Text>
     </Box>
 
-    <Flex
-        direction="column"
-        gap={4}
-        fontSize="14px"
-        fontWeight="600"
-        color="#222"
-        textAlign={{
-            base: "center",
-            md: "left",
-        }}
-        maxW={{
-            base: "100%",
-            md: "380px",
-        }}
-        alignItems={{
-            base: "center",
-            md: "flex-start",
-        }}
-    >
+  <SimpleGrid
+  columns={{
+    base: 1,
+    md: 3,
+    lg: 1,
+  }}
+  gapX={{
+    base: 4,
+    md: 12,
+    lg: 4,
+  }}
+  gapY={{
+    base: 4,
+    md: 8,
+    lg: 4,
+  }}
+  w="100%"
+  maxW={{
+    base: "100%",
+    md: "100%",
+    lg: "380px",
+  }}
+  fontSize={{
+    base: "14px",
+    sm: "16px",
+    md: "18px",
+    lg: "14px",   // restore
+  }}
+  textAlign={{
+    base: "center",
+    md: "center",
+    lg: "left",   // restore desktop
+  }}
+>
         <Text>• Personalized Design Consultation.</Text>
         <Text>• Architectural Planning & Approvals</Text>
         <Text>• Interior & Landscape Design</Text>
         <Text>• End-to-End Turnkey Execution</Text>
         <Text>• Dedicated Site Supervision</Text>
         <Text>• Transparent Project Supervision</Text>
-    </Flex>
+    </SimpleGrid>
 </Flex>
             </Grid>
         </Box>
