@@ -36,7 +36,7 @@ const InnerHeroSection = () => {
                     >
                         <Text
                             className="michroma_font"
-                            fontSize={{ base: "42px", lg: "72px" }}
+                            fontSize={{ base: "42px", lg: "60px" }}
                             lineHeight="1.15"
                             color="white"
                             fontWeight="800"

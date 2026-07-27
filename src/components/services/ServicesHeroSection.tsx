@@ -39,7 +39,7 @@ const ServicesHeroSection = () => {
                             lineHeight="1.15"
                             color="white"
                             fontWeight="800"
-                            mb={'20%'}
+                            mb={'2%'}
                         >
                             Services
                         </Text>

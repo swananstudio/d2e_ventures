@@ -548,8 +548,9 @@ const ProjectLocations = () => {
                                 }}
                                 viewport={{ once: true }}
                                 position="absolute"
-                                left={{ base: "16px", md: "20px" }}
-                                top="-8px"
+                                left={{ base: "-26px", md: "20px" }}
+                                top={{ base: "-16px", md: "-8px" }}
+                                // top="-8px"
                                 whiteSpace="nowrap"
                                 fontSize={{ base: "11px", md: "13px" }}
                                 color="#1E1E1E"

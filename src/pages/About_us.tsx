@@ -21,7 +21,7 @@ const About_us = () => {
                     bgImage={`url(${QualitySectionImg})`}
                     bgSize="cover"
                     bgRepeat="no-repeat"
-                    backgroundPosition="center"
+                    backgroundPosition={{base:'right', lg:"center"}}
                     bgAttachment="fixed"
                     justifyContent="center"
                     position="relative"
