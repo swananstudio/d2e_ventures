@@ -2,14 +2,13 @@ import {
     Box,
     Flex,
     Grid,
-    Image,
+    
     SimpleGrid,
     Text,
 } from "@chakra-ui/react";
 
-import {
-    aboutoverview2,   
-} from "../../assets/assets";
+import Carousel from "./Carousel";
+
 import CountUp from "../../utlis/CountUp";
 
 const Overview = () => {
@@ -238,22 +237,7 @@ mb={{
         lg: "0",
     }}
 >
-    <Image
-        src={aboutoverview2}
-        position="absolute"
-        top={{
-            base: "15px",
-            sm: "20px",
-            md: "25px",
-            lg: "30px",
-        }}
-        left="0"
-        w="100%"
-        h="100%"
-        objectFit="cover"
-        borderRadius="15px"
-      
-    />
+    <Carousel/>
 </Box>     
 
                 {/* RIGHT CONTENT */}
@@ -370,6 +354,8 @@ maxW={{
     md: "center",
     lg: "left",   // restore desktop
   }}
+  fontWeight={500}
+
 >
         <Text>• Personalized Design Consultation.</Text>
         <Text>• Architectural Planning & Approvals</Text>
