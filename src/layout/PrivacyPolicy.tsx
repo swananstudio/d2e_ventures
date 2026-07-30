@@ -1,6 +1,6 @@
 import {
   Button,
-  CloseButton,
+
   Dialog,
   Portal,
   Text,
@@ -41,7 +41,7 @@ const PrivacyPolicy = ({ trigger }: PrivacyPolicyProps) => {
             overflow="hidden"
           >
             <Dialog.CloseTrigger asChild>
-              <CloseButton />
+
             </Dialog.CloseTrigger>
 
             <Dialog.Header
@@ -60,7 +60,8 @@ const PrivacyPolicy = ({ trigger }: PrivacyPolicyProps) => {
               </Dialog.Title>
             </Dialog.Header>
             <Dialog.Body py={6} px={8}
-              className="hide-scrollbar">
+              overflowY="auto"
+              scrollBehavior="smooth">
               <VStack align="start" gap={5}>
                 <Text
                   fontSize="15px"
