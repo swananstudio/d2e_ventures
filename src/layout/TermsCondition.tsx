@@ -1,6 +1,6 @@
 import {
   Button,
-  CloseButton,
+  
   Dialog,
   Portal,
   Text,
@@ -26,7 +26,7 @@ const TermsCondition = ({ trigger }: TermsConditionProps) => {
   };
 
   return (
-    <Dialog.Root size="xl" scrollBehavior="inside">
+    <Dialog.Root size="xl" >
       <Dialog.Trigger asChild>{trigger}</Dialog.Trigger>
 
       <Portal>
@@ -40,7 +40,7 @@ const TermsCondition = ({ trigger }: TermsConditionProps) => {
             overflow="hidden"
           >
             <Dialog.CloseTrigger asChild>
-              <CloseButton />
+       
             </Dialog.CloseTrigger>
 
             <Dialog.Header
@@ -59,9 +59,11 @@ const TermsCondition = ({ trigger }: TermsConditionProps) => {
               </Dialog.Title>
             </Dialog.Header>
 
-            <Dialog.Body py={6} px={8}
-              className="hide-scrollbar">
-              <VStack align="start" gap={5}>
+            <Dialog.Body
+             py={6}
+             px={8}
+            overflowY="auto"
+             scrollBehavior="smooth" > <VStack align="start" gap={5}>
 
                 <Text
                   fontSize="15px"
