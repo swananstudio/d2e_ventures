@@ -1,9 +1,12 @@
-import PortfolioHeroSection from "../components/portfolio/PortfolioHeroSection"
+import PortfolioHeroSection2 from "../components/portfolio/PortfolioHeroSection2"
+
 
 const Portfolio = () => {
     return (
         <>
-            <PortfolioHeroSection />
+        
+            <PortfolioHeroSection2 />
+         
         </>
     )
 }
