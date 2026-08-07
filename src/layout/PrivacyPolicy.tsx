@@ -1,17 +1,19 @@
 import {
   Button,
-
   Dialog,
   Portal,
   Text,
   VStack,
 } from "@chakra-ui/react";
+import { useLenis } from "lenis/react";
 
 interface PrivacyPolicyProps {
   trigger: React.ReactNode;
 }
 
 const PrivacyPolicy = ({ trigger }: PrivacyPolicyProps) => {
+  const lenis = useLenis();
+
   const bodyText = {
     fontSize: "15px",
     lineHeight: "1.9",
@@ -25,9 +27,18 @@ const PrivacyPolicy = ({ trigger }: PrivacyPolicyProps) => {
     mt: 2,
   };
 
-
   return (
-    <Dialog.Root size="xl" scrollBehavior="inside">
+    <Dialog.Root
+      size="xl"
+      scrollBehavior="inside"
+      onOpenChange={(details) => {
+        if (details.open) {
+          lenis?.stop();
+        } else {
+          lenis?.start();
+        }
+      }}
+    >
       <Dialog.Trigger asChild>{trigger}</Dialog.Trigger>
 
       <Portal>
@@ -39,10 +50,10 @@ const PrivacyPolicy = ({ trigger }: PrivacyPolicyProps) => {
             maxW="750px"
             borderRadius="20px"
             overflow="hidden"
+            display="flex"
+            flexDirection="column"
           >
-            <Dialog.CloseTrigger asChild>
-
-            </Dialog.CloseTrigger>
+            <Dialog.CloseTrigger asChild></Dialog.CloseTrigger>
 
             <Dialog.Header
               borderBottom="1px solid"
@@ -59,32 +70,44 @@ const PrivacyPolicy = ({ trigger }: PrivacyPolicyProps) => {
                 Privacy Policy
               </Dialog.Title>
             </Dialog.Header>
-            <Dialog.Body py={6} px={8}
-              overflowY="auto"
-              scrollBehavior="smooth">
-              <VStack align="start" gap={5}>
-                <Text
-                  fontSize="15px"
-                  color="gray.600"
-                  fontWeight="500"
 
-                ><b>Effective Date:</b> July 2026</Text>
+            <Dialog.Body
+              py={6}
+              px={8}
+              overflowY="auto"
+              overscrollBehavior="contain"
+              scrollBehavior="smooth"
+              data-lenis-prevent
+              css={{
+                WebkitOverflowScrolling: "touch",
+                touchAction: "pan-y",
+                flex: "1 1 auto",
+                minHeight: 0,
+              }}
+            >
+              <VStack align="start" gap={5}>
+                <Text fontSize="15px" color="gray.600" fontWeight="500">
+                  <b>Effective Date:</b> July 2026
+                </Text>
 
                 <Text {...bodyText}>
                   D2E Ventures Pvt. Ltd. values your privacy and is committed to
                   protecting your personal information.
                 </Text>
 
-                <Text {...sectionHeading}>
-                  Information We Collect
-                </Text>
+                <Text {...sectionHeading}>Information We Collect</Text>
 
                 <Text {...bodyText}>
-                  • Name<br />
-                  • Phone Number<br />
-                  • Email Address<br />
-                  • Property Location<br />
-                  • Project Details<br />
+                  • Name
+                  <br />
+                  • Phone Number
+                  <br />
+                  • Email Address
+                  <br />
+                  • Property Location
+                  <br />
+                  • Project Details
+                  <br />
                   • Messages submitted through contact forms
                 </Text>
 
@@ -93,26 +116,30 @@ const PrivacyPolicy = ({ trigger }: PrivacyPolicyProps) => {
                 </Text>
 
                 <Text {...bodyText}>
-                  • IP Address<br />
-                  • Browser Type<br />
-                  • Device Information<br />
+                  • IP Address
+                  <br />
+                  • Browser Type
+                  <br />
+                  • Device Information
+                  <br />
                   • Website Usage Statistics
                 </Text>
 
-                <Text {...sectionHeading}>
-                  How We Use Your Information
-                </Text>
+                <Text {...sectionHeading}>How We Use Your Information</Text>
+
+                <Text {...bodyText}>We use your information to:</Text>
 
                 <Text {...bodyText}>
-                  We use your information to:
-                </Text>
-
-                <Text {...bodyText}>
-                  • Respond to enquiries<br />
-                  • Schedule consultations<br />
-                  • Provide quotations<br />
-                  • Improve our services<br />
-                  • Contact you regarding your project<br />
+                  • Respond to enquiries
+                  <br />
+                  • Schedule consultations
+                  <br />
+                  • Provide quotations
+                  <br />
+                  • Improve our services
+                  <br />
+                  • Contact you regarding your project
+                  <br />
                   • Send important updates
                 </Text>
 
@@ -120,9 +147,7 @@ const PrivacyPolicy = ({ trigger }: PrivacyPolicyProps) => {
                   We do not sell your personal information to third parties.
                 </Text>
 
-                <Text {...sectionHeading}>
-                  Cookies
-                </Text>
+                <Text {...sectionHeading}>Cookies</Text>
 
                 <Text {...bodyText}>
                   Our website may use cookies to improve user experience and
@@ -133,9 +158,7 @@ const PrivacyPolicy = ({ trigger }: PrivacyPolicyProps) => {
                   You may disable cookies through your browser settings.
                 </Text>
 
-                <Text {...sectionHeading}>
-                  Data Security
-                </Text>
+                <Text {...sectionHeading}>Data Security</Text>
 
                 <Text {...bodyText}>
                   We take reasonable technical and administrative measures to
@@ -143,54 +166,51 @@ const PrivacyPolicy = ({ trigger }: PrivacyPolicyProps) => {
                   transmission is completely secure.
                 </Text>
 
-                <Text {...sectionHeading}>
-                  Sharing Information
-                </Text>
+                <Text {...sectionHeading}>Sharing Information</Text>
+
+                <Text {...bodyText}>We may share information only when:</Text>
 
                 <Text {...bodyText}>
-                  We may share information only when:
+                  • Required by law
+                  <br />
+                  • Necessary to provide requested services
+                  <br />
+                  • Working with trusted professional partners under
+                  confidentiality obligations
                 </Text>
 
-                <Text {...bodyText}>
-                  • Required by law<br />
-                  • Necessary to provide requested services<br />
-                  • Working with trusted professional partners under confidentiality obligations
-                </Text>
-
-                <Text {...sectionHeading}>
-                  External Websites
-                </Text>
+                <Text {...sectionHeading}>External Websites</Text>
 
                 <Text {...bodyText}>
                   Our website may contain links to external websites. We are not
                   responsible for their privacy practices.
                 </Text>
 
-                <Text {...sectionHeading}>
-                  Your Rights
-                </Text>
+                <Text {...sectionHeading}>Your Rights</Text>
 
                 <Text {...bodyText}>
                   You may request to access, correct or delete your personal
                   information where legally permissible.
                 </Text>
 
-                <Text {...sectionHeading}>
-                  Contact
-                </Text>
+                <Text {...sectionHeading}>Contact</Text>
 
                 <Text {...bodyText}>
-                  D2E Ventures Pvt. Ltd.<br />
-                  Shop No. G2, Classic Gloria Commercial Complex,<br />
-                  Near MNGL CNG Pump,<br />
-                  Yewalewadi, Pune – 411048<br /><br />
-                  Phone: +91 82650 68887<br />
+                  D2E Ventures Pvt. Ltd.
+                  <br />
+                  Shop No. G2, Classic Gloria Commercial Complex,
+                  <br />
+                  Near MNGL CNG Pump,
+                  <br />
+                  Yewalewadi, Pune – 411048
+                  <br />
+                  <br />
+                  Phone: +91 82650 68887
+                  <br />
                   Email: d2eventurespvtltd@gmail.com
                 </Text>
 
-                <Text {...sectionHeading}>
-                  Policy Updates
-                </Text>
+                <Text {...sectionHeading}>Policy Updates</Text>
 
                 <Text {...bodyText}>
                   This Privacy Policy may be updated periodically. Continued use
@@ -199,11 +219,7 @@ const PrivacyPolicy = ({ trigger }: PrivacyPolicyProps) => {
               </VStack>
             </Dialog.Body>
 
-            <Dialog.Footer
-              borderTop="1px solid"
-              borderColor="gray.200"
-              pt={4}
-            >
+            <Dialog.Footer borderTop="1px solid" borderColor="gray.200" pt={4}>
               <Dialog.ActionTrigger asChild>
                 <Button
                   bg="black"

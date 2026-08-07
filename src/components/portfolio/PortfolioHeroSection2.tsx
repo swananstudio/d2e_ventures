@@ -784,8 +784,9 @@ function AccordionContent({ items }: { items: AccordionItem[] }) {
                     style={{ overflow: "hidden" }}
                   >
                     <Box
-                      border="1px solid"
-                      borderColor="whiteAlpha.700"
+                      border="1px solid,  "
+                      
+                    borderColor="rgba(255, 255, 255, 0.11)"
                       borderRadius="8px"
                       px={{ base: 2.5, md: 3 }}
                       py={{ base: 1.5, md: 2 }}
@@ -796,6 +797,7 @@ function AccordionContent({ items }: { items: AccordionItem[] }) {
                           color="whiteAlpha.800"
                           fontSize={{ base: "13px", sm: "14px", md: "15px" }}
                           lineHeight="1.5"
+                          ml="7px"
                         >
                           {item.content.map((line) => (
                             <List.Item key={line}>{line}</List.Item>

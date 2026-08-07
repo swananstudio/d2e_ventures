@@ -1,17 +1,19 @@
 import {
   Button,
-  
   Dialog,
   Portal,
   Text,
   VStack,
 } from "@chakra-ui/react";
+import { useLenis } from "lenis/react";
 
 interface TermsConditionProps {
   trigger: React.ReactNode;
 }
 
 const TermsCondition = ({ trigger }: TermsConditionProps) => {
+  const lenis = useLenis();
+
   const bodyText = {
     fontSize: "15px",
     lineHeight: "1.9",
@@ -26,7 +28,16 @@ const TermsCondition = ({ trigger }: TermsConditionProps) => {
   };
 
   return (
-    <Dialog.Root size="xl" >
+    <Dialog.Root
+      size="xl"
+      onOpenChange={(details) => {
+        if (details.open) {
+          lenis?.stop();
+        } else {
+          lenis?.start();
+        }
+      }}
+    >
       <Dialog.Trigger asChild>{trigger}</Dialog.Trigger>
 
       <Portal>
@@ -38,10 +49,10 @@ const TermsCondition = ({ trigger }: TermsConditionProps) => {
             maxW="750px"
             borderRadius="20px"
             overflow="hidden"
+            display="flex"
+            flexDirection="column"
           >
-            <Dialog.CloseTrigger asChild>
-       
-            </Dialog.CloseTrigger>
+            <Dialog.CloseTrigger asChild></Dialog.CloseTrigger>
 
             <Dialog.Header
               borderBottom="1px solid"
@@ -60,17 +71,21 @@ const TermsCondition = ({ trigger }: TermsConditionProps) => {
             </Dialog.Header>
 
             <Dialog.Body
-             py={6}
-             px={8}
-            overflowY="auto"
-             scrollBehavior="smooth" > <VStack align="start" gap={5}>
-
-                <Text
-                  fontSize="15px"
-                  color="gray.600"
-                  fontWeight="500"
-
-                >
+              py={6}
+              px={8}
+              overflowY="auto"
+              overscrollBehavior="contain"
+              scrollBehavior="smooth"
+              data-lenis-prevent
+              css={{
+                WebkitOverflowScrolling: "touch",
+                touchAction: "pan-y",
+                flex: "1 1 auto",
+                minHeight: 0,
+              }}
+            >
+              <VStack align="start" gap={5}>
+                <Text fontSize="15px" color="gray.600" fontWeight="500">
                   <b>Effective Date:</b> July 2026
                 </Text>
 
@@ -80,9 +95,7 @@ const TermsCondition = ({ trigger }: TermsConditionProps) => {
                   Conditions.
                 </Text>
 
-                <Text {...sectionHeading}>
-                  Company Information
-                </Text>
+                <Text {...sectionHeading}>Company Information</Text>
 
                 <Text {...bodyText}>
                   D2E Ventures Pvt. Ltd.
@@ -99,18 +112,14 @@ const TermsCondition = ({ trigger }: TermsConditionProps) => {
                   Email: d2eventurespvtltd@gmail.com
                 </Text>
 
-                <Text {...sectionHeading}>
-                  Website Usage
-                </Text>
+                <Text {...sectionHeading}>Website Usage</Text>
 
                 <Text {...bodyText}>
                   The information provided on this website is for general
                   informational purposes only.
                 </Text>
 
-                <Text {...bodyText}>
-                  You agree not to:
-                </Text>
+                <Text {...bodyText}>You agree not to:</Text>
 
                 <Text {...bodyText}>
                   • Misuse or attempt to hack the website.
@@ -122,13 +131,9 @@ const TermsCondition = ({ trigger }: TermsConditionProps) => {
                   • Upload malicious software or harmful content.
                 </Text>
 
-                <Text {...sectionHeading}>
-                  Intellectual Property
-                </Text>
+                <Text {...sectionHeading}>Intellectual Property</Text>
 
-                <Text {...bodyText}>
-                  All content including:
-                </Text>
+                <Text {...bodyText}>All content including:</Text>
 
                 <Text {...bodyText}>
                   • Logo
@@ -160,9 +165,7 @@ const TermsCondition = ({ trigger }: TermsConditionProps) => {
                   prior written consent.
                 </Text>
 
-                <Text {...sectionHeading}>
-                  Project Information
-                </Text>
+                <Text {...sectionHeading}>Project Information</Text>
 
                 <Text {...bodyText}>
                   All project images, renderings, layouts, floor plans, pricing
@@ -176,18 +179,14 @@ const TermsCondition = ({ trigger }: TermsConditionProps) => {
                   approvals.
                 </Text>
 
-                <Text {...sectionHeading}>
-                  Quotations & Estimates
-                </Text>
+                <Text {...sectionHeading}>Quotations & Estimates</Text>
 
                 <Text {...bodyText}>
                   Any estimate, quotation or consultation provided through the
                   website does not constitute a legally binding agreement.
                 </Text>
 
-                <Text {...bodyText}>
-                  Final pricing shall be based on:
-                </Text>
+                <Text {...bodyText}>Final pricing shall be based on:</Text>
 
                 <Text {...bodyText}>
                   • Site Visit
@@ -201,9 +200,7 @@ const TermsCondition = ({ trigger }: TermsConditionProps) => {
                   • Written Agreement
                 </Text>
 
-                <Text {...sectionHeading}>
-                  Third-Party Links
-                </Text>
+                <Text {...sectionHeading}>Third-Party Links</Text>
 
                 <Text {...bodyText}>
                   Our website may contain links to third-party websites.
@@ -214,9 +211,7 @@ const TermsCondition = ({ trigger }: TermsConditionProps) => {
                   availability of such websites.
                 </Text>
 
-                <Text {...sectionHeading}>
-                  Limitation of Liability
-                </Text>
+                <Text {...sectionHeading}>Limitation of Liability</Text>
 
                 <Text {...bodyText}>
                   D2E Ventures Pvt. Ltd. shall not be liable for any direct,
@@ -233,9 +228,7 @@ const TermsCondition = ({ trigger }: TermsConditionProps) => {
                   • Technical issues
                 </Text>
 
-                <Text {...sectionHeading}>
-                  Governing Law
-                </Text>
+                <Text {...sectionHeading}>Governing Law</Text>
 
                 <Text {...bodyText}>
                   These Terms shall be governed by the laws of India.
@@ -246,23 +239,16 @@ const TermsCondition = ({ trigger }: TermsConditionProps) => {
                   the courts of Pune, Maharashtra.
                 </Text>
 
-                <Text fontWeight="bold">
-                  Changes
-                </Text>
+                <Text fontWeight="bold">Changes</Text>
 
                 <Text {...bodyText}>
                   We reserve the right to modify these Terms & Conditions at any
                   time without prior notice.
                 </Text>
-
               </VStack>
             </Dialog.Body>
 
-            <Dialog.Footer
-              borderTop="1px solid"
-              borderColor="gray.200"
-              pt={4}
-            >
+            <Dialog.Footer borderTop="1px solid" borderColor="gray.200" pt={4}>
               <Dialog.ActionTrigger asChild>
                 <Button
                   bg="black"
