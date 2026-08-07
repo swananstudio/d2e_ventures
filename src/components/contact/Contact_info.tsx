@@ -17,7 +17,7 @@ import {
     blackcolormail,
     blackcolortiming,
 } from "../../assets/assets";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 type ContactFormValues = {
     fullName: string;
     email: string;
@@ -33,6 +33,7 @@ const Contact_info = () => {
     const {
         register,
         handleSubmit,
+        control,
         formState: { errors },
         reset,
     } = useForm<ContactFormValues>({
@@ -81,9 +82,9 @@ const Contact_info = () => {
             title: "Hours of Operation",
             value: (
                 <>
-                    Monday - Friday: 09:00 AM - 08:00 PM
+                    Monday to Friday 10.30 AM- 7.30 PM
                     <br />
-                    Sunday & Saturday: 10:30 AM - 10:30 PM
+                    Saturday 10.30 AM - 2.00 PM
                 </>
             ),
         },
@@ -139,7 +140,7 @@ Thank you!`;
                 {/* LEFT */}
 
                 <Box
-                  pt={{
+                    pt={{
                         base: 6,
                         md: 8,
                     }}
@@ -338,23 +339,26 @@ Thank you!`;
                         </Field.Root>
 
                         {/* Terms */}
-                        <Field.Root  invalid={!!errors.acceptTerms}>
-                            <Checkbox.Root checked>
-                                <Checkbox.HiddenInput
-                                    {...register("acceptTerms", {
-                                        required: "Please accept the terms and privacy policy.",
-                                    })}
-                                />
-
-                                <Checkbox.Control />
-
-                                <Checkbox.Label
-                                    fontSize="13px"
-                                    color="#333333"
-                                >
-                                    Accept terms and privacy policy.
-                                </Checkbox.Label>
-                            </Checkbox.Root>
+                        <Field.Root invalid={!!errors.acceptTerms}>
+                            <Controller
+                                name="acceptTerms"
+                                control={control}
+                                rules={{
+                                    required: "Please accept the terms and privacy policy.",
+                                }}
+                                render={({ field }) => (
+                                    <Checkbox.Root
+                                        checked={field.value}
+                                        onCheckedChange={(e) => field.onChange(!!e.checked)}
+                                    >
+                                        <Checkbox.HiddenInput />
+                                        <Checkbox.Control />
+                                        <Checkbox.Label fontSize="13px" color="#333333">
+                                            Accept terms and privacy policy.
+                                        </Checkbox.Label>
+                                    </Checkbox.Root>
+                                )}
+                            />
 
                             <Field.ErrorText>
                                 {errors.acceptTerms?.message}

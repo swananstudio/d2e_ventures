@@ -72,6 +72,11 @@ const DevelopmentStage = () => {
                 md: "80px",
                 lg: "70px",
             }}
+            pt={{
+                base: "20px",
+                md: "30px",
+                lg: "40px",
+            }}
         >
             <Box
                 w="100%"

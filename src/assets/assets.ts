@@ -78,6 +78,7 @@ import integrated_development from './services/client_trust/integrated_developme
 import land_values from './services/client_trust/land_values.png'
 import premium_project from './services/client_trust/premium_project.png'
 import transparent_coordination from './services/client_trust/transparent_coordination.png'
+import centric_development from './services/client_trust/centric_development.png'
 
 import portfolioherosection from './portfolio/herosection/heroimage.png'
 import portfolio_hero_section_swiper1 from './portfolio/herosection/swiper1.webp'
@@ -91,7 +92,7 @@ import areasize from './portfolio/herosection/areasize.png'
 import QualitySectionImg from './about/QualitySectionImg.webp'
 
 import contact_office_surrounding from './contact/office_surrounding.webm'
-import loadingimage  from './loading.svg'
+import loadingimage from './loading.svg'
 export {
     herosection, herosectiongif, homeherosectionvideo, about_hero_section, services_hero_section, contact_hero_section,
     logo, footerlogo,
@@ -108,5 +109,5 @@ export {
     service_client, design_execution, integrated_development, land_values, premium_project, transparent_coordination,
     architecture,
     portfolioherosection, areasize, portfolio_hero_section_swiper1, portfolio_hero_section_swiper2, portfolio_hero_section_swiper3, portfolio_hero_section_swiper4, portfolio_hero_section_swiper5, QualitySectionImg,
-    contact_office_surrounding, loadingimage
+    contact_office_surrounding, loadingimage, centric_development
 }

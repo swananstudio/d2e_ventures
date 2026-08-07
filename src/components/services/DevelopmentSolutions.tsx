@@ -21,13 +21,13 @@ const DevelopmentSolutions = () => {
                 maxW="1600px"
                 mx="auto"
                 templateColumns={{
-                    base: "1fr",
-                    lg: "0.8fr 1.7fr",
+                    base: "repeat(1, 1fr)",
+                    lg: "repeat(1, 1fr)",
                 }}
                 gap={{
-                    base: 10,
-                    md: 12,
-                    lg: 20,
+                    base: 5,
+                    md: 10,
+                    lg: 10,
                 }}
                 alignItems="flex-start"
             >
@@ -67,10 +67,11 @@ const DevelopmentSolutions = () => {
                 {/* RIGHT CONTENT */}
 
                 <Box
-                    maxW={{
-                        base: "100%",
-                        lg: "720px",
-                    }}
+                    // maxW={{
+                    //     base: "100%",
+                    //     lg: "720px",
+                    // }}
+                    w={{ base: '100%', sm: '80%', md: '80%', lg: '70%', xl:'75%' }}
                 >
                     <Text
                         fontSize={{
@@ -89,8 +90,8 @@ const DevelopmentSolutions = () => {
 
                     <Text
                         mt={{
-                            base: 6,
-                            lg: 5,
+                            base: 5,
+                            lg: 4,
                         }}
                         fontSize={{
                             base: "14px",

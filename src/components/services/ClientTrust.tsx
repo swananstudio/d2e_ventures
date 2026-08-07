@@ -13,6 +13,7 @@ import {
     land_values,
     premium_project,
     transparent_coordination,
+    centric_development
 } from "../../assets/assets";
 
 type TrustFeature = {
@@ -53,10 +54,10 @@ const trustFeatures: TrustFeature[] = [
             "Clear communication and efficient coordination at every stage of the project.",
     },
     {
-        icon: premium_project,
-        title: "Premium Project Positioning",
+        icon: centric_development,
+        title: "Client-Centric Development",
         description:
-            "Thoughtfully crafted developments that stand out in quality and appeal.",
+            "Every project is tailored to your vision, lifestyle, goals, and future needs.",
     },
 ];
 
@@ -74,6 +75,11 @@ const ClientTrust = () => {
                 base: "60px",
                 md: "75px",
                 lg: "80px",
+            }}
+            pt={{
+                base: "10px",
+                md: "15px",
+                lg: "20px",
             }}
         >
             <Box
@@ -186,13 +192,15 @@ const ClientTrust = () => {
                         md: "repeat(2, 1fr)",
                     }}
                     columnGap={{
-                        md: 12,
-                        lg: 20,
+                        md: '50px',
+                        lg: '150px',
+                        xl: '250px',
                     }}
                     rowGap={{
                         base: 7,
                         md: 8,
                     }}
+
                 >
                     {trustFeatures.map((feature, index) => (
                         <Flex
@@ -205,12 +213,12 @@ const ClientTrust = () => {
                         >
                             <Flex
                                 w={{
-                                    base: "45px",
-                                    md: "50px",
+                                    base: "50px",
+                                    md: "55px",
                                 }}
                                 h={{
-                                    base: "45px",
-                                    md: "50px",
+                                    base: "50px",
+                                    md: "55px",
                                 }}
                                 bg="#F3F2EF"
                                 border="1px solid #DDDCD8"
@@ -222,12 +230,12 @@ const ClientTrust = () => {
                                 <Image
                                     src={feature.icon}
                                     w={{
-                                        base: "20px",
-                                        md: "23px",
+                                        base: "23px",
+                                        md: "26px",
                                     }}
                                     h={{
-                                        base: "20px",
-                                        md: "23px",
+                                        base: "23px",
+                                        md: "26px",
                                     }}
                                     objectFit="contain"
                                 />
@@ -238,7 +246,7 @@ const ClientTrust = () => {
                                     fontSize={{
                                         base: "15px",
                                         md: "16px",
-                                        lg: "17px",
+                                        lg: "20px",
                                     }}
                                     fontWeight="700"
                                     lineHeight="1.3"
@@ -249,10 +257,11 @@ const ClientTrust = () => {
 
                                 <Text
                                     mt={1}
-                                    maxW="480px"
+                                    maxW="400px"
                                     fontSize={{
-                                        base: "12px",
-                                        md: "13px",
+                                        base: "14px",
+                                        md: "16px",
+                                        lg: "17px",
                                     }}
                                     lineHeight="1.45"
                                     color="#333333"

@@ -145,11 +145,12 @@ const HeroSection = () => {
                                     bg: "#b89558",
                                 }}
                                 onClick={() => navigate('/portfolio')}
-                                >
+                            >
                                 EXPLORE PROJECTS
                             </Button>
 
                             <Button
+                            
                                 variant="outline"
                                 color="white"
                                 borderColor="#C8A96B"
@@ -165,7 +166,7 @@ const HeroSection = () => {
                             >
                                 ENQUIRE NOW
                             </Button>
-                        </Flex>
+                        </Flex> 
                     </MotionFlex>
                 </Flex>
             </Flex>

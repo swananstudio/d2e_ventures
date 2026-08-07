@@ -329,109 +329,109 @@ export default function PortfolioHeroSection2() {
                   isolation="isolate"
                 >
                   {projectThumbnails.map((project, index) => {
-  // Desktop positioning logic
-  const distance = getRelativePosition(index);
-  const isActiveDesktop = distance === 0;
-  const isVisibleDesktop = Math.abs(distance) <= 1;
+                    // Desktop positioning logic
+                    const distance = getRelativePosition(index);
+                    const isActiveDesktop = distance === 0;
+                    const isVisibleDesktop = Math.abs(distance) <= 1;
 
-  const left =
-    distance === -1
-      ? "0%"
-      : distance === 0
-      ? "35%"
-      : distance === 1
-      ? "70%"
-      : distance < -1
-      ? "-28%"
-      : "98%";
+                    const left =
+                      distance === -1
+                        ? "0%"
+                        : distance === 0
+                          ? "35%"
+                          : distance === 1
+                            ? "70%"
+                            : distance < -1
+                              ? "-28%"
+                              : "98%";
 
-  // Mobile stack positioning
-  const stackPosition =
-    ((index - activeIndex) % projectThumbnails.length +
-      projectThumbnails.length) %
-    projectThumbnails.length;
-  const isFrontMobile = stackPosition === 0;
+                    // Mobile stack positioning
+                    const stackPosition =
+                      ((index - activeIndex) % projectThumbnails.length +
+                        projectThumbnails.length) %
+                      projectThumbnails.length;
+                    const isFrontMobile = stackPosition === 0;
 
-  const desktopAnimate = {
-    left,
-    top: 0,
-    x: "0%",
-    rotate: 0,
-    opacity: isVisibleDesktop ? 1 : 0,
-    scale: isActiveDesktop ? 1 : 0.95,
-  };
+                    const desktopAnimate = {
+                      left,
+                      top: 0,
+                      x: "0%",
+                      rotate: 0,
+                      opacity: isVisibleDesktop ? 1 : 0,
+                      scale: isActiveDesktop ? 1 : 0.95,
+                    };
 
-  const mobileAnimate = {
-    left: "50%",
-    x: "-50%",
-    top: 0,
-    rotate: 0,
-    opacity: isFrontMobile ? 1 : 0,
-    scale: 1,
-  };
+                    const mobileAnimate = {
+                      left: "50%",
+                      x: "-50%",
+                      top: 0,
+                      rotate: 0,
+                      opacity: isFrontMobile ? 1 : 0,
+                      scale: 1,
+                    };
 
-  return (
-    <MotionBox
-      key={index}
-      layoutId={`project-card-${index}`}
-      position="absolute"
-      top={0}
-      w={{ base: "78%", md: "30%" }}
-      h="100%"
-      zIndex={
-        isMobile
-          ? 10 - stackPosition
-          : isActiveDesktop
-          ? 3
-          : 2
-      }
-      overflow="hidden"
-      borderRadius="20px"
-      cursor="pointer"
-      bg="rgba(255,255,255,.18)"
-      border="1px solid rgba(255,255,255,.2)"
-      boxShadow={
-        (isMobile ? isFrontMobile : isActiveDesktop)
-          ? "0 22px 50px rgba(0,0,0,.32)"
-          : "0 14px 32px rgba(0,0,0,.18)"
-      }
-      pointerEvents={
-        isMobile
-          ? isFrontMobile
-            ? "auto"
-            : "none"
-          : isVisibleDesktop
-          ? "auto"
-          : "none"
-      }
-      onClick={() => openCard(index)}
-      initial={false}
-      animate={isMobile ? mobileAnimate : desktopAnimate}
-      transition={
-        isMobile
-          ? {
-              duration: 0.35,
-              ease: [0.22, 1, 0.36, 1],
-            }
-          : {
-              duration: 0.6,
-              ease: [0.22, 1, 0.36, 1],
-            }
-      }
-      style={{
-        willChange: "opacity, transform",
-      }}
-    >
-      <Image
-        src={project.image}
-        w="100%"
-        h="100%"
-        objectFit="cover"
-        draggable={false}
-      />
-    </MotionBox>
-  );
-})}
+                    return (
+                      <MotionBox
+                        key={index}
+                        layoutId={`project-card-${index}`}
+                        position="absolute"
+                        top={0}
+                        w={{ base: "78%", md: "30%" }}
+                        h="100%"
+                        zIndex={
+                          isMobile
+                            ? 10 - stackPosition
+                            : isActiveDesktop
+                              ? 3
+                              : 2
+                        }
+                        overflow="hidden"
+                        borderRadius="20px"
+                        cursor="pointer"
+                        bg="rgba(255,255,255,.18)"
+                        border="1px solid rgba(255,255,255,.2)"
+                        boxShadow={
+                          (isMobile ? isFrontMobile : isActiveDesktop)
+                            ? "0 22px 50px rgba(0,0,0,.32)"
+                            : "0 14px 32px rgba(0,0,0,.18)"
+                        }
+                        pointerEvents={
+                          isMobile
+                            ? isFrontMobile
+                              ? "auto"
+                              : "none"
+                            : isVisibleDesktop
+                              ? "auto"
+                              : "none"
+                        }
+                        onClick={() => openCard(index)}
+                        initial={false}
+                        animate={isMobile ? mobileAnimate : desktopAnimate}
+                        transition={
+                          isMobile
+                            ? {
+                              duration: 0.35,
+                              ease: [0.22, 1, 0.36, 1],
+                            }
+                            : {
+                              duration: 0.6,
+                              ease: [0.22, 1, 0.36, 1],
+                            }
+                        }
+                        style={{
+                          willChange: "opacity, transform",
+                        }}
+                      >
+                        <Image
+                          src={project.image}
+                          w="100%"
+                          h="100%"
+                          objectFit="cover"
+                          draggable={false}
+                        />
+                      </MotionBox>
+                    );
+                  })}
                 </Box>
 
                 <Flex justify="center" w="100%" gap={4} mt={5}>
@@ -637,7 +637,7 @@ function DetailLayout({
           alignItems="center"
           justifyContent="center"
           overflow="hidden"
-          
+
         >
           <Box
             h="100%"

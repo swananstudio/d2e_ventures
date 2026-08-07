@@ -1,6 +1,7 @@
 
 import {
     Box,
+    chakra,
     Flex,
     Grid,
     GridItem,
@@ -10,6 +11,9 @@ import {
 import {
     home, premium, strategy, concept, transparent,
 } from '../../assets/assets'
+import { motion, useInView } from "motion/react";
+import { useRef } from "react";
+import TextReveal from "../../custom/TextReveal";
 
 const features = [
     {
@@ -33,8 +37,40 @@ const features = [
         subtitle: "with quality assurance",
     },
 ];
-
+const animationDelay = [
+    0.5, // Feature 1
+    0.5, // Feature 2
+    0.9, // Feature 3
+    0.9, // Feature 4
+];
 const IntroSection = () => {
+
+    const MotionText = chakra(motion(Text))
+    const MotionFlex = chakra(motion(Flex))
+    // const MotionText = chakra(motion.p);
+    const headingRef = useRef(null);
+
+    const isInView = useInView(headingRef, {
+        once: true,
+        amount: 0.4,
+    });
+
+
+    // const revealVariant = {
+    //     hidden: {
+    //         y: 60,
+    //         opacity: 0,
+    //     },
+    //     visible: {
+    //         y: 0,
+    //         opacity: 1,
+    //         transition: {
+    //             duration: 0.8,
+    //             ease: [0.22, 1, 0.36, 1],
+    //         },
+    //     },
+    // };
+
     return (
         <Flex
             py={{ base: "70px", lg: "110px" }}
@@ -153,37 +189,136 @@ const IntroSection = () => {
                 {/* RIGHT */}
 
                 <Box>
-                    <Text
-                        fontSize={{
-                            base: "24px",
-                            lg: "34px",
-                        }}
-                        fontWeight="400"
-                    >
-                        Not Just Building Spaces.
-                    </Text>
+                    <Flex ref={headingRef} direction="column">
+                        {/* <Box overflow="hidden"> */}
+                            {/* <MotionText
+                                initial={{ y: "100%" }}
+                                animate={isInView ? {
+                                    y: 0,
+                                    transition: {
+                                        duration: 0.8,
+                                        ease: [0.22, 1, 0.36, 1],
+                                    }
+                                } : {}}
+                                fontSize={{
+                                    base: "24px",
+                                    lg: "34px",
+                                }}
+                                fontWeight="400"
+                            >
+                                Not Just Building Spaces.
+                            </MotionText> */}
+                            <TextReveal
+                                baseColor="#5A5A5A"
+                                revealColor="#000"
+                                gap={2}
+                                w='100%'
+                            >
+                                <Text
+                                    fontSize={{
+                                        base: "24px",
+                                        lg: "34px",
+                                    }}
+                                    fontWeight="400"
+                                >
+                                    Not Just Building Spaces.
+                                </Text>
 
-                    <Text
-                        mt={2}
-                        fontWeight="700"
-                        lineHeight="1.1"
-                        fontSize={{
-                            base: "42px",
-                            md: "56px",
-                            lg: "64px",
-                        }}
-                    >
-                        Crafting Places
-                        <br />
-                        to Belong.
-                    </Text>
+                                <Text
+                                    // mt={2}
+                                    fontSize={{
+                                        base: "42px",
+                                        md: "56px",
+                                        lg: "64px",
+                                    }}
+                                    fontWeight="700"
+                                    lineHeight={1.2}
+                                >
+                                    Crafting Places
+                                    <br />
+                                    to Belong.
+                                </Text>
+                            </TextReveal>
+                            
+                            {/* <TextReveal
+                                baseColor="#5A5A5A"
+                                revealColor="#000000"
+                            >
+                                <>
+                                    <Text
+                                        className="montserrat"
+                                        fontWeight="400"
+                                        lineHeight="1.1"
+                                        fontSize={{
+                                            base: "24px",
+                                            lg: "34px",
+                                        }}
+                                    >
+                                        Not Just Building Spaces.
+                                    </Text>
 
-                    <Text
+                                    <Text
+                                        mt={2}
+                                        className="montserrat"
+                                        fontWeight="700"
+                                        lineHeight="1.1"
+                                        fontSize={{
+                                            base: "42px",
+                                            md: "56px",
+                                            lg: "64px",
+                                        }}
+                                    >
+                                        Crafting Places
+                                        <br />
+                                        to Belong.
+                                    </Text>
+                                </>
+                            </TextReveal> */}
+                        {/* </Box> */}
+
+                        {/* <Box overflow="hidden" mt={2}>
+                            <MotionText
+                                initial={{ y: "100%" }}
+                                animate={isInView ? {
+                                    y: 0,
+                                    transition: {
+                                        duration: 0.8,
+                                        delay: 0.2,
+                                        ease: [0.22, 1, 0.36, 1],
+                                    }
+                                } : {}}
+                                fontWeight="700"
+                                lineHeight="1.1"
+                                fontSize={{
+                                    base: "42px",
+                                    md: "56px",
+                                    lg: "64px",
+                                }}
+                            >
+                                Crafting Places
+                                <br />
+                                to Belong.
+                            </MotionText>
+                        </Box> */}
+
+                    </Flex>
+
+                    <MotionText
                         mt={8}
                         color="#555"
                         fontSize="17px"
                         lineHeight="1.9"
                         maxW="750px"
+                        initial={{ y: '100%', opacity: 0 }}
+                        animate={isInView ? {
+                            y: 0,
+                            opacity: 1,
+                            transition: {
+                                duration: 1,
+                                delay: 0.5,
+                                ease: [0.22, 1, 0.36, 1],
+                            }
+                        } : {}}
                     >
                         D2E Ventures Private Limited is an integrated
                         development consultancy specializing in premium
@@ -195,7 +330,7 @@ const IntroSection = () => {
                             as="span"
                             fontWeight="700"
                             color="#222"
-                            
+
                         >
                             {" "}{" "}
                             we transform ideas into
@@ -204,7 +339,7 @@ const IntroSection = () => {
                         with precision,
                         transparency,
                         and lasting quality.
-                    </Text>
+                    </MotionText>
 
                     <Grid
                         mt={14}
@@ -214,9 +349,28 @@ const IntroSection = () => {
                         }}
                         gap={8}
                     >
-                        {features.map((item) => (
+                        {features.map((item, index) => (
                             <GridItem key={item.title}>
-                                <Flex gap={5}>
+                                <MotionFlex
+                                    initial={{
+                                        y: '100%',
+                                        opacity: 0,
+                                    }}
+                                    whileInView={{
+                                        y: 0,
+                                        opacity: 1,
+                                        transition: {
+                                            duration: 0.8,
+                                            delay: animationDelay[index],
+                                            ease: "easeInOut",
+                                        },
+                                    }}
+                                    viewport={{
+                                        once: true,
+                                        amount: 0.3,
+                                    }}
+                                    gap={5}
+                                >
                                     <Flex
                                         w="62px"
                                         h="62px"
@@ -248,13 +402,13 @@ const IntroSection = () => {
                                             {item.subtitle}
                                         </Text>
                                     </Box>
-                                </Flex>
+                                </MotionFlex>
                             </GridItem>
                         ))}
                     </Grid>
                 </Box>
-            </Grid>
-        </Flex>
+            </Grid >
+        </Flex >
     )
 }
 

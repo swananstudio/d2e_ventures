@@ -2,6 +2,15 @@
 @import url('https://fonts.googleapis.com/css2?family=Michroma&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 
+/* @font-face {
+  font-family: "Microgbe";
+  src: url("./assets/font/MICROGBE.TTF") format("truetype");
+} */
+
+.microgbe {
+  font-family: "Microgbe", sans-serif;
+}
+
 html {
   scroll-behavior: smooth;
 }
@@ -12,11 +21,15 @@ html {
 
 .montserrat {
   font-family: "Montserrat", sans-serif;
+  
+  
+  
   /* font-optical-sizing: auto; */
   /* font-style: normal; */
 }
 
 .michroma_font {
+  /* font-family: "Microgbe", sans-serif; */
   font-family: "Michroma", sans-serif
 }
 
@@ -94,38 +107,55 @@ html {
   border-radius: 18px;
 }
 
-
-
-
-/* Portfolio Page */
-.portfolioThumbSwiper {
+/* .portfolioSwiper {
   width: 100%;
   overflow: visible;
 }
 
-.portfolioThumbSwiper .swiper-wrapper {
+.portfolioSwiper .swiper-wrapper {
   align-items: center;
 }
 
-.portfolioThumbSwiper .swiper-slide {
+.portfolioSwiper .swiper-slide {
+  transition:
+    opacity .6s ease,
+    scale .6s ease;
+} */
+
+
+
+/* Portfolio Page */
+/* .portfolioThumbSwiper {
+  width: 100%;
+  overflow: visible;
+
+} */
+
+.swiper-wrapper {
+  align-items: center;
+}
+
+
+
+/* .portfolioThumbSwiper .swiper-slide {
   width: 240px !important;
   flex-shrink: 0;
-}
+
+} */
 
 
 .css-1llu7l6 {
   color: #666666;
 }
 
+/* 
 .hide-scrollbar {
-  scrollbar-width: none;      /* Firefox */
-  -ms-overflow-style: none;   /* IE & Edge */
+  scrollbar-width: none;      
+  -ms-overflow-style: none; 
 }
 
 .hide-scrollbar::-webkit-scrollbar {
   width: 0;
   height: 0;
-  display: none;
-
-  
-}
+  display: none
+} */
