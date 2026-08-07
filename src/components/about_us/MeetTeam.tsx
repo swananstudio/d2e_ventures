@@ -9,9 +9,12 @@ import {
     pranjal_patil,
     aman_bhagwan,
 
-    expertise as expertiseIcon,
-    responsibilities as responsibilitiesIcon,
-    philosophy as philosophyIcon,
+    // expertise as expertiseIcon,
+    // responsibilities as responsibilitiesIcon,
+    // philosophy as philosophyIcon,
+    expertise_white as expertiseIcon,
+    responsibilities_white as responsibilitiesIcon,
+    philosophy_white as philosophyIcon,
 } from "../../assets/assets";
 
 import {
@@ -46,19 +49,19 @@ const teamMembers: TeamMemberProps[] = [
                 icon: expertiseIcon,
                 title: "Expertise",
                 description:
-                    "Bringing over eight years of industry experience in project management, construction execution, and business development.",
+                    "Bringing over 9 years of expertise in architecture,planning, and construction to create functional,well-crafted, and lasting design solutions.",
             },
             {
                 icon: responsibilitiesIcon,
                 title: "Responsibilities",
                 description:
-                    "Leading project execution from planning to completion.",
+                    "Leading projects from concept to completion byoverseeing design coordination, execution,quality, and timely delivery.",
             },
             {
                 icon: philosophyIcon,
                 title: "Philosophy",
                 description:
-                    "Successful projects are driven by thoughtful planning.",
+                    "Believing that great spaces are built throughcollaboration, attention to detail, and anunwavering commitment to quality.",
             },
         ],
     },
@@ -72,19 +75,19 @@ const teamMembers: TeamMemberProps[] = [
                 icon: expertiseIcon,
                 title: "Expertise",
                 description:
-                    "Landscape design and construction-ready documentation.",
+                    "Experienced in construction management,turnkey execution, and delivering projectswith efficiency and precision.",
             },
             {
                 icon: responsibilitiesIcon,
                 title: "Responsibilities",
                 description:
-                    "Leading the design process and GFC documentation.",
+                    "Overseeing site operations, project execution,vendor coordination, and quality control toensure timely project delivery.",
             },
             {
                 icon: philosophyIcon,
                 title: "Philosophy",
                 description:
-                    "Creative vision supported by technical precision.",
+                    "I believe design is about creating meaningfulexperiences through intelligent planning andtimeless architecture and landscapes.",
             },
         ],
     },
@@ -98,19 +101,19 @@ const teamMembers: TeamMemberProps[] = [
                 icon: expertiseIcon,
                 title: "Expertise",
                 description:
-                    "Interior design and execution.",
+                    "Specializing in residential architecture andinterior design with a focus on thoughtful planning and functional spaces.",
             },
             {
                 icon: responsibilitiesIcon,
                 title: "Responsibilities",
                 description:
-                    "Material selection and site supervision.",
+                    "Leading residential design, interior planning,and design coordination to deliver cohesive living environments.",
             },
             {
                 icon: philosophyIcon,
                 title: "Philosophy",
                 description:
-                    "Purposeful functionality and flawless execution.",
+                    "Believing every home should reflect itspurpose, personality, and the people wholive in it",
             },
         ],
     },
@@ -143,7 +146,7 @@ const MeetTeam = () => {
 
             <Flex
                 wrap="wrap"
-                gap={'50px'}
+                gap={'70px'}
                 justify="center"
             >
                 {teamMembers.map((member) => (
@@ -386,15 +389,17 @@ const TeamCard = ({
             ref={scope}
             w={{
                 base: "100%",
-                lg: "30%",
+                lg: "28%",
             }}
-            h="620px"
+            h="100%"
+            minH={'600px'}
             overflow="hidden"
             position="relative"
             cursor="pointer"
             onMouseEnter={handleHoverStart}
             onMouseLeave={handleHoverEnd}
-            bg="gray.100"
+            bg="rgba(8,8,8,.92)"
+            borderRadius={'20px'}
         >
             {/* IMAGE */}
 
@@ -405,7 +410,9 @@ const TeamCard = ({
                     width: "100%",
                     height: "100%",
                     objectFit: "cover",
+                    objectPosition: 'top ',
                     display: "block",
+                    borderRadius: "20px"
                 }}
             />
 
@@ -423,6 +430,8 @@ const TeamCard = ({
                     flexDirection: "column",
                     justifyContent: "flex-start",
                     transform: "translateY(100%)",
+                    borderRadius: '20px',
+                    height: '600px'
                 }}
             >
                 {/* NAME */}
@@ -469,7 +478,7 @@ const TeamCard = ({
                             style={{
                                 display: "flex",
                                 gap: "20px",
-                                alignItems: "flex-start",
+                                alignItems: "center",
                                 opacity: 0,
                                 transform: "translateY(35px)",
                             }}
@@ -478,9 +487,11 @@ const TeamCard = ({
                                 w="52px"
                                 h="52px"
                                 minW="52px"
-                                bg="#fff"
+                                borderRadius={'7.5px'}
+                                bg="#FFFFFF0D"
                                 justify="center"
                                 align="center"
+                                border='0.75px solid #FFFFFF1A'
                             >
                                 <img
                                     ref={(el) => {
@@ -497,7 +508,7 @@ const TeamCard = ({
 
                             <Box>
                                 <Text
-                                    fontSize="18px"
+                                    fontSize="15px"
                                     fontWeight="700"
                                     mb={2}
                                 >
@@ -505,7 +516,7 @@ const TeamCard = ({
                                 </Text>
 
                                 <Text
-                                    fontSize="14px"
+                                    fontSize="12px"
                                     lineHeight="1.8"
                                     color="rgba(255,255,255,.75)"
                                 >

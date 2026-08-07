@@ -18,6 +18,9 @@ import aman_bhagwan from './about/aman_bhagwan.svg'
 import expertise from './about/expertise.svg'
 import responsibilities from './about/responsibilities.svg'
 import philosophy from './about/philosophy.svg'
+import expertise_white from './about/expertise_white.svg'
+import responsibilities_white from './about/responsibilities_white.svg'
+import philosophy_white from './about/philosophy_white.svg'
 
 
 import maps from './footer/maps.svg'
@@ -99,7 +102,7 @@ export {
     services, homereview1, homereview2, homereview3, homereview4,
     aboutoverview1, aboutoverview2, aboutoverview3, aboutoverview4,
     aman_bhagwan, omkar_dhende, pranjal_patil,
-    expertise, responsibilities, philosophy,
+    expertise, responsibilities, philosophy, expertise_white, responsibilities_white, philosophy_white,
     maps, phone, mail, timing, instagram, linkidin, facebook, twitter, youtube,
     blackcolormaps, blackcolorphone, blackcolormail, blackcolortiming,
     home, premium, strategy, concept, transparent, introline,

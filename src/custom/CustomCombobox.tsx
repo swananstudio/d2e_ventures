@@ -157,7 +157,7 @@ const CustomCombobox = <T extends FieldValues>({
                   _placeholder={{
                     color: "#777777",
                   }}
-                  pl={'20px'}
+                  pl={'4px'}
                 >
                   Select your Requirement(s)
                 </Text>
