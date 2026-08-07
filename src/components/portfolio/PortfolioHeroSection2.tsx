@@ -797,7 +797,7 @@ function AccordionContent({ items }: { items: AccordionItem[] }) {
                           color="whiteAlpha.800"
                           fontSize={{ base: "13px", sm: "14px", md: "15px" }}
                           lineHeight="1.5"
-                          ml="7px"
+                          ml="16px"
                         >
                           {item.content.map((line) => (
                             <List.Item key={line}>{line}</List.Item>
