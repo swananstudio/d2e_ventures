@@ -290,24 +290,6 @@ export default function PortfolioHeroSection2() {
                   Nestled amidst lush farmland, it features a personalized
                   residence with curated interiors and a private swimming pool.
                 </Text>
-
-                <Button
-                  mt={5}
-                  bg="#FFFFFF25"
-                  backdropFilter="blur(12px)"
-                  color="white"
-                  w={{ base: "100%", sm: "260px", lg: "fit-content" }}
-                  border="1px solid rgba(255,255,255,.35)"
-                  borderRadius="10px"
-                  px={7}
-                  _hover={{ bg: "#C8A96B", color: "#000" }}
-                  onClick={() => openCard(activeIndex)}
-                >
-                  <Flex align="center" gap={3}>
-                    Explore Gallery
-                    <GoArrowRight />
-                  </Flex>
-                </Button>
               </Box>
 
               <Flex
@@ -329,7 +311,6 @@ export default function PortfolioHeroSection2() {
                   isolation="isolate"
                 >
                   {projectThumbnails.map((project, index) => {
-                    // Desktop positioning logic
                     const distance = getRelativePosition(index);
                     const isActiveDesktop = distance === 0;
                     const isVisibleDesktop = Math.abs(distance) <= 1;
@@ -345,7 +326,6 @@ export default function PortfolioHeroSection2() {
                               ? "-28%"
                               : "98%";
 
-                    // Mobile stack positioning
                     const stackPosition =
                       ((index - activeIndex) % projectThumbnails.length +
                         projectThumbnails.length) %
@@ -369,6 +349,8 @@ export default function PortfolioHeroSection2() {
                       opacity: isFrontMobile ? 1 : 0,
                       scale: 1,
                     };
+
+                    const details = sectionDetailsMap[project.section];
 
                     return (
                       <MotionBox
@@ -410,25 +392,71 @@ export default function PortfolioHeroSection2() {
                         transition={
                           isMobile
                             ? {
-                              duration: 0.35,
-                              ease: [0.22, 1, 0.36, 1],
-                            }
+                                duration: 0.35,
+                                ease: [0.22, 1, 0.36, 1],
+                              }
                             : {
-                              duration: 0.6,
-                              ease: [0.22, 1, 0.36, 1],
-                            }
+                                duration: 0.6,
+                                ease: [0.22, 1, 0.36, 1],
+                              }
                         }
                         style={{
                           willChange: "opacity, transform",
                         }}
                       >
+                        {/* Thumbnail Image */}
                         <Image
                           src={project.image}
                           w="100%"
                           h="100%"
                           objectFit="cover"
                           draggable={false}
+                          position="relative"
+                          zIndex={0}
                         />
+
+                        {/* Dark Gradient directly behind title text on card image */}
+                        <Box
+                          position="absolute"
+                          left={0}
+                          right={0}
+                          bottom={0}
+                          h="75%"
+                          background="linear-gradient(to top, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.5) 60%, rgba(0, 0, 0, 0) 100%)"
+                          pointerEvents="none"
+                          zIndex={1}
+                        />
+
+                        {/* Title text content */}
+                        <Box
+                          position="absolute"
+                          left={0}
+                          right={0}
+                          bottom={0}
+                          px={{ base: 3, md: 4 }}
+                          pb={{ base: 3, md: 4 }}
+                          pointerEvents="none"
+                          zIndex={2}
+                        >
+                          <Text
+                            color="rgba(255,255,255,.9)"
+                            fontSize={{ base: "10px", md: "11px" }}
+                            letterSpacing="0.08em"
+                            fontWeight="500"
+                            mb="2px"
+                            textTransform="uppercase"
+                          >
+                            {details.title}
+                          </Text>
+                          <Text
+                            color="white"
+                            fontSize={{ base: "16px", md: "19px" }}
+                            fontWeight="600"
+                            lineHeight="1.1"
+                          >
+                            {details.subtitle}
+                          </Text>
+                        </Box>
                       </MotionBox>
                     );
                   })}
@@ -637,9 +665,9 @@ function DetailLayout({
           alignItems="center"
           justifyContent="center"
           overflow="hidden"
-
         >
           <Box
+            position="relative"
             h="100%"
             w="100%"
             maxH={{ base: tallImageMobile ? "30vh" : "26vh", md: "calc(100vh - 90px)" }}
@@ -647,6 +675,8 @@ function DetailLayout({
             alignItems="center"
             justifyContent="center"
             bg="black"
+            borderRadius="12px"
+            overflow="hidden"
           >
             <AnimatePresence mode="wait">
               <motion.img
@@ -784,9 +814,8 @@ function AccordionContent({ items }: { items: AccordionItem[] }) {
                     style={{ overflow: "hidden" }}
                   >
                     <Box
-                      border="1px solid,  "
-                      
-                    borderColor="rgba(255, 255, 255, 0.11)"
+                      border="1px solid"
+                      borderColor="rgba(255, 255, 255, 0.11)"
                       borderRadius="8px"
                       px={{ base: 2.5, md: 3 }}
                       py={{ base: 1.5, md: 2 }}
