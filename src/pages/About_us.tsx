@@ -4,24 +4,24 @@ import Overview from '../components/about_us/Overview';
 import InnerHeroSection from './../components/about_us/InnerHeroSection';
 // import Quality from "./../components/about_us/Quality";
 import { Flex, } from "@chakra-ui/react"
-import { QualitySectionImg } from '../assets/assets';
+import { QualitySectionImg, QualitySectionImg_mobile } from '../assets/assets';
 
 const About_us = () => {
     return (
         <>
             <InnerHeroSection />
 
-            <Flex  flexDirection={'column'}>
+            <Flex flexDirection={'column'}>
                 <Flex  >
                     <Overview />
                 </Flex>
                 <Flex
                     h="100vh"
                     w="100%"
-                    bgImage={`url(${QualitySectionImg})`}
+                    bgImage={{base:`url(${QualitySectionImg_mobile})`, md:`url(${QualitySectionImg})`}}
                     bgSize="cover"
                     bgRepeat="no-repeat"
-                    backgroundPosition={{base:'right', lg:"center"}}
+                    backgroundPosition={{ base: 'right', lg: "center" }}
                     bgAttachment="fixed"
                     justifyContent="center"
                     position="relative"

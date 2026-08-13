@@ -1,29 +1,28 @@
 import {
     Box,
     Flex,
+    Image,
+    SimpleGrid,
+    Text,
 } from "@chakra-ui/react";
-
 
 import {
     omkar_dhende,
     pranjal_patil,
     aman_bhagwan,
 
-    // expertise as expertiseIcon,
-    // responsibilities as responsibilitiesIcon,
-    // philosophy as philosophyIcon,
     expertise_white as expertiseIcon,
     responsibilities_white as responsibilitiesIcon,
     philosophy_white as philosophyIcon,
 } from "../../assets/assets";
 
-import {
-    // Image,
-    Text,
-} from "@chakra-ui/react";
-
 import { useAnimate } from "motion/react";
-import { useRef } from "react";
+import { useRef, useState } from "react";
+
+
+// ============================================================
+// TYPES
+// ============================================================
 
 export interface TeamDetail {
     icon: string;
@@ -39,29 +38,39 @@ export interface TeamMemberProps {
     details: TeamDetail[];
 }
 
+type Props = {
+    member: TeamMemberProps;
+};
+
+
+// ============================================================
+// TEAM DATA
+// ============================================================
+
 const teamMembers: TeamMemberProps[] = [
     {
         name: "Ar. Omkar Keshav Dhende",
-        role: "Projects & Business Development Lead",
+        role: "Project & Business Development Lead",
         image: omkar_dhende,
+
         details: [
             {
                 icon: expertiseIcon,
                 title: "Expertise",
                 description:
-                    "Bringing over 9 years of expertise in architecture,planning, and construction to create functional,well-crafted, and lasting design solutions.",
+                    "Bringing over 9 years of expertise in architecture, planning, and construction to create functional, well-crafted, and lasting design solutions.",
             },
             {
                 icon: responsibilitiesIcon,
                 title: "Responsibilities",
                 description:
-                    "Leading projects from concept to completion byoverseeing design coordination, execution,quality, and timely delivery.",
+                    "Leading projects from concept to completion by overseeing design coordination, execution, quality, and timely delivery.",
             },
             {
                 icon: philosophyIcon,
                 title: "Philosophy",
                 description:
-                    "Believing that great spaces are built throughcollaboration, attention to detail, and anunwavering commitment to quality.",
+                    "Believing that great spaces are built through collaboration, attention to detail, and anunwavering commitment to quality.",
             },
         ],
     },
@@ -70,24 +79,26 @@ const teamMembers: TeamMemberProps[] = [
         name: "Ar. Pranjal Prahlad Patil",
         role: "Landscape Design Specialist",
         image: pranjal_patil,
+        reverse: true,
+
         details: [
             {
                 icon: expertiseIcon,
                 title: "Expertise",
                 description:
-                    "Experienced in construction management,turnkey execution, and delivering projectswith efficiency and precision.",
+                    "Experienced in construction management, turnkey execution, and delivering projects with efficiency and precision.",
             },
             {
                 icon: responsibilitiesIcon,
                 title: "Responsibilities",
                 description:
-                    "Overseeing site operations, project execution,vendor coordination, and quality control toensure timely project delivery.",
+                    "Overseeing site operations, project execution, vendor coordination, and quality control.",
             },
             {
                 icon: philosophyIcon,
                 title: "Philosophy",
                 description:
-                    "I believe design is about creating meaningfulexperiences through intelligent planning andtimeless architecture and landscapes.",
+                    "I believe design is about creating meaning fulexperiences through intelligent planning andtimeless architecture and landscapes.",
             },
         ],
     },
@@ -96,6 +107,7 @@ const teamMembers: TeamMemberProps[] = [
         name: "Ar. Amaan Asif Bagwan",
         role: "Interior Design & Execution Lead",
         image: aman_bhagwan,
+
         details: [
             {
                 icon: expertiseIcon,
@@ -107,55 +119,108 @@ const teamMembers: TeamMemberProps[] = [
                 icon: responsibilitiesIcon,
                 title: "Responsibilities",
                 description:
-                    "Leading residential design, interior planning,and design coordination to deliver cohesive living environments.",
+                    "Leading residential design, interior planning, and design coordination to deliver cohesive living environments.",
             },
             {
                 icon: philosophyIcon,
                 title: "Philosophy",
                 description:
-                    "Believing every home should reflect itspurpose, personality, and the people wholive in it",
+                    "Believing every home should reflect its purpose, personality, and the people who live in it",
             },
         ],
     },
 ];
 
+
+// ============================================================
+// MEET TEAM
+// ============================================================
+
 const MeetTeam = () => {
     return (
         <Flex
-            py={'50px'}
+            w="100%"
+            py={{
+                base: "40px",
+                md: "45px",
+                lg: "50px",
+                xl: "100px",
+            }}
+            pb={{
+                base: "40px",
+                md: "45px",
+                lg: "50px",
+                xl: "100px",
+            }}
             px={{
                 base: "6%",
-                lg: "4%",
+                md: "5%",
+                lg: "3%",
+                xl: "4%",
             }}
-            w='100%'
-            flexDirection={'column'}
-            justifyContent={'center'}
-            gapY={'50px'}
+            flexDirection="column"
+            justifyContent="center"
+            gap={{
+                base: "30px",
+                md: "38px",
+                lg: "45px",
+                xl: "50px",
+            }}
         >
-            <Text
 
+            {/* ==================================================
+                HEADING
+            ================================================== */}
+
+            <Text
                 textAlign="center"
-                fontSize={{ base: "30px", md: "40px", lg: "48px" }}
-                fontWeight="800"
+                fontSize={{
+                    base: "28px",
+                    sm: "32px",
+                    md: "38px",
+                    lg: "44px",
+                    xl: "48px",
+                }}
+                fontWeight="700"
                 color="#080808"
-                className="michroma_font"
+                className="montserrat"
                 lineHeight={1}
             >
                 MEET THE TEAM
             </Text>
 
-            <Flex
-                wrap="wrap"
-                gap={'70px'}
-                justify="center"
+
+            {/* ==================================================
+                TEAM GRID
+            ================================================== */}
+
+            <SimpleGrid
+                w="100%"
+                columns={{
+                    base: 1,
+                    md: 2,
+                    lg: 3,
+                }}
+                gap={{
+                    base: "24px",
+                    sm: "28px",
+                    md: "32px",
+                    lg: "45px",
+                    xl: "70px",
+                }}
+                alignItems="stretch"
+                placeItems="center"
             >
+
                 {teamMembers.map((member) => (
                     <TeamCard
                         key={member.name}
                         member={member}
                     />
                 ))}
-            </Flex>
+
+            </SimpleGrid>
+
         </Flex>
     );
 };
@@ -163,12 +228,9 @@ const MeetTeam = () => {
 export default MeetTeam;
 
 
-
-
-
-type Props = {
-    member: TeamMemberProps;
-};
+// ============================================================
+// TEAM CARD
+// ============================================================
 
 const TeamCard = ({
     member,
@@ -188,62 +250,116 @@ const TeamCard = ({
 
     const iconRefs = useRef<(HTMLImageElement | null)[]>([]);
 
+
+    // ========================================================
+    // ONLY FOR TABLET + MOBILE
+    // ========================================================
+
+    const [isMobileTabletOpen, setIsMobileTabletOpen] =
+        useState(false);
+
+    const isMobileTablet = () => {
+        return window.innerWidth < 992;
+    };
+
+
+    // ========================================================
+    // HOVER START
+    //
+    // DESKTOP / LAPTOP ORIGINAL
+    // ========================================================
+
     const handleHoverStart = async () => {
 
+        // On tablet/mobile, hover should do nothing.
+        if (isMobileTablet()) return;
+
+
+        // ----------------------------------------------------
         // Move image upward
-        animate(
-            imageRef.current!,
-            {
-                y: "-100%",
-                scale: 1,
-            },
-            {
-                duration: 1.5,
-                ease: "easeInOut",
-            }
-        );
+        // ----------------------------------------------------
 
+        if (imageRef.current) {
+            animate(
+                imageRef.current,
+                {
+                    y: "-100%",
+                    scale: 1,
+                },
+                {
+                    duration: 1.5,
+                    ease: "easeInOut",
+                }
+            );
+        }
+
+
+        // ----------------------------------------------------
         // Overlay comes from bottom
-        animate(
-            overlayRef.current!,
-            {
-                y: "0%",
-            },
-            {
-                duration: 1.5,
-                ease: "easeInOut",
-            }
-        );
+        // ----------------------------------------------------
 
+        if (overlayRef.current) {
+            animate(
+                overlayRef.current,
+                {
+                    y: "0%",
+                },
+                {
+                    duration: 1.5,
+                    ease: "easeInOut",
+                }
+            );
+        }
+
+
+        // ----------------------------------------------------
         // Name
-        await animate(
-            titleRef.current!,
-            {
-                opacity: 1,
-                y: 0,
-            },
-            {
-                duration: 0.45,
-                delay: 0.75,
-                ease: "easeOut",
-            }
-        );
+        // ----------------------------------------------------
 
+        if (titleRef.current) {
+            await animate(
+                titleRef.current,
+                {
+                    opacity: 1,
+                    y: 0,
+                },
+                {
+                    duration: 0.45,
+                    delay: 0.75,
+                    ease: "easeOut",
+                }
+            );
+        }
+
+
+        // ----------------------------------------------------
         // Role
-        await animate(
-            roleRef.current!,
-            {
-                opacity: 1,
-                y: 0,
-            },
-            {
-                duration: 0.35,
-                ease: "easeOut",
-            }
-        );
+        // ----------------------------------------------------
 
+        if (roleRef.current) {
+            await animate(
+                roleRef.current,
+                {
+                    opacity: 1,
+                    y: 0,
+                },
+                {
+                    duration: 0.35,
+                    ease: "easeOut",
+                }
+            );
+        }
+
+
+        // ----------------------------------------------------
         // Detail Cards
-        for (let index = 0; index < detailRefs.current.length; index++) {
+        // ----------------------------------------------------
+
+        for (
+            let index = 0;
+            index < detailRefs.current.length;
+            index++
+        ) {
 
             const detail = detailRefs.current[index];
 
@@ -261,11 +377,16 @@ const TeamCard = ({
                 }
             );
 
-            // Icon animation
-            if (iconRefs.current[index]) {
 
+            // ------------------------------------------------
+            // Icon animation
+            // ------------------------------------------------
+
+            const icon = iconRefs.current[index];
+
+            if (icon) {
                 animate(
-                    iconRefs.current[index]!,
+                    icon,
                     {
                         scale: [0.4, 1.25, 1],
                         rotate: [-25, 10, 0],
@@ -275,16 +396,32 @@ const TeamCard = ({
                         ease: "easeOut",
                     }
                 );
-
             }
         }
-
     };
+
+
+    // ========================================================
+    // HOVER END
+    //
+    // DESKTOP / LAPTOP ORIGINAL
+    // ========================================================
 
     const handleHoverEnd = async () => {
 
+        // On tablet/mobile, hover should do nothing.
+        if (isMobileTablet()) return;
+
+
+        // ----------------------------------------------------
         // Hide details in reverse order
-        for (let index = detailRefs.current.length - 1; index >= 0; index--) {
+        // ----------------------------------------------------
+
+        for (
+            let index = detailRefs.current.length - 1;
+            index >= 0;
+            index--
+        ) {
 
             const detail = detailRefs.current[index];
 
@@ -302,9 +439,12 @@ const TeamCard = ({
                 }
             );
 
-            if (iconRefs.current[index]) {
+
+            const icon = iconRefs.current[index];
+
+            if (icon) {
                 animate(
-                    iconRefs.current[index]!,
+                    icon,
                     {
                         scale: 0.5,
                         rotate: -20,
@@ -317,59 +457,88 @@ const TeamCard = ({
             }
         }
 
+
+        // ----------------------------------------------------
         // Hide role
-        await animate(
-            roleRef.current!,
-            {
-                opacity: 0,
-                y: 30,
-            },
-            {
-                duration: 0.2,
-                ease: "easeIn",
-            }
-        );
+        // ----------------------------------------------------
 
+        if (roleRef.current) {
+            await animate(
+                roleRef.current,
+                {
+                    opacity: 0,
+                    y: 30,
+                },
+                {
+                    duration: 0.2,
+                    ease: "easeIn",
+                }
+            );
+        }
+
+
+        // ----------------------------------------------------
         // Hide name
-        await animate(
-            titleRef.current!,
-            {
-                opacity: 0,
-                y: 30,
-            },
-            {
-                duration: 0.2,
-                ease: "easeIn",
-            }
-        );
+        // ----------------------------------------------------
 
+        if (titleRef.current) {
+            await animate(
+                titleRef.current,
+                {
+                    opacity: 0,
+                    y: 30,
+                },
+                {
+                    duration: 0.2,
+                    ease: "easeIn",
+                }
+            );
+        }
+
+
+        // ----------------------------------------------------
         // Overlay goes down
-        animate(
-            overlayRef.current!,
-            {
-                y: "100%",
-            },
-            {
-                duration: 1.2,
-                ease: "easeInOut",
-            }
-        );
+        // ----------------------------------------------------
 
+        if (overlayRef.current) {
+            animate(
+                overlayRef.current,
+                {
+                    y: "100%",
+                },
+                {
+                    duration: 1.2,
+                    ease: "easeInOut",
+                }
+            );
+        }
+
+
+        // ----------------------------------------------------
         // Image returns
-        animate(
-            imageRef.current!,
-            {
-                y: 0,
-                scale: 1,
-            },
-            {
-                duration: 1.2,
-                ease: "easeInOut",
-            }
-        );
+        // ----------------------------------------------------
 
-        // Reset icon transform so next hover starts correctly
+        if (imageRef.current) {
+            animate(
+                imageRef.current,
+                {
+                    y: 0,
+                    scale: 1,
+                },
+                {
+                    duration: 1.2,
+                    ease: "easeInOut",
+                }
+            );
+        }
+
+
+        // ----------------------------------------------------
+        // Reset icons
+        // ----------------------------------------------------
+
         iconRefs.current.forEach((icon) => {
+
             if (!icon) return;
 
             animate(
@@ -382,151 +551,879 @@ const TeamCard = ({
                     duration: 0,
                 }
             );
+
         });
     };
+
+
+    // ========================================================
+    // MOBILE / TABLET OPEN
+    //
+    // Uses the EXACT SAME animation as desktop hover.
+    // Only the trigger is different.
+    // ========================================================
+
+    const handleMobileTabletOpen = async () => {
+
+        // Prevent this function from doing anything
+        // on laptop / desktop.
+
+        if (!isMobileTablet()) return;
+
+        setIsMobileTabletOpen(true);
+
+
+        // ----------------------------------------------------
+        // Move image upward
+        // ----------------------------------------------------
+
+        if (imageRef.current) {
+            animate(
+                imageRef.current,
+                {
+                    y: "-100%",
+                    scale: 1,
+                },
+                {
+                    duration: 1.5,
+                    ease: "easeInOut",
+                }
+            );
+        }
+
+
+        // ----------------------------------------------------
+        // Overlay comes from bottom
+        // ----------------------------------------------------
+
+        if (overlayRef.current) {
+            animate(
+                overlayRef.current,
+                {
+                    y: "0%",
+                },
+                {
+                    duration: 1.5,
+                    ease: "easeInOut",
+                }
+            );
+        }
+
+
+        // ----------------------------------------------------
+        // Name
+        // ----------------------------------------------------
+
+        if (titleRef.current) {
+            await animate(
+                titleRef.current,
+                {
+                    opacity: 1,
+                    y: 0,
+                },
+                {
+                    duration: 0.45,
+                    delay: 0.75,
+                    ease: "easeOut",
+                }
+            );
+        }
+
+
+        // ----------------------------------------------------
+        // Role
+        // ----------------------------------------------------
+
+        if (roleRef.current) {
+            await animate(
+                roleRef.current,
+                {
+                    opacity: 1,
+                    y: 0,
+                },
+                {
+                    duration: 0.35,
+                    ease: "easeOut",
+                }
+            );
+        }
+
+
+        // ----------------------------------------------------
+        // Detail Cards
+        // ----------------------------------------------------
+
+        for (
+            let index = 0;
+            index < detailRefs.current.length;
+            index++
+        ) {
+
+            const detail = detailRefs.current[index];
+
+            if (!detail) continue;
+
+            await animate(
+                detail,
+                {
+                    opacity: 1,
+                    y: 0,
+                },
+                {
+                    duration: 0.35,
+                    ease: "easeOut",
+                }
+            );
+
+
+            const icon = iconRefs.current[index];
+
+            if (icon) {
+                animate(
+                    icon,
+                    {
+                        scale: [0.4, 1.25, 1],
+                        rotate: [-25, 10, 0],
+                    },
+                    {
+                        duration: 0.45,
+                        ease: "easeOut",
+                    }
+                );
+            }
+        }
+    };
+
+
+    // ========================================================
+    // MOBILE / TABLET CLOSE
+    // ========================================================
+
+    const handleMobileTabletClose = async () => {
+
+        if (!isMobileTablet()) return;
+
+
+        // ----------------------------------------------------
+        // Hide details in reverse order
+        // ----------------------------------------------------
+
+        for (
+            let index = detailRefs.current.length - 1;
+            index >= 0;
+            index--
+        ) {
+
+            const detail = detailRefs.current[index];
+
+            if (!detail) continue;
+
+            await animate(
+                detail,
+                {
+                    opacity: 0,
+                    y: 35,
+                },
+                {
+                    duration: 0.18,
+                    ease: "easeIn",
+                }
+            );
+
+
+            const icon = iconRefs.current[index];
+
+            if (icon) {
+                animate(
+                    icon,
+                    {
+                        scale: 0.5,
+                        rotate: -20,
+                    },
+                    {
+                        duration: 0.2,
+                        ease: "easeIn",
+                    }
+                );
+            }
+        }
+
+
+        // ----------------------------------------------------
+        // Hide role
+        // ----------------------------------------------------
+
+        if (roleRef.current) {
+            await animate(
+                roleRef.current,
+                {
+                    opacity: 0,
+                    y: 30,
+                },
+                {
+                    duration: 0.2,
+                    ease: "easeIn",
+                }
+            );
+        }
+
+
+        // ----------------------------------------------------
+        // Hide name
+        // ----------------------------------------------------
+
+        if (titleRef.current) {
+            await animate(
+                titleRef.current,
+                {
+                    opacity: 0,
+                    y: 30,
+                },
+                {
+                    duration: 0.2,
+                    ease: "easeIn",
+                }
+            );
+        }
+
+
+        // ----------------------------------------------------
+        // Overlay goes down
+        // ----------------------------------------------------
+
+        if (overlayRef.current) {
+            animate(
+                overlayRef.current,
+                {
+                    y: "100%",
+                },
+                {
+                    duration: 1.2,
+                    ease: "easeInOut",
+                }
+            );
+        }
+
+
+        // ----------------------------------------------------
+        // Image returns
+        // ----------------------------------------------------
+
+        if (imageRef.current) {
+            animate(
+                imageRef.current,
+                {
+                    y: 0,
+                    scale: 1,
+                },
+                {
+                    duration: 1.2,
+                    ease: "easeInOut",
+                }
+            );
+        }
+
+
+        // ----------------------------------------------------
+        // Reset icons
+        // ----------------------------------------------------
+
+        iconRefs.current.forEach((icon) => {
+
+            if (!icon) return;
+
+            animate(
+                icon,
+                {
+                    scale: 1,
+                    rotate: 0,
+                },
+                {
+                    duration: 0,
+                }
+            );
+
+        });
+
+
+        setIsMobileTabletOpen(false);
+    };
+
+
+    // ========================================================
+    // MOBILE / TABLET CLICK
+    // ========================================================
+
+    const handleCardClick = () => {
+
+        // Desktop / laptop:
+        // Do absolutely nothing.
+        if (!isMobileTablet()) return;
+
+
+        if (isMobileTabletOpen) {
+            handleMobileTabletClose();
+        } else {
+            handleMobileTabletOpen();
+        }
+    };
+
+
+    // ========================================================
+    // CARD
+    // ========================================================
+
     return (
         <Box
             ref={scope}
-            w={{
-                base: "100%",
-                lg: "28%",
+
+            w="100%"
+
+            /*
+             * DEFAULT / MOBILE
+             */
+            h={{
+                base: "520px",
+                sm: "560px",
+                md: "500px",
+                lg: "550px",
+                xl: "620px",
             }}
-            h="100%"
-            minH={'600px'}
+
+            maxW={{
+                base: "100%",
+                md: "100%",
+                lg: "100%",
+                xl: "100%",
+            }}
+
             overflow="hidden"
             position="relative"
             cursor="pointer"
+
+            // Desktop / laptop
             onMouseEnter={handleHoverStart}
             onMouseLeave={handleHoverEnd}
-            bg="rgba(8,8,8,.92)"
-            borderRadius={'20px'}
-        >
-            {/* IMAGE */}
 
-            <img
+            // Tablet / mobile
+            onClick={handleCardClick}
+
+            bg="rgba(8,8,8,.92)"
+            borderRadius="20px"
+
+            /*
+             * ================================================
+             * HEIGHT-BASED RESPONSIVENESS
+             * ================================================
+             *
+             * UNCHANGED FROM YOUR ORIGINAL CODE
+             */
+
+            css={{
+
+                // --------------------------------------------
+                // Short desktop / laptop
+                // --------------------------------------------
+
+                "@media screen and (min-width: 992px) and (max-height: 800px)": {
+                    height: "500px",
+                },
+
+                // --------------------------------------------
+                // Medium height desktop
+                // --------------------------------------------
+
+                "@media screen and (min-width: 992px) and (min-height: 801px) and (max-height: 950px)": {
+                    height: "550px",
+                },
+
+                // --------------------------------------------
+                // Large / tall desktop
+                // --------------------------------------------
+
+                "@media screen and (min-width: 1280px) and (min-height: 951px)": {
+                    height: "620px",
+                },
+
+                // --------------------------------------------
+                // Short tablet
+                // --------------------------------------------
+
+                "@media screen and (min-width: 768px) and (max-width: 991px) and (max-height: 800px)": {
+                    height: "460px",
+                },
+
+                // --------------------------------------------
+                // Normal tablet
+                // --------------------------------------------
+
+                "@media screen and (min-width: 768px) and (max-width: 991px) and (min-height: 801px)": {
+                    height: "520px",
+                },
+            }}
+        >
+
+            {/* =================================================
+                IMAGE
+            ================================================= */}
+
+            <Image
                 ref={imageRef}
                 src={member.image}
-                style={{
-                    width: "100%",
-                    height: "100%",
-                    objectFit: "cover",
-                    objectPosition: 'top ',
-                    display: "block",
-                    borderRadius: "20px"
-                }}
+                w="100%"
+                h="100%"
+                objectFit="cover"
+                objectPosition="top"
+                display="block"
+                borderRadius="20px"
             />
 
-            {/* OVERLAY */}
 
-            <div
+            {/* =================================================
+                TAP TO VIEW INDICATOR
+                ONLY MOBILE + TABLET
+                ================================================= */}
+
+            {!isMobileTabletOpen && (
+                <Box
+                    display={{
+                        base: "block",
+                        md: "block",
+                        lg: "none",
+                    }}
+
+                    position="absolute"
+
+                    bottom={{
+                        base: "18px",
+                        md: "20px",
+                    }}
+
+                    left="50%"
+
+                    transform="translateX(-50%)"
+
+                    zIndex={5}
+
+                    pointerEvents="none"
+                >
+
+                    <Flex
+                        align="center"
+                        gap="8px"
+
+                        px={{
+                            base: "14px",
+                            md: "16px",
+                        }}
+
+                        py={{
+                            base: "8px",
+                            md: "9px",
+                        }}
+
+                        borderRadius="full"
+
+                        bg="rgba(0,0,0,0.65)"
+
+                        border="1px solid rgba(255,255,255,0.25)"
+
+                        backdropFilter="blur(8px)"
+
+                        whiteSpace="nowrap"
+                    >
+
+                        <Box
+                            w="8px"
+                            h="8px"
+                            borderRadius="full"
+                            bg="#C8A96B"
+
+                            css={{
+                                animation:
+                                    "teamCardPulse 1.5s ease-in-out infinite",
+
+                                "@keyframes teamCardPulse": {
+
+                                    "0%, 100%": {
+                                        transform: "scale(1)",
+                                        opacity: 1,
+                                    },
+
+                                    "50%": {
+                                        transform: "scale(1.5)",
+                                        opacity: 0.5,
+                                    },
+                                },
+                            }}
+                        />
+
+                        <Text
+                            color="white"
+                            fontSize={{
+                                base: "10px",
+                                md: "11px",
+                            }}
+                            fontWeight="500"
+                        >
+                            Tap to view details
+                        </Text>
+
+                    </Flex>
+
+                </Box>
+            )}
+
+
+            {/* =================================================
+                OVERLAY
+            ================================================= */}
+
+            <Box
                 ref={overlayRef}
-                style={{
-                    position: "absolute",
-                    inset: 0,
-                    background: "rgba(8,8,8,.92)",
-                    color: "white",
-                    padding: "40px 32px",
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "flex-start",
-                    transform: "translateY(100%)",
-                    borderRadius: '20px',
-                    height: '600px'
+
+                position="absolute"
+                inset={0}
+
+                w="100%"
+                h="100%"
+
+                bg="rgba(8,8,8,.92)"
+                color="white"
+
+                px={{
+                    base: "18px",
+                    sm: "22px",
+                    md: "24px",
+                    lg: "28px",
+                    xl: "32px",
+                }}
+
+                py={{
+                    base: "24px",
+                    sm: "28px",
+                    md: "28px",
+                    lg: "32px",
+                    xl: "40px",
+                }}
+
+                display="flex"
+                flexDirection="column"
+                justifyContent="flex-start"
+
+                transform="translateY(100%)"
+
+                borderRadius="20px"
+
+                overflow="hidden"
+
+                css={{
+
+                    /*
+                     * Desktop / laptop
+                     * UNCHANGED
+                     */
+
+                    "@media screen and (min-width: 992px) and (max-height: 800px)": {
+                        padding: "26px 24px",
+                    },
+
+                    "@media screen and (min-width: 992px) and (min-height: 801px) and (max-height: 950px)": {
+                        padding: "30px 28px",
+                    },
                 }}
             >
-                {/* NAME */}
 
-                <p
+                {/* =================================================
+                    NAME
+                ================================================= */}
+
+                <Text
                     ref={titleRef}
-                    style={{
-                        fontSize: "30px",
-                        fontWeight: 700,
-                        opacity: 0,
-                        transform: "translateY(30px)",
-                        margin: 0,
+
+                    fontSize={{
+                        base: "21px",
+                        sm: "23px",
+                        md: "24px",
+                        lg: "29px",
+                        xl: "32px",
+                    }}
+
+                    lineHeight="1.2"
+
+                    fontWeight="700"
+
+                    opacity={0}
+
+                    transform="translateY(30px)"
+
+                    m={0}
+
+                    css={{
+
+                        /*
+                         * Desktop / laptop
+                         * UNCHANGED
+                         */
+
+                        "@media screen and (min-width: 992px) and (max-height: 800px)": {
+                            fontSize: "23px",
+                        },
                     }}
                 >
                     {member.name}
-                </p>
+                </Text>
 
-                {/* ROLE */}
 
-                <p
+                {/* =================================================
+                    ROLE
+                ================================================= */}
+
+                <Text
                     ref={roleRef}
-                    style={{
-                        marginTop: "8px",
-                        marginBottom: "40px",
-                        color: "#C8A96B",
-                        fontWeight: 500,
-                        opacity: 0,
-                        transform: "translateY(30px)",
+
+                    mt="8px"
+
+                    mb={{
+                        base: "22px",
+                        sm: "26px",
+                        md: "28px",
+                        lg: "32px",
+                        xl: "40px",
+                    }}
+
+                    fontSize={{
+                        base: "11px",
+                        sm: "12px",
+                        md: "12px",
+                        lg: "13px",
+                        xl: "15px",
+                    }}
+
+                    lineHeight="1.4"
+
+                    color="#C8A96B"
+
+                    fontWeight="500"
+
+                    opacity={0}
+
+                    transform="translateY(30px)"
+
+                    css={{
+
+                        /*
+                         * Desktop / laptop
+                         * UNCHANGED
+                         */
+
+                        "@media screen and (min-width: 992px) and (max-height: 800px)": {
+                            marginBottom: "24px",
+                            fontSize: "12px",
+                        },
                     }}
                 >
                     {member.role}
-                </p>
+                </Text>
+
+
+                {/* =================================================
+                    DETAILS
+                ================================================= */}
 
                 <Flex
                     direction="column"
-                    gap={8}
+
+                    gap={{
+                        base: "18px",
+                        sm: "21px",
+                        md: "22px",
+                        lg: "25px",
+                        xl: "32px",
+                    }}
+
+                    mt={{
+                        base: "0px",
+                        lg: "10px",
+                        xl: "0px",
+                    }}
+
+                    css={{
+
+                        /*
+                         * Desktop / laptop
+                         * UNCHANGED
+                         */
+
+                        "@media screen and (min-width: 992px) and (max-height: 800px)": {
+                            gap: "18px",
+                        },
+
+                        "@media screen and (min-width: 992px) and (min-height: 801px) and (max-height: 950px)": {
+                            gap: "22px",
+                        },
+                    }}
                 >
+
                     {member.details.map((item, index) => (
-                        <div
+
+                        <Box
                             key={item.title}
-                            ref={(el) => {
+
+                            ref={(el: HTMLDivElement | null) => {
                                 detailRefs.current[index] = el;
                             }}
-                            style={{
-                                display: "flex",
-                                gap: "20px",
-                                alignItems: "center",
-                                opacity: 0,
-                                transform: "translateY(35px)",
+
+                            display="flex"
+
+                            gap={{
+                                base: "10px",
+                                sm: "12px",
+                                md: "13px",
+                                lg: "16px",
+                                xl: "20px",
                             }}
+
+                            alignItems="flex-start"
+
+                            opacity={0}
+
+                            transform="translateY(35px)"
                         >
+
+                            {/* =================================================
+                                ICON
+                            ================================================= */}
+
                             <Flex
-                                w="52px"
-                                h="52px"
-                                minW="52px"
-                                borderRadius={'7.5px'}
+                                w={{
+                                    base: "36px",
+                                    sm: "40px",
+                                    md: "42px",
+                                    lg: "46px",
+                                    xl: "52px",
+                                }}
+
+                                h={{
+                                    base: "36px",
+                                    sm: "40px",
+                                    md: "42px",
+                                    lg: "46px",
+                                    xl: "52px",
+                                }}
+
+                                minW={{
+                                    base: "36px",
+                                    sm: "40px",
+                                    md: "42px",
+                                    lg: "46px",
+                                    xl: "52px",
+                                }}
+
+                                borderRadius="7.5px"
+
                                 bg="#FFFFFF0D"
+
                                 justify="center"
+
                                 align="center"
-                                border='0.75px solid #FFFFFF1A'
+
+                                border="0.75px solid #FFFFFF1A"
                             >
-                                <img
+
+                                <Image
                                     ref={(el) => {
                                         iconRefs.current[index] = el;
                                     }}
+
                                     src={item.icon}
-                                    style={{
-                                        width: "24px",
-                                        height: "24px",
-                                        objectFit: "contain",
+
+                                    w={{
+                                        base: "16px",
+                                        sm: "18px",
+                                        md: "19px",
+                                        lg: "21px",
+                                        xl: "24px",
                                     }}
+
+                                    h={{
+                                        base: "16px",
+                                        sm: "18px",
+                                        md: "19px",
+                                        lg: "21px",
+                                        xl: "24px",
+                                    }}
+
+                                    objectFit="contain"
                                 />
+
                             </Flex>
 
-                            <Box>
+
+                            {/* =================================================
+                                TEXT
+                            ================================================= */}
+
+                            <Box
+                                flex="1"
+                                minW={0}
+                            >
+
                                 <Text
-                                    fontSize="15px"
+                                    fontSize={{
+                                        base: "11px",
+                                        sm: "12px",
+                                        md: "12px",
+                                        lg: "13px",
+                                        xl: "15px",
+                                    }}
+
                                     fontWeight="700"
-                                    mb={2}
+
+                                    mb={{
+                                        base: "5px",
+                                        md: "6px",
+                                        xl: "8px",
+                                    }}
+
+                                    lineHeight="1.3"
                                 >
                                     {item.title}
                                 </Text>
 
+
                                 <Text
-                                    fontSize="12px"
-                                    lineHeight="1.8"
+                                    fontSize={{
+                                        base: "9.5px",
+                                        sm: "10px",
+                                        md: "10.5px",
+                                        lg: "11px",
+                                        xl: "12px",
+                                    }}
+
+                                    lineHeight={{
+                                        base: "1.45",
+                                        sm: "1.5",
+                                        md: "1.55",
+                                        lg: "1.65",
+                                        xl: "1.8",
+                                    }}
+
                                     color="rgba(255,255,255,.75)"
                                 >
                                     {item.description}
                                 </Text>
+
                             </Box>
-                        </div>
+
+                        </Box>
+
                     ))}
+
                 </Flex>
-            </div>
+
+            </Box>
+
         </Box>
     );
 };

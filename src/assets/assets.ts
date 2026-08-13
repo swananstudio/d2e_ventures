@@ -2,6 +2,7 @@ import herosection from './herosection.svg'
 import homeherosectionvideo from './home/herosection/homeherosectionvideo.mp4'
 import herosectiongif from './home/herosection/animation.gif'
 import logo from './Vector.png'
+import d2e_logo from './D2e_logo.svg'
 import footerlogo from './footerlogo.svg'
 import services from './services.svg'
 import aboutoverview1 from './aboutoverview1.svg'
@@ -93,6 +94,7 @@ import portfolio_hero_section_swiper5 from './portfolio/herosection/swiper5.webp
 import architecture from './services/development_stage/architecture.png'
 import areasize from './portfolio/herosection/areasize.png'
 import QualitySectionImg from './about/QualitySectionImg.webp'
+import QualitySectionImg_mobile from './about/QualitySectionImg_mobile.webp'
 
 import contact_office_surrounding from './contact/office_surrounding.webm'
 import loadingimage from './loading.svg'
@@ -112,5 +114,5 @@ export {
     service_client, design_execution, integrated_development, land_values, premium_project, transparent_coordination,
     architecture,
     portfolioherosection, areasize, portfolio_hero_section_swiper1, portfolio_hero_section_swiper2, portfolio_hero_section_swiper3, portfolio_hero_section_swiper4, portfolio_hero_section_swiper5, QualitySectionImg,
-    contact_office_surrounding, loadingimage, centric_development
+    contact_office_surrounding, loadingimage, centric_development, d2e_logo, QualitySectionImg_mobile
 }
