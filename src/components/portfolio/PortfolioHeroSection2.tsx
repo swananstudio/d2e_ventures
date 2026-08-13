@@ -225,13 +225,14 @@ export default function PortfolioHeroSection2() {
                 zIndex={1}
                 color="white"
                 w={{ base: "100%", lg: "45%" }}
+                mb={{ base: 10, lg:18 }}
               >
                 <Text
                   fontSize={{
                     base: "42px",
                     sm: "54px",
                     md: "68px",
-                    lg: "82px",
+                    lg: "79px",
                   }}
                   lineHeight="0.95"
                   fontWeight="700"
@@ -245,7 +246,7 @@ export default function PortfolioHeroSection2() {
                     base: "30px",
                     sm: "38px",
                     md: "46px",
-                    lg: "58px",
+                    lg: "50px",
                   }}
                   fontWeight="300"
                 >
@@ -253,42 +254,36 @@ export default function PortfolioHeroSection2() {
                 </Text>
 
                 <Flex
-                  mt={6}
+                  mt={8}
                   gap={6}
                   flexWrap="wrap"
                   color="#F5F5F5"
                   fontSize="16px"
                 >
                   <Flex align="center" gap={2}>
-                    <Image src={maps} w="18px" />
-                    <Text>Pune, Maharashtra</Text>
+                    <Image src={maps} w="14px" />
+                    <Text fontWeight="700">Pune, Maharashtra</Text>
                   </Flex>
 
                   <Flex align="center" gap={2}>
                     <Image src={areasize} w="18px" />
-                    <Text>18,000 Sq.ft.</Text>
+                    <Text fontWeight="700">22,000 Sq.ft.</Text>
                   </Flex>
                 </Flex>
 
                 <Text
-                  mt={7}
+                  mt={5}
                   color="#F4F4F4"
                   lineHeight="1.8"
-                  fontSize={{ base: "16px", md: "18px" }}
+                  fontSize={{ base: "16px", md: "18px", lg: "15.5px" }}
+                  letterSpacing="0.02em"
+                  wordSpacing="0.05em"
                 >
                   A farm development project thoughtfully designed to reflect
                   Indian culture through its architecture, materials, and
-                  spatial experience.
-                </Text>
-
-                <Text
-                  mt={4}
-                  color="#F4F4F4"
-                  lineHeight="1.8"
-                  fontSize={{ base: "16px", md: "18px" }}
-                >
-                  Nestled amidst lush farmland, it features a personalized
-                  residence with curated interiors and a private swimming pool.
+                  spatial experience. Nestled amidst lush farmland, it features
+                  a personalized residence with curated interiors and a private
+                  swimming pool.
                 </Text>
               </Box>
 
@@ -732,7 +727,7 @@ function OverviewDetails() {
     {
       title: "Key Spaces",
       content:
-        "The farmhouse features four ensuite bedrooms, a double-height living area, private swimming pool, open courtyard, outdoor dining deck, entertainment lounge, and landscaped gardens, thoughtfully designed for seamless indoor and outdoor living.",
+        "The farmhouse features three ensuite bedrooms, a double-height living area, private swimming pool, open courtyard, outdoor dining deck, entertainment lounge, and landscaped gardens, thoughtfully designed for seamless indoor and outdoor living.",
     },
   ];
 
@@ -747,8 +742,8 @@ function OverviewDetails() {
         <Detail label="Project Type" value="Luxury Farmhouse" />
         <Detail label="Completion Year" value="2024" />
         <Detail label="Project Duration" value="14 Months" />
-        <Detail label="Site Area" value="1.5 Acres" />
-        <Detail label="Built-up Area" value="8,200 sq.ft." />
+        <Detail label="Site Area" value="22,000 sq.ft." />
+        <Detail label="Built-up Area" value="2500 sq.ft." />
         <Detail label="Status" value="Completed" />
       </Grid>
 
