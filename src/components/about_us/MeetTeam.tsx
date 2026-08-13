@@ -1142,7 +1142,7 @@ const TeamCard = ({
                     ref={titleRef}
 
                     fontSize={{
-                        base: "21px",
+                        base: "23px",
                         sm: "23px",
                         md: "24px",
                         lg: "29px",
@@ -1371,10 +1371,10 @@ const TeamCard = ({
 
                                 <Text
                                     fontSize={{
-                                        base: "11px",
-                                        sm: "12px",
-                                        md: "12px",
-                                        lg: "13px",
+                                        base: "14px",
+                                        sm: "14px",
+                                        md: "15px",
+                                        lg: "15px",
                                         xl: "15px",
                                     }}
 
@@ -1394,8 +1394,8 @@ const TeamCard = ({
 
                                 <Text
                                     fontSize={{
-                                        base: "9.5px",
-                                        sm: "10px",
+                                        base: "12px",
+                                        sm: "12px",
                                         md: "10.5px",
                                         lg: "11px",
                                         xl: "12px",
