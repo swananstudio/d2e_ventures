@@ -195,7 +195,7 @@ export default function PortfolioProject2() {
             w="100%"
             h="100%"
           >
-            <Navbar />
+          {/*-Navbar-*/}
 
             <Flex
               flex={1}
