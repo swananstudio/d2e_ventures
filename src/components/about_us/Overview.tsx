@@ -223,7 +223,7 @@ h={{
   base: "20px",
   sm: "30px",
   md: "40px",
-  lg: "50px",
+  lg: "20px",
 }}
 
 mb={{

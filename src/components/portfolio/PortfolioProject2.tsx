@@ -7,6 +7,7 @@ import {
   Image,
   List,
   Text,
+  chakra,
   useBreakpointValue,
 } from "@chakra-ui/react";
 import {
@@ -21,39 +22,29 @@ import {
   GoChevronLeft,
   GoChevronRight,
 } from "react-icons/go";
-import { useState, useEffect, type ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 
 import Navbar from "../../layout/Navbar";
 import {
-  portfolioherosection,
-  portfolio_hero_section_swiper1,
-  portfolio_hero_section_swiper2,
-  portfolio_hero_section_swiper3,
-  portfolio_hero_section_swiper4,
-  portfolio_hero_section_swiper5,
-  maps,
-  areasize,
+  PortfolioProject2Img,
+  GC_clientVision,
+  GC_ExecutionandDelivery,
+  GC_PlanningandStrategy,
+  GC_ProjectOverview,
 } from "../../assets/assets";
 
-const MotionBox = motion.create(Box);
+const MotionBox = motion(Box);
 
 const projectThumbnails = [
-  { image: portfolio_hero_section_swiper1, section: "section1" },
-  { image: portfolio_hero_section_swiper2, section: "section2" },
-  { image: portfolio_hero_section_swiper3, section: "section3" },
-  { image: portfolio_hero_section_swiper4, section: "section4" },
-  { image: portfolio_hero_section_swiper5, section: "section5" },
+  { image: GC_ProjectOverview, section: "section1" },
+  { image: GC_clientVision, section: "section2" },
+  { image: GC_PlanningandStrategy, section: "section3" },
+  { image: GC_ExecutionandDelivery, section: "section4", isVideo: true },
 ];
 
-const sectionOrder = [
-  "section1",
-  "section2",
-  "section3",
-  "section4",
-  "section5",
-];
+const sectionOrder = ["section1", "section2", "section3", "section4"];
 
-const tallImageSections = new Set(["section1", "section2", "section5"]);
+const tallImageSections = new Set(["section1", "section2"]);
 
 const morphTransition: Transition = {
   type: "spring",
@@ -81,49 +72,40 @@ const sectionDetailsMap: Record<
     subtitle: string;
     image: string;
     imageAlt: string;
+    isVideo?: boolean;
   }
 > = {
   section1: {
     title: "PROJECT",
     subtitle: "Overview",
-    image: portfolio_hero_section_swiper1,
+    image: GC_ProjectOverview,
     imageAlt: "Project overview",
   },
   section2: {
-    title: "CLIENT",
-    subtitle: "Vision",
-    image: portfolio_hero_section_swiper2,
-    imageAlt: "Client vision",
+    title: "PROJECT",
+    subtitle: "Goal & Vision",
+    image: GC_clientVision,
+    imageAlt: "Project Goal",
   },
   section3: {
     title: "PLANNING &",
     subtitle: "STRATEGY",
-    image: portfolio_hero_section_swiper3,
+    image: GC_PlanningandStrategy,
     imageAlt: "Planning and strategy",
   },
   section4: {
-    title: "DESIGN",
-    subtitle: "Development",
-    image: portfolio_hero_section_swiper4,
-    imageAlt: "Design development",
-  },
-  section5: {
-    title: "Execution",
+    title: "EXECUTION",
     subtitle: "& Delivery",
-    image: portfolio_hero_section_swiper5,
+    image: GC_ExecutionandDelivery,
     imageAlt: "Execution and delivery",
+    isVideo: true,
   },
 };
 
-export default function PortfolioHeroSection2() {
-  const [currentSection, setCurrentSection] = useState("main");
-  const [activeIndex, setActiveIndex] = useState(1);
+export default function PortfolioProject2() {
+  const [currentSection, setCurrentSection] = useState<string>("main");
+  const [activeIndex, setActiveIndex] = useState<number>(0);
   const [openedCardIndex, setOpenedCardIndex] = useState<number | null>(null);
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   const isMobile = useBreakpointValue({ base: true, md: false }) ?? false;
 
@@ -149,14 +131,14 @@ export default function PortfolioHeroSection2() {
   };
 
   const getRelativePosition = (index: number) => {
-    const total = projectThumbnails.length;
     let distance = index - activeIndex;
 
-    if (distance > total / 2) {
-      distance -= total;
+    if (distance > projectThumbnails.length / 2) {
+      distance -= projectThumbnails.length;
     }
-    if (distance < -total / 2) {
-      distance += total;
+
+    if (distance < -projectThumbnails.length / 2) {
+      distance += projectThumbnails.length;
     }
 
     return distance;
@@ -197,7 +179,7 @@ export default function PortfolioHeroSection2() {
           minH={{ base: "900px", md: "1000px", lg: "100vh" }}
           h={{ base: "auto", lg: "100vh" }}
           w="100%"
-          bgImage={`url(${portfolioherosection})`}
+          bgImage={`url(${PortfolioProject2Img})`}
           bgSize="cover"
           backgroundPosition="center"
           bgRepeat="no-repeat"
@@ -242,7 +224,7 @@ export default function PortfolioHeroSection2() {
                   lineHeight="0.95"
                   fontWeight="700"
                 >
-                  KALPADHAN
+                  GOODWILL
                 </Text>
 
                 <Text
@@ -255,26 +237,8 @@ export default function PortfolioHeroSection2() {
                   }}
                   fontWeight="300"
                 >
-                  FARM
+                  CRESCENT
                 </Text>
-
-                <Flex
-                  mt={8}
-                  gap={6}
-                  flexWrap="wrap"
-                  color="#F5F5F5"
-                  fontSize="16px"
-                >
-                  <Flex align="center" gap={2}>
-                    <Image src={maps} w="14px" />
-                    <Text fontWeight="700">Pune, Maharashtra</Text>
-                  </Flex>
-
-                  <Flex align="center" gap={2}>
-                    <Image src={areasize} w="18px" />
-                    <Text fontWeight="700">22,000 Sq.ft.</Text>
-                  </Flex>
-                </Flex>
 
                 <Text
                   mt={5}
@@ -284,11 +248,12 @@ export default function PortfolioHeroSection2() {
                   letterSpacing="0.02em"
                   wordSpacing="0.05em"
                 >
-                  A farm development project thoughtfully designed to reflect
-                  Indian culture through its architecture, materials, and
-                  spatial experience. Nestled amidst lush farmland, it features
-                  a personalized residence with curated interiors and a private
-                  swimming pool.
+                  This residential interior is thoughtfully designed to blend
+                  warm wood tones, soft neutrals, and natural textures, creating
+                  a calm and contemporary home. The space balances
+                  functionality with character through custom details, ambient
+                  lighting, curated décor, and earthy accents. The result is an
+                  inviting environment that feels both refined and lived-in.
                 </Text>
               </Box>
 
@@ -303,8 +268,12 @@ export default function PortfolioHeroSection2() {
                 <Box
                   position="relative"
                   w="100%"
-                  height={{ base: "260px", md: "300px" }}
+                  h="42vh"
+                  minH="220px"
+                  maxH="290px"
                   mt={{ base: 8, sm: 10, md: 0 }}
+                  overflow="visible"
+                  isolation="isolate"
                 >
                   {projectThumbnails.map((project, index) => {
                     const distance = getRelativePosition(index);
@@ -351,7 +320,7 @@ export default function PortfolioHeroSection2() {
                     return (
                       <MotionBox
                         key={index}
-                        layoutId={mounted ? `project-card-${index}` : undefined}
+                        layoutId={`project-card-${index}`}
                         position="absolute"
                         top={0}
                         w={{ base: "78%", md: "30%" }}
@@ -385,21 +354,49 @@ export default function PortfolioHeroSection2() {
                         onClick={() => openCard(index)}
                         initial={false}
                         animate={isMobile ? mobileAnimate : desktopAnimate}
-                        transition={{
-                          duration: 0.4,
-                          ease: [0.22, 1, 0.36, 1],
+                        transition={
+                          isMobile
+                            ? {
+                                duration: 0.35,
+                                ease: [0.22, 1, 0.36, 1],
+                              }
+                            : {
+                                duration: 0.6,
+                                ease: [0.22, 1, 0.36, 1],
+                              }
+                        }
+                        style={{
+                          willChange: "opacity, transform",
                         }}
                       >
-                        <Image
-                          src={project.image}
-                          w="100%"
-                          h="100%"
-                          objectFit="cover"
-                          draggable={false}
-                          position="relative"
-                          zIndex={0}
-                        />
+                        {/* Thumbnail Media */}
+                        {project.isVideo ? (
+                          <chakra.video
+                            src={project.image}
+                            autoPlay
+                            loop
+                            muted
+                            playsInline
+                            w="100%"
+                            h="100%"
+                            objectFit="cover"
+                            position="relative"
+                            zIndex={0}
+                          />
+                        ) : (
+                          <Image
+                            src={project.image}
+                            w="100%"
+                            h="100%"
+                            objectFit="cover"
+                            draggable={false}
+                            position="relative"
+                            zIndex={0}
+                            alt={details.title}
+                          />
+                        )}
 
+                        {/* Dark Gradient directly behind title text on card image */}
                         <Box
                           position="absolute"
                           left={0}
@@ -411,6 +408,7 @@ export default function PortfolioHeroSection2() {
                           zIndex={1}
                         />
 
+                        {/* Title text content */}
                         <Box
                           position="absolute"
                           left={0}
@@ -503,7 +501,6 @@ export default function PortfolioHeroSection2() {
                   {currentSection === "section2" && <Section2Content />}
                   {currentSection === "section3" && <Section3Content />}
                   {currentSection === "section4" && <Section4Content />}
-                  {currentSection === "section5" && <Section5Content />}
                 </motion.div>
               </AnimatePresence>
             </Box>
@@ -519,6 +516,7 @@ type DetailLayoutProps = SectionProps & {
   subtitle: string;
   image: string;
   imageAlt: string;
+  isVideo?: boolean;
   children: ReactNode;
 };
 
@@ -529,6 +527,7 @@ function DetailLayout({
   subtitle,
   image,
   imageAlt,
+  isVideo,
   children,
   layoutId,
   onClose,
@@ -536,7 +535,6 @@ function DetailLayout({
   onNext,
   isFirst,
   isLast,
-  tallImageMobile,
 }: DetailLayoutProps) {
   return (
     <MotionBox
@@ -602,10 +600,11 @@ function DetailLayout({
         </Text>
       </Box>
 
+      {/* Grid aligned to flex-end so both columns share the same bottom baseline */}
       <Grid
         templateColumns={{ base: "1fr", md: "360px minmax(0, 1fr)", lg: "440px minmax(0, 1fr)" }}
         gap={{ base: 4, md: 6, lg: 12 }}
-        alignItems="stretch"
+        alignItems={{ base: "stretch", md: "flex-end" }}
         flex={1}
         overflow="hidden"
         minH={0}
@@ -614,17 +613,18 @@ function DetailLayout({
           order={{ base: 2, md: 1 }}
           display="flex"
           flexDirection="column"
+          justifyContent="flex-end"
           overflowY="auto"
           pr={{ base: 1, md: 2 }}
-          pb={{ base: 6, md: 6 }}
-          h="100%"
+          pb={{ base: 2, md: 0 }}
+          maxH={{ base: "100%", md: "calc(100vh - 120px)" }}
           minH={0}
           css={{
             "&::-webkit-scrollbar": { display: "none" },
             scrollbarWidth: "none",
           }}
         >
-          <Box mt={{ base: 0, md: "auto" }}>
+          <Box w="100%">
             <Box display={{ base: "none", md: "block" }} mb={{ md: 3, lg: 3 }}>
               <Text
                 fontSize={{ md: "38px", lg: "52px" }}
@@ -643,41 +643,59 @@ function DetailLayout({
 
         <GridItem
           order={{ base: 1, md: 2 }}
-          h="100%"
+          w="100%"
           display="flex"
-          alignItems="center"
+          alignItems="flex-end"
           justifyContent="center"
           overflow="hidden"
         >
+          {/* Outer container with fixed aspect-ratio enforcing equal height and width across all slides */}
           <Box
             position="relative"
-            h="100%"
             w="100%"
-            maxH={{ base: tallImageMobile ? "30vh" : "26vh", md: "calc(100vh - 90px)" }}
+            maxH={{ base: "32vh", md: "calc(100vh - 120px)" }}
+            aspectRatio={{ base: "16 / 10", md: "16 / 10" }}
             display="flex"
             alignItems="center"
             justifyContent="center"
             bg="black"
-            borderRadius="12px"
             overflow="hidden"
           >
             <AnimatePresence mode="wait">
-              <motion.img
-                key={image}
-                src={image}
-                alt={imageAlt}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.25 }}
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  maxWidth: "100%",
-                  maxHeight: "100%",
-                  objectFit: "contain",
-                }}
-              />
+              {isVideo ? (
+                <motion.video
+                  key={image}
+                  src={image}
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.25 }}
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                  }}
+                />
+              ) : (
+                <motion.img
+                  key={image}
+                  src={image}
+                  alt={imageAlt}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.25 }}
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                  }}
+                />
+              )}
             </AnimatePresence>
           </Box>
         </GridItem>
@@ -710,12 +728,12 @@ function OverviewDetails() {
   const items: AccordionItem[] = [
     {
       title: "Services",
-      content: ["Architecture", "Interior Design", "Landscape", "Turnkey Execution"],
+      content: ["Interior Design", "Space Planning"],
     },
     {
       title: "Key Spaces",
       content:
-        "The farmhouse features three ensuite bedrooms, a double-height living area, private swimming pool, open courtyard, outdoor dining deck, entertainment lounge, and landscaped gardens, thoughtfully designed for seamless indoor and outdoor living.",
+        "The residence includes a cozy, modern living area, dining space, modular kitchen, bedrooms, and well-planned storage solutions. Thoughtful space planning, custom joinery, textured finishes, and curated furnishings create a cohesive character in every room.",
     },
   ];
 
@@ -727,12 +745,11 @@ function OverviewDetails() {
         gapY={{ base: 2, md: 3 }}
         mb={{ base: 2, md: 3 }}
       >
-        <Detail label="Project Type" value="Luxury Farmhouse" />
-        <Detail label="Completion Year" value="2024" />
-        <Detail label="Project Duration" value="14 Months" />
-        <Detail label="Site Area" value="22,000 sq.ft." />
-        <Detail label="Built-up Area" value="2500 sq.ft." />
+        <Detail label="Project Type" value="Residential Interior" />
+        <Detail label="Completion Year" value="2025" />
+        <Detail label="Project Duration" value="1 Month" />
         <Detail label="Status" value="Completed" />
+        <Detail label="Design Approach" value="Contemporary • Warm Minimalism" />
       </Grid>
 
       <AccordionContent items={items} />
@@ -806,6 +823,7 @@ function AccordionContent({ items }: { items: AccordionItem[] }) {
                     >
                       {Array.isArray(item.content) ? (
                         <List.Root
+                          as="ul"
                           color="whiteAlpha.800"
                           fontSize={{ base: "13px", sm: "14px", md: "15px" }}
                           lineHeight="1.5"
@@ -843,17 +861,19 @@ function Section2Content() {
     {
       title: "Project Goal",
       content:
-        "To develop a farmhouse that serves as a weekend retreat, preserving the openness and character of the agricultural landscape.",
+        "To shape a contemporary home that feels relaxed, personal, and naturally inviting.",
     },
     {
-      title: "Requirements",
+      title: "Design Requirements",
       content: [
-        "Traditional Indian architecture with contemporary planning",
-        "Vernacular sloping roofs, natural materials, and earthy finishes",
-        "Personalized family retreat with integrated indoor–outdoor living",
-        "Private pool, verandahs, and rooftop sit-out overlooking farmland",
-        "Distinct private and recreational zones with seamless circulation",
-        "Optimized for panoramic views, natural daylight, and cross ventilation",
+        "Modern residential aesthetic with a sense of warmth",
+        "Balanced use of timber, neutral tones, and tactile finishes",
+        "Efficient planning for comfortable everyday living",
+        "Bespoke cabinetry, furniture, and built-in storage",
+        "Ambient and accent lighting to enhance the interiors",
+        "Distinct living, dining, kitchen, and private spaces",
+        "Consistent material language across the residence",
+        "Personalised elements that make the space feel truly lived-in",
       ],
     },
   ];
@@ -863,23 +883,24 @@ function Section2Content() {
 function Section3Content() {
   const items: AccordionItem[] = [
     {
-      title: "Contextual Planning",
-      content: ["Site Analysis • Orientation", "Topography • Environmental Response"],
+      title: "Space Planning",
+      content:
+        "Optimised layouts were developed to improve circulation, functionality, and everyday usability.",
     },
     {
-      title: "Spatial Strategy",
-      content: ["Spatial Zoning • Circulation", "Functional Planning • User Experience"],
+      title: "Functional Zoning",
+      content:
+        "Living, dining, kitchen, and private areas were clearly defined while maintaining visual continuity.",
     },
     {
-      title: "Integrated Design",
-      content: ["Passive Design • Landscape Integration", "Daylighting • Ventilation"],
+      title: "Material Strategy",
+      content:
+        "A restrained palette of wood, neutral finishes, and tactile materials was established to create warmth and cohesion.",
     },
     {
-      title: "Execution Planning",
-      content: [
-        "Technical Coordination • Services Integration",
-        "Buildability • Project Delivery",
-      ],
+      title: "Lighting Strategy",
+      content:
+        "Ambient, task, and accent lighting were layered to enhance functionality and establish a comfortable atmosphere.",
     },
   ];
   return <AccordionContent items={items} />;
@@ -888,50 +909,19 @@ function Section3Content() {
 function Section4Content() {
   const items: AccordionItem[] = [
     {
-      title: "Roofscape",
+      title: "End-to-End Execution",
       content:
-        "Traditional sloping roofs reinterpret vernacular architecture while enhancing climate responsiveness.",
+        "Translated the design intent into a finished interior through detailed coordination, fabrication, installation, and finishing.",
     },
     {
-      title: "Materiality",
+      title: "Vendor Coordination",
       content:
-        "A restrained palette of natural materials and earthy finishes creates a timeless architectural character.",
+        "Coordinated carpentry, electrical, lighting, furniture, furnishings, and décor to maintain design consistency.",
     },
     {
-      title: "Spatial Experience",
+      title: "Quality Control",
       content:
-        "Open living spaces, verandahs, and courtyards blur the boundary between indoors and outdoors.",
-    },
-    {
-      title: "Landscape Integration",
-      content:
-        "The pool, gardens, and outdoor spaces are designed as an extension of the architecture.",
-    },
-  ];
-  return <AccordionContent items={items} />;
-}
-
-function Section5Content() {
-  const items: AccordionItem[] = [
-    {
-      title: "End-to-End Delivery",
-      content:
-        "Led a 14-month execution journey from concept development and planning through construction, finishing, and final handover.",
-    },
-    {
-      title: "Integrated Coordination",
-      content:
-        "Coordinated architecture, interiors, landscape, structural, and MEP teams while managing 20+ specialized contractors and vendors.",
-    },
-    {
-      title: "Quality Assurance",
-      content:
-        "Conducted 100+ site reviews, ensuring construction quality, material excellence, timely progress, and meticulous workmanship at every stage.",
-    },
-    {
-      title: "Seamless Execution",
-      content:
-        "Delivered a cohesive built environment where architecture, interiors, and landscape came together as one unified design vision.",
+        "Reviewed finishes, joinery, detailing, and installation at every stage to ensure accuracy and workmanship.",
     },
   ];
   return <AccordionContent items={items} />;

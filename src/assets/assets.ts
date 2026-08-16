@@ -98,6 +98,11 @@ import QualitySectionImg_mobile from './about/QualitySectionImg_mobile.webp'
 
 import contact_office_surrounding from './contact/office_surrounding.webm'
 import loadingimage from './loading.svg'
+import PortfolioProject2Img from './portfolio/herosection/PortfolioProject2Img.webp'
+import GC_ExecutionandDelivery from './portfolio/herosection/GC_ExecutionandDelivery.mp4'
+import GC_clientVision from './portfolio/herosection/GC_clientVision.webp'
+import GC_PlanningandStrategy from './portfolio/herosection/GC_PlanningandStrategy.webp'
+import GC_ProjectOverview from './portfolio/herosection/GC_ProjectOverview.jpg'
 export {
     herosection, herosectiongif, homeherosectionvideo, about_hero_section, services_hero_section, contact_hero_section,
     logo, footerlogo,
@@ -114,5 +119,5 @@ export {
     service_client, design_execution, integrated_development, land_values, premium_project, transparent_coordination,
     architecture,
     portfolioherosection, areasize, portfolio_hero_section_swiper1, portfolio_hero_section_swiper2, portfolio_hero_section_swiper3, portfolio_hero_section_swiper4, portfolio_hero_section_swiper5, QualitySectionImg,
-    contact_office_surrounding, loadingimage, centric_development, d2e_logo, QualitySectionImg_mobile
+    contact_office_surrounding, loadingimage, centric_development, d2e_logo, QualitySectionImg_mobile , PortfolioProject2Img , GC_ExecutionandDelivery , GC_PlanningandStrategy , GC_clientVision , GC_ProjectOverview
 }
