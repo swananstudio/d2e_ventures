@@ -24,7 +24,7 @@ import {
 } from "react-icons/go";
 import { useState, type ReactNode } from "react";
 
-import Navbar from "../../layout/Navbar";
+
 import {
   PortfolioProject2Img,
   GC_clientVision,
