@@ -103,6 +103,12 @@ import GC_ExecutionandDelivery from './portfolio/herosection/GC_ExecutionandDeli
 import GC_clientVision from './portfolio/herosection/GC_clientVision.webp'
 import GC_PlanningandStrategy from './portfolio/herosection/GC_PlanningandStrategy.webp'
 import GC_ProjectOverview from './portfolio/herosection/GC_ProjectOverview.jpg'
+import GC_ExecutionandDelivery_CoverImg from './portfolio/herosection/GC_ExecutionandDelivery_CoverImg.jpg'
+import GC_Project_Overview_1 from './portfolio/herosection/GC_project_overview_1.webp'
+import GC_Project_Overview_2 from './portfolio/herosection/GC_project_overview_2.webp'
+import GC_Project_Overview_3 from './portfolio/herosection/GC_project_overview_3.webp'
+import GC_Project_Overview_4 from './portfolio/herosection/GC_project_overview_4.webp'
+import GC_Project_Overview_5 from './portfolio/herosection/GC_project_overview_5.webp'
 export {
     herosection, herosectiongif, homeherosectionvideo, about_hero_section, services_hero_section, contact_hero_section,
     logo, footerlogo,
@@ -119,5 +125,9 @@ export {
     service_client, design_execution, integrated_development, land_values, premium_project, transparent_coordination,
     architecture,
     portfolioherosection, areasize, portfolio_hero_section_swiper1, portfolio_hero_section_swiper2, portfolio_hero_section_swiper3, portfolio_hero_section_swiper4, portfolio_hero_section_swiper5, QualitySectionImg,
-    contact_office_surrounding, loadingimage, centric_development, d2e_logo, QualitySectionImg_mobile , PortfolioProject2Img , GC_ExecutionandDelivery , GC_PlanningandStrategy , GC_clientVision , GC_ProjectOverview
+    contact_office_surrounding, loadingimage, centric_development, d2e_logo, QualitySectionImg_mobile , PortfolioProject2Img , GC_ExecutionandDelivery , GC_PlanningandStrategy , GC_clientVision , GC_ProjectOverview , GC_ExecutionandDelivery_CoverImg , GC_Project_Overview_1,
+  GC_Project_Overview_2,
+  GC_Project_Overview_3,
+  GC_Project_Overview_4,
+  GC_Project_Overview_5
 }

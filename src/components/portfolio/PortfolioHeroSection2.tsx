@@ -125,8 +125,7 @@ export default function PortfolioHeroSection2() {
     setMounted(true);
   }, []);
 
-  const isMobile = useBreakpointValue({ base: true, md: false }) ?? false;
-
+ const isMobile = useBreakpointValue({ base: true, lg: false }) ?? true;
   const goNext = () => {
     setActiveIndex((previous) => (previous + 1) % projectThumbnails.length);
   };
@@ -194,8 +193,8 @@ export default function PortfolioHeroSection2() {
     <LayoutGroup>
       <Box position="relative">
         <Flex
-          minH={{ base: "900px", md: "1000px", lg: "100vh" }}
-          h={{ base: "auto", lg: "100vh" }}
+          minH={{ base: "auto", md: "100vh", lg: "100vh" }}
+          h={{ base: "auto", md: "100vh", lg: "100vh" }}
           w="100%"
           bgImage={`url(${portfolioherosection})`}
           bgSize="cover"
@@ -203,6 +202,7 @@ export default function PortfolioHeroSection2() {
           bgRepeat="no-repeat"
           position="relative"
           overflow="hidden"
+          py={{ base: 2, sm: 3, md: 4, lg: 0 }}
         >
           <Box position="absolute" inset={0} bg="rgba(0,0,0,.35)" />
 
@@ -217,26 +217,27 @@ export default function PortfolioHeroSection2() {
 
             <Flex
               flex={1}
-              pl={{ base: "6%", md: "5%", lg: "3%" }}
-              pr={{ base: "6%", md: "4%", lg: "0%" }}
-              pb={{ base: "8%", lg: "4%" }}
+              pl={{ base: "6%", md: "6%", lg: "3%" }}
+              pr={{ base: "6%", md: "6%", lg: "0%" }}
+              pb={{ base: "3%", md: "1.5%", lg: "4%" }}
+              pt={{ base: 2, md: "auto", lg: 0 }}
               direction={{ base: "column", lg: "row" }}
-              justify="space-between"
-              align={{ base: "flex-start", lg: "flex-end" }}
-              gap={{ base: "8%", md: "6%", lg: "3%" }}
+              justify={{ base: "flex-end", lg: "space-between" }}
+              align={{ base: "stretch", lg: "flex-end" }}
+              gap={{ base: 3, md: 3, lg: "3%" }}
             >
               <Box
                 position="relative"
                 zIndex={1}
                 color="white"
                 w={{ base: "100%", lg: "45%" }}
-                mb={{ base: 10, lg: 18 }}
+                mb={{ base: 0, lg: 18 }}
               >
                 <Text
                   fontSize={{
-                    base: "42px",
-                    sm: "54px",
-                    md: "68px",
+                    base: "32px",
+                    sm: "42px",
+                    md: "52px",
                     lg: "79px",
                   }}
                   lineHeight="0.95"
@@ -246,11 +247,11 @@ export default function PortfolioHeroSection2() {
                 </Text>
 
                 <Text
-                  mt={2}
+                  mt={{ base: 1, md: 2, lg: 2 }}
                   fontSize={{
-                    base: "30px",
-                    sm: "38px",
-                    md: "46px",
+                    base: "22px",
+                    sm: "28px",
+                    md: "34px",
                     lg: "50px",
                   }}
                   fontWeight="300"
@@ -259,11 +260,11 @@ export default function PortfolioHeroSection2() {
                 </Text>
 
                 <Flex
-                  mt={8}
-                  gap={6}
+                  mt={{ base: 2, md: 3, lg: 8 }}
+                  gap={{ base: 3, md: 5, lg: 6 }}
                   flexWrap="wrap"
                   color="#F5F5F5"
-                  fontSize="16px"
+                  fontSize={{ base: "13px", md: "15px", lg: "16px" }}
                 >
                   <Flex align="center" gap={2}>
                     <Image src={maps} w="14px" />
@@ -277,10 +278,10 @@ export default function PortfolioHeroSection2() {
                 </Flex>
 
                 <Text
-                  mt={5}
+                  mt={{ base: 2, md: 3, lg: 5 }}
                   color="#F4F4F4"
                   lineHeight="1.8"
-                  fontSize={{ base: "16px", md: "18px", lg: "15.5px" }}
+                  fontSize={{ base: "13px", sm: "14px", md: "15px", lg: "15.5px" }}
                   letterSpacing="0.02em"
                   wordSpacing="0.05em"
                 >
@@ -303,8 +304,8 @@ export default function PortfolioHeroSection2() {
                 <Box
                   position="relative"
                   w="100%"
-                  height={{ base: "260px", md: "300px" }}
-                  mt={{ base: 8, sm: 10, md: 0 }}
+                  height={{ base: "260px", sm: "280px", md: "240px", lg: "300px" }}
+                  mt={{ base: 2, md: 3, lg: 0 }}
                 >
                   {projectThumbnails.map((project, index) => {
                     const distance = getRelativePosition(index);
@@ -354,7 +355,7 @@ export default function PortfolioHeroSection2() {
                         layoutId={mounted ? `project-card-${index}` : undefined}
                         position="absolute"
                         top={0}
-                        w={{ base: "78%", md: "30%" }}
+                        w={{ base: "85%", sm: "70%", md: "46%", lg: "30%" }}
                         h="100%"
                         zIndex={
                           isMobile
@@ -416,14 +417,14 @@ export default function PortfolioHeroSection2() {
                           left={0}
                           right={0}
                           bottom={0}
-                          px={{ base: 3, md: 4 }}
-                          pb={{ base: 3, md: 4 }}
+                          px={{ base: 4, md: 5 }}
+                          pb={{ base: 4, md: 5 }}
                           pointerEvents="none"
                           zIndex={2}
                         >
                           <Text
                             color="rgba(255,255,255,.9)"
-                            fontSize={{ base: "10px", md: "11px" }}
+                            fontSize={{ base: "11px", md: "12px" }}
                             letterSpacing="0.08em"
                             fontWeight="500"
                             mb="2px"
@@ -433,7 +434,7 @@ export default function PortfolioHeroSection2() {
                           </Text>
                           <Text
                             color="white"
-                            fontSize={{ base: "16px", md: "19px" }}
+                            fontSize={{ base: "18px", md: "20px" }}
                             fontWeight="600"
                             lineHeight="1.1"
                           >
@@ -445,13 +446,13 @@ export default function PortfolioHeroSection2() {
                   })}
                 </Box>
 
-                <Flex justify="center" w="100%" gap={4} mt={5}>
+                <Flex justify="center" w="100%" gap={4} mt={{ base: 2, md: 2, lg: 5 }}>
                   <Button
                     aria-label="Previous project"
                     onClick={goPrevious}
-                    w="60px"
-                    h="60px"
-                    minW="60px"
+                    w={{ base: "40px", md: "44px", lg: "60px" }}
+                    h={{ base: "40px", md: "44px", lg: "60px" }}
+                    minW={{ base: "40px", md: "44px", lg: "60px" }}
                     borderRadius="full"
                     bg="rgba(255,255,255,.15)"
                     color="white"
@@ -463,9 +464,9 @@ export default function PortfolioHeroSection2() {
                   <Button
                     aria-label="Next project"
                     onClick={goNext}
-                    w="60px"
-                    h="60px"
-                    minW="60px"
+                    w={{ base: "40px", md: "44px", lg: "60px" }}
+                    h={{ base: "40px", md: "44px", lg: "60px" }}
+                    minW={{ base: "40px", md: "44px", lg: "60px" }}
                     borderRadius="full"
                     bg="rgba(255,255,255,.15)"
                     color="white"
@@ -551,7 +552,7 @@ function DetailLayout({
       maxH="100vh"
       overflow="hidden"
       px={{ base: 4, sm: 6, md: 8, lg: 12 }}
-      pt={{ base: 5, sm: 6, md: 7, lg: 8 }}
+      pt={{ base: 4, sm: 6, md: 7, lg: 8 }}
       pb={{ base: 4, sm: 6, lg: 8 }}
       display="flex"
       flexDirection="column"
@@ -560,18 +561,18 @@ function DetailLayout({
         <Flex
           as="button"
           align="center"
-          gap={3}
+          gap={{ base: 2, md: 3 }}
           color="#B8965A"
           cursor="pointer"
           _hover={{ color: "#d7b47d" }}
           onClick={onClose}
         >
           <GoArrowLeft size={24} />
-          <Text fontSize={{ base: "16px", sm: "18px", md: "22px", lg: "24px" }} fontWeight="500">
+          <Text fontSize={{ base: "14px", sm: "18px", md: "22px", lg: "24px" }} fontWeight="500">
             Back to Projects
           </Text>
         </Flex>
-        <Flex gap={5} color="#B8965A">
+        <Flex gap={{ base: 3, md: 5 }} color="#B8965A">
           <Box
             as="button"
             cursor={isFirst ? "default" : "pointer"}
@@ -594,18 +595,18 @@ function DetailLayout({
       </Flex>
 
       <Box display={{ base: "block", md: "none" }} mb={2}>
-        <Text fontSize="28px" fontWeight="700" lineHeight=".95">
+        <Text fontSize="24px" fontWeight="700" lineHeight=".95">
           {title}
         </Text>
-        <Text fontSize="20px" fontWeight="300">
+        <Text fontSize="18px" fontWeight="300">
           {subtitle}
         </Text>
       </Box>
 
       <Grid
         templateColumns={{ base: "1fr", md: "360px minmax(0, 1fr)", lg: "440px minmax(0, 1fr)" }}
-        gap={{ base: 4, md: 6, lg: 12 }}
-        alignItems="stretch"
+        gap={{ base: 3, md: 6, lg: 12 }}
+        alignItems={{ base: "stretch", md: "flex-end", lg: "stretch" }}
         flex={1}
         overflow="hidden"
         minH={0}
@@ -616,7 +617,7 @@ function DetailLayout({
           flexDirection="column"
           overflowY="auto"
           pr={{ base: 1, md: 2 }}
-          pb={{ base: 6, md: 6 }}
+          pb={{ base: 2, md: 0, lg: 6 }}
           h="100%"
           minH={0}
           css={{

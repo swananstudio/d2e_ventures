@@ -7,7 +7,6 @@ import {
   Image,
   List,
   Text,
-  chakra,
   useBreakpointValue,
 } from "@chakra-ui/react";
 import {
@@ -22,8 +21,8 @@ import {
   GoChevronLeft,
   GoChevronRight,
 } from "react-icons/go";
-import { useState, type ReactNode } from "react";
-
+import { useState, useEffect, type ReactNode } from "react";
+import Navbar from "../../layout/Navbar";
 
 import {
   PortfolioProject2Img,
@@ -31,15 +30,31 @@ import {
   GC_ExecutionandDelivery,
   GC_PlanningandStrategy,
   GC_ProjectOverview,
+  GC_ExecutionandDelivery_CoverImg,
+  maps,
+  areasize,
+  GC_Project_Overview_1,
+  GC_Project_Overview_2,
+  GC_Project_Overview_3,
+  GC_Project_Overview_4,
+  GC_Project_Overview_5,
 } from "../../assets/assets";
 
 const MotionBox = motion(Box);
+
+const overviewImages = [
+  GC_Project_Overview_1,
+  GC_Project_Overview_2,
+  GC_Project_Overview_3,
+  GC_Project_Overview_4,
+  GC_Project_Overview_5,
+];
 
 const projectThumbnails = [
   { image: GC_ProjectOverview, section: "section1" },
   { image: GC_clientVision, section: "section2" },
   { image: GC_PlanningandStrategy, section: "section3" },
-  { image: GC_ExecutionandDelivery, section: "section4", isVideo: true },
+  { image: GC_ExecutionandDelivery_CoverImg, section: "section4" },
 ];
 
 const sectionOrder = ["section1", "section2", "section3", "section4"];
@@ -48,9 +63,9 @@ const tallImageSections = new Set(["section1", "section2"]);
 
 const morphTransition: Transition = {
   type: "spring",
-  stiffness: 190,
-  damping: 26,
-  mass: 0.9,
+  stiffness: 140,
+  damping: 30,
+  mass: 1.0,
 };
 
 const ease = [0.22, 1, 0.36, 1] as const;
@@ -70,20 +85,22 @@ const sectionDetailsMap: Record<
   {
     title: string;
     subtitle: string;
-    image: string;
+    image: string | string[];
     imageAlt: string;
     isVideo?: boolean;
+    isCarousel?: boolean;
   }
 > = {
   section1: {
     title: "PROJECT",
     subtitle: "Overview",
-    image: GC_ProjectOverview,
+    image: overviewImages,
     imageAlt: "Project overview",
+    isCarousel: true,
   },
   section2: {
-    title: "PROJECT",
-    subtitle: "Goal & Vision",
+    title: "CLIENT",
+    subtitle: "Vision",
     image: GC_clientVision,
     imageAlt: "Project Goal",
   },
@@ -104,10 +121,10 @@ const sectionDetailsMap: Record<
 
 export default function PortfolioProject2() {
   const [currentSection, setCurrentSection] = useState<string>("main");
-  const [activeIndex, setActiveIndex] = useState<number>(0);
+  const [activeIndex, setActiveIndex] = useState<number>(1);
   const [openedCardIndex, setOpenedCardIndex] = useState<number | null>(null);
 
-  const isMobile = useBreakpointValue({ base: true, md: false }) ?? false;
+  const isMobile = useBreakpointValue({ base: true, lg: false }) ?? true;
 
   const goNext = () => {
     setActiveIndex((previous) => (previous + 1) % projectThumbnails.length);
@@ -176,8 +193,8 @@ export default function PortfolioProject2() {
     <LayoutGroup>
       <Box position="relative">
         <Flex
-          minH={{ base: "900px", md: "1000px", lg: "100vh" }}
-          h={{ base: "auto", lg: "100vh" }}
+          minH={{ base: "auto", md: "100vh", lg: "100vh" }}
+          h={{ base: "auto", md: "100vh", lg: "100vh" }}
           w="100%"
           bgImage={`url(${PortfolioProject2Img})`}
           bgSize="cover"
@@ -185,6 +202,7 @@ export default function PortfolioProject2() {
           bgRepeat="no-repeat"
           position="relative"
           overflow="hidden"
+          py={{ base: 2, sm: 3, md: 4, lg: 0 }} /* REDUCED TOP/BOTTOM PADDING FOR MOBILE */
         >
           <Box position="absolute" inset={0} bg="rgba(0,0,0,.35)" />
 
@@ -195,31 +213,34 @@ export default function PortfolioProject2() {
             w="100%"
             h="100%"
           >
-          {/*-Navbar-*/}
+            <Navbar />
 
             <Flex
               flex={1}
-              pl={{ base: "6%", md: "5%", lg: "3%" }}
-              pr={{ base: "6%", md: "4%", lg: "0%" }}
-              pb={{ base: "8%", lg: "4%" }}
+              pl={{ base: "6%", md: "6%", lg: "3%" }}
+              pr={{ base: "6%", md: "6%", lg: "0%" }}
+              pb={{ base: "3%", md: "1.5%", lg: "4%" }} /* REDUCED BOTTOM PADDING FOR MD */
+              pt={{ base: 2, md: "auto", lg: "auto" }} /* REDUCED TOP PADDING FOR BASE */
               direction={{ base: "column", lg: "row" }}
-              justify="space-between"
-              align={{ base: "flex-start", lg: "flex-end" }}
-              gap={{ base: "8%", md: "6%", lg: "3%" }}
+              justify={{ base: "flex-end", lg: "space-between" }}
+              align={{ base: "stretch", lg: "flex-end" }}
+              gap={{ base: 3, md: 3, lg: "3%" }}
             >
+              {/* LEFT SIDE TEXT BLOCK */}
               <Box
                 position="relative"
                 zIndex={1}
                 color="white"
                 w={{ base: "100%", lg: "45%" }}
-                mb={{ base: 10, lg: 18 }}
+                mb={{ base: 0, lg: 18 }}
               >
                 <Text
                   fontSize={{
-                    base: "42px",
-                    sm: "54px",
-                    md: "68px",
-                    lg: "79px",
+                    base: "32px",
+                    sm: "42px",
+                    md: "52px",
+                    lg: "68px",
+                    xl: "76px",
                   }}
                   lineHeight="0.95"
                   fontWeight="700"
@@ -228,50 +249,72 @@ export default function PortfolioProject2() {
                 </Text>
 
                 <Text
-                  mt={2}
+                  mt={{ base: 1, md: 2 }}
                   fontSize={{
-                    base: "30px",
-                    sm: "38px",
-                    md: "46px",
-                    lg: "50px",
+                    base: "22px",
+                    sm: "28px",
+                    md: "34px",
+                    lg: "42px",
                   }}
                   fontWeight="300"
                 >
                   CRESCENT
                 </Text>
 
+                <Flex
+                  mt={{ base: 2, md: 3, lg: 8 }}
+                  gap={{ base: 3, md: 5, lg: 6 }}
+                  flexWrap="wrap"
+                  color="#F5F5F5"
+                  fontSize={{ base: "13px", md: "15px" }}
+                >
+                  <Flex align="center" gap={2}>
+                    <Image src={maps} w="14px" />
+                    <Text fontWeight="700">Pune, Maharashtra</Text>
+                  </Flex>
+
+                  <Flex align="center" gap={2}>
+                    <Image src={areasize} w="18px" />
+                    <Text fontWeight="700">22,000 Sq.ft.</Text>
+                  </Flex>
+                </Flex>
+
                 <Text
-                  mt={5}
+                  mt={{ base: 2, md: 3, lg: 5 }}
                   color="#F4F4F4"
-                  lineHeight="1.8"
-                  fontSize={{ base: "16px", md: "18px", lg: "15.5px" }}
-                  letterSpacing="0.02em"
-                  wordSpacing="0.05em"
+                  lineHeight="1.6"
+                  fontSize={{
+                    base: "13px",
+                    sm: "14px",
+                    md: "15px",
+                    lg: "16px",
+                  }}
+                  letterSpacing="0.01em"
                 >
                   This residential interior is thoughtfully designed to blend
                   warm wood tones, soft neutrals, and natural textures, creating
                   a calm and contemporary home. The space balances
                   functionality with character through custom details, ambient
-                  lighting, curated décor, and earthy accents. The result is an
-                  inviting environment that feels both refined and lived-in.
+                  lighting, curated décor, and earthy accents.
                 </Text>
               </Box>
 
+              {/* RIGHT SIDE CARDS BLOCK */}
               <Flex
                 position="relative"
                 zIndex={10}
                 direction="column"
                 w={{ base: "100%", lg: "50%" }}
                 maxW={{ base: "100%", lg: "50%" }}
-                gap={{ base: "5%", lg: "6%" }}
+                align={{ base: "center", lg: "flex-end" }}
               >
                 <Box
                   position="relative"
                   w="100%"
-                  h="42vh"
-                  minH="220px"
-                  maxH="290px"
-                  mt={{ base: 8, sm: 10, md: 0 }}
+                  h={{ base: "260px", sm: "280px", md: "240px", lg: "300px" }}
+                  minH={{ base: "230px", md: "220px", lg: "300px" }}
+                  maxH={{ base: "320px", md: "260px", lg: "300px" }}
+                  mt={{ base: 2, md: 3, lg: 0 }} /* REDUCED MARGIN TOP ABOVE CARDS */
                   overflow="visible"
                   isolation="isolate"
                 >
@@ -323,7 +366,7 @@ export default function PortfolioProject2() {
                         layoutId={`project-card-${index}`}
                         position="absolute"
                         top={0}
-                        w={{ base: "78%", md: "30%" }}
+                        w={{ base: "85%", sm: "70%", md: "46%", lg: "30%" }}
                         h="100%"
                         zIndex={
                           isMobile
@@ -357,11 +400,11 @@ export default function PortfolioProject2() {
                         transition={
                           isMobile
                             ? {
-                                duration: 0.35,
+                                duration: 0.5,
                                 ease: [0.22, 1, 0.36, 1],
                               }
                             : {
-                                duration: 0.6,
+                                duration: 0.8,
                                 ease: [0.22, 1, 0.36, 1],
                               }
                         }
@@ -369,19 +412,21 @@ export default function PortfolioProject2() {
                           willChange: "opacity, transform",
                         }}
                       >
-                        {/* Thumbnail Media */}
-                        {project.isVideo ? (
-                          <chakra.video
-                            src={project.image}
+                        {details.isVideo ? (
+                          <video
+                            src={details.image as string}
                             autoPlay
                             loop
                             muted
                             playsInline
-                            w="100%"
-                            h="100%"
-                            objectFit="cover"
-                            position="relative"
-                            zIndex={0}
+                            style={{
+                              width: "100%",
+                              height: "100%",
+                              objectFit: "cover",
+                              position: "relative",
+                              zIndex: 0,
+                              display: "block",
+                            }}
                           />
                         ) : (
                           <Image
@@ -396,7 +441,6 @@ export default function PortfolioProject2() {
                           />
                         )}
 
-                        {/* Dark Gradient directly behind title text on card image */}
                         <Box
                           position="absolute"
                           left={0}
@@ -408,20 +452,19 @@ export default function PortfolioProject2() {
                           zIndex={1}
                         />
 
-                        {/* Title text content */}
                         <Box
                           position="absolute"
                           left={0}
                           right={0}
                           bottom={0}
-                          px={{ base: 3, md: 4 }}
-                          pb={{ base: 3, md: 4 }}
+                          px={{ base: 4, md: 5 }}
+                          pb={{ base: 4, md: 5 }}
                           pointerEvents="none"
                           zIndex={2}
                         >
                           <Text
                             color="rgba(255,255,255,.9)"
-                            fontSize={{ base: "10px", md: "11px" }}
+                            fontSize={{ base: "11px", md: "12px" }}
                             letterSpacing="0.08em"
                             fontWeight="500"
                             mb="2px"
@@ -431,7 +474,7 @@ export default function PortfolioProject2() {
                           </Text>
                           <Text
                             color="white"
-                            fontSize={{ base: "16px", md: "19px" }}
+                            fontSize={{ base: "18px", md: "20px" }}
                             fontWeight="600"
                             lineHeight="1.1"
                           >
@@ -443,33 +486,35 @@ export default function PortfolioProject2() {
                   })}
                 </Box>
 
-                <Flex justify="center" w="100%" gap={4} mt={5}>
+                <Flex justify="center" w="100%" gap={4} mt={{ base: 2, md: 2, lg: 5 }}> {/* REDUCED MARGIN TOP BELOW CARDS */}
                   <Button
                     aria-label="Previous project"
                     onClick={goPrevious}
-                    w="60px"
-                    h="60px"
-                    minW="60px"
+                    w={{ base: "40px", md: "44px", lg: "60px" }}
+                    h={{ base: "40px", md: "44px", lg: "60px" }}
+                    minW={{ base: "40px", md: "44px", lg: "60px" }}
                     borderRadius="full"
                     bg="rgba(255,255,255,.15)"
                     color="white"
                     _hover={{ bg: "#C8A96B", color: "#000" }}
+                    flexShrink={0}
                   >
-                    <GoArrowLeft size={22} />
+                    <GoArrowLeft size={isMobile ? 18 : 22} />
                   </Button>
 
                   <Button
                     aria-label="Next project"
                     onClick={goNext}
-                    w="60px"
-                    h="60px"
-                    minW="60px"
+                    w={{ base: "40px", md: "44px", lg: "60px" }}
+                    h={{ base: "40px", md: "44px", lg: "60px" }}
+                    minW={{ base: "40px", md: "44px", lg: "60px" }}
                     borderRadius="full"
                     bg="rgba(255,255,255,.15)"
                     color="white"
                     _hover={{ bg: "#C8A96B", color: "#000" }}
+                    flexShrink={0}
                   >
-                    <GoArrowRight size={22} />
+                    <GoArrowRight size={isMobile ? 18 : 22} />
                   </Button>
                 </Flex>
               </Flex>
@@ -489,20 +534,10 @@ export default function PortfolioProject2() {
             {...(sectionDetailsMap[currentSection] || sectionDetailsMap.section1)}
           >
             <Box overflow="visible">
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={currentSection}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.2, ease: "easeInOut" }}
-                >
-                  {currentSection === "section1" && <OverviewDetails />}
-                  {currentSection === "section2" && <Section2Content />}
-                  {currentSection === "section3" && <Section3Content />}
-                  {currentSection === "section4" && <Section4Content />}
-                </motion.div>
-              </AnimatePresence>
+              {currentSection === "section1" && <OverviewDetails />}
+              {currentSection === "section2" && <Section2Content />}
+              {currentSection === "section3" && <Section3Content />}
+              {currentSection === "section4" && <Section4Content />}
             </Box>
           </DetailLayout>
         )}
@@ -514,13 +549,94 @@ export default function PortfolioProject2() {
 type DetailLayoutProps = SectionProps & {
   title: string;
   subtitle: string;
-  image: string;
+  image: string | string[];
   imageAlt: string;
   isVideo?: boolean;
+  isCarousel?: boolean;
   children: ReactNode;
 };
 
 type AccordionItem = { title: string; content: string | string[] };
+
+function ImageCarousel({ images, alt }: { images: string[]; alt: string }) {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [loaded, setLoaded] = useState<Set<string>>(() => {
+    // Synchronously check which images are already cached by the browser
+    // so a revisit doesn't blank out while waiting for onload to re-fire.
+    const initial = new Set<string>();
+    images.forEach((src) => {
+      const img = new window.Image();
+      img.src = src;
+      if (img.complete && img.naturalWidth > 0) {
+        initial.add(src);
+      }
+    });
+    return initial;
+  });
+  const SLIDE_DURATION = 5000;
+
+  useEffect(() => {
+    images.forEach((src) => {
+      const img = new window.Image();
+      img.src = src;
+      if (img.complete && img.naturalWidth > 0) {
+        setLoaded((prev) => (prev.has(src) ? prev : new Set(prev).add(src)));
+        return;
+      }
+      img.onload = () => {
+        setLoaded((prev) => new Set(prev).add(src));
+      };
+    });
+  }, [images]);
+
+  useEffect(() => {
+    if (!images || images.length <= 1) return;
+    const timer = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % images.length);
+    }, SLIDE_DURATION);
+    return () => clearInterval(timer);
+  }, [images]);
+
+  return (
+    <Box position="relative" w="100%" h="100%" overflow="hidden" bg="black">
+      {images.map((src, i) => {
+        const isActive = i === currentIndex;
+        const isReady = loaded.has(src);
+
+        return (
+          <motion.div
+            key={src}
+            style={{
+              position: "absolute",
+              inset: 0,
+              opacity: isReady && isActive ? 1 : 0,
+              zIndex: isActive ? 1 : 0,
+              transition: "opacity 1.5s ease-in-out",
+              willChange: "opacity",
+            }}
+          >
+            <motion.img
+              src={src}
+              alt={`${alt} ${i + 1}`}
+              animate={isActive ? { scale: 1.08 } : { scale: 1 }}
+              transition={{
+                duration: SLIDE_DURATION / 1000 + 1.5,
+                ease: "linear",
+              }}
+              style={{
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+                willChange: "transform",
+                transform: "translateZ(0)",
+              }}
+            />
+          </motion.div>
+        );
+      })}
+    </Box>
+  );
+}
 
 function DetailLayout({
   title,
@@ -528,6 +644,7 @@ function DetailLayout({
   image,
   imageAlt,
   isVideo,
+  isCarousel,
   children,
   layoutId,
   onClose,
@@ -549,7 +666,7 @@ function DetailLayout({
       maxH="100vh"
       overflow="hidden"
       px={{ base: 4, sm: 6, md: 8, lg: 12 }}
-      pt={{ base: 5, sm: 6, md: 7, lg: 8 }}
+      pt={{ base: 4, sm: 6, md: 7, lg: 8 }}
       pb={{ base: 4, sm: 6, lg: 8 }}
       display="flex"
       flexDirection="column"
@@ -558,18 +675,18 @@ function DetailLayout({
         <Flex
           as="button"
           align="center"
-          gap={3}
+          gap={{ base: 2, md: 3 }}
           color="#B8965A"
           cursor="pointer"
           _hover={{ color: "#d7b47d" }}
           onClick={onClose}
         >
-          <GoArrowLeft size={24} />
-          <Text fontSize={{ base: "16px", sm: "18px", md: "22px", lg: "24px" }} fontWeight="500">
+          <GoArrowLeft size={20} />
+          <Text fontSize={{ base: "14px", sm: "18px", md: "22px", lg: "24px" }} fontWeight="500">
             Back to Projects
           </Text>
         </Flex>
-        <Flex gap={5} color="#B8965A">
+        <Flex gap={{ base: 3, md: 5 }} color="#B8965A">
           <Box
             as="button"
             cursor={isFirst ? "default" : "pointer"}
@@ -577,7 +694,7 @@ function DetailLayout({
             _hover={isFirst ? {} : { color: "#d7b47d" }}
             onClick={isFirst ? undefined : onBack}
           >
-            <GoChevronLeft size={30} />
+            <GoChevronLeft size={26} />
           </Box>
           <Box
             as="button"
@@ -586,24 +703,23 @@ function DetailLayout({
             _hover={isLast ? {} : { color: "#d7b47d" }}
             onClick={isLast ? undefined : onNext}
           >
-            <GoChevronRight size={30} />
+            <GoChevronRight size={26} />
           </Box>
         </Flex>
       </Flex>
 
       <Box display={{ base: "block", md: "none" }} mb={2}>
-        <Text fontSize="28px" fontWeight="700" lineHeight=".95">
+        <Text fontSize="24px" fontWeight="700" lineHeight=".95">
           {title}
         </Text>
-        <Text fontSize="20px" fontWeight="300">
+        <Text fontSize="18px" fontWeight="300">
           {subtitle}
         </Text>
       </Box>
 
-      {/* Grid aligned to flex-end so both columns share the same bottom baseline */}
       <Grid
         templateColumns={{ base: "1fr", md: "360px minmax(0, 1fr)", lg: "440px minmax(0, 1fr)" }}
-        gap={{ base: 4, md: 6, lg: 12 }}
+        gap={{ base: 3, md: 6, lg: 12 }}
         alignItems={{ base: "stretch", md: "flex-end" }}
         flex={1}
         overflow="hidden"
@@ -649,11 +765,10 @@ function DetailLayout({
           justifyContent="center"
           overflow="hidden"
         >
-          {/* Outer container with fixed aspect-ratio enforcing equal height and width across all slides */}
           <Box
             position="relative"
             w="100%"
-            maxH={{ base: "32vh", md: "calc(100vh - 120px)" }}
+            maxH={{ base: "28vh", md: "calc(100vh - 120px)" }}
             aspectRatio={{ base: "16 / 10", md: "16 / 10" }}
             display="flex"
             alignItems="center"
@@ -661,42 +776,41 @@ function DetailLayout({
             bg="black"
             overflow="hidden"
           >
-            <AnimatePresence mode="wait">
-              {isVideo ? (
-                <motion.video
-                  key={image}
-                  src={image}
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.25 }}
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    objectFit: "cover",
-                  }}
-                />
-              ) : (
-                <motion.img
-                  key={image}
-                  src={image}
-                  alt={imageAlt}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.25 }}
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    objectFit: "cover",
-                  }}
-                />
-              )}
-            </AnimatePresence>
+            {isCarousel && Array.isArray(image) ? (
+              <ImageCarousel images={image} alt={imageAlt} />
+            ) : isVideo && typeof image === "string" ? (
+              <motion.video
+                key={image}
+                src={image}
+                autoPlay
+                loop
+                muted
+                playsInline
+                initial={{ opacity: 0.8 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.3 }}
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                  objectPosition: "center",
+                }}
+              />
+            ) : (
+              <motion.img
+                key={image as string}
+                src={image as string}
+                alt={imageAlt}
+                initial={{ opacity: 0.8 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.3 }}
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                }}
+              />
+            )}
           </Box>
         </GridItem>
       </Grid>
@@ -707,10 +821,10 @@ function DetailLayout({
 function Detail({ label, value }: { label: string; value: string }) {
   return (
     <Box>
-      <Text color="#D6B46A" fontSize={{ base: "13px", sm: "14px", md: "14px" }} fontWeight="500">
+      <Text color="#D6B46A" fontSize={{ base: "12px", sm: "13px", md: "14px" }} fontWeight="500">
         {label}
       </Text>
-      <Text fontSize={{ base: "14px", sm: "15px", md: "16px" }}>{value}</Text>
+      <Text fontSize={{ base: "13px", sm: "14px", md: "16px" }}>{value}</Text>
     </Box>
   );
 }
@@ -783,7 +897,7 @@ function AccordionContent({ items }: { items: AccordionItem[] }) {
                 onClick={() => setActive(isOpen ? null : index)}
                 aria-expanded={isOpen}
               >
-                <Text fontSize={{ base: "16px", sm: "18px", md: "20px" }} fontWeight="500">
+                <Text fontSize={{ base: "15px", sm: "17px", md: "20px" }} fontWeight="500">
                   {item.title}
                 </Text>
 
@@ -792,7 +906,7 @@ function AccordionContent({ items }: { items: AccordionItem[] }) {
                   transition={{ duration: 0.35, ease }}
                 >
                   <Text
-                    fontSize={{ base: "20px", md: "24px" }}
+                    fontSize={{ base: "18px", md: "24px" }}
                     lineHeight="1"
                     color={isOpen ? "#C7A46C" : "white"}
                   >
@@ -825,7 +939,7 @@ function AccordionContent({ items }: { items: AccordionItem[] }) {
                         <List.Root
                           as="ul"
                           color="whiteAlpha.800"
-                          fontSize={{ base: "13px", sm: "14px", md: "15px" }}
+                          fontSize={{ base: "12px", sm: "13px", md: "15px" }}
                           lineHeight="1.5"
                           ml="16px"
                         >
@@ -836,7 +950,7 @@ function AccordionContent({ items }: { items: AccordionItem[] }) {
                       ) : (
                         <Text
                           color="whiteAlpha.800"
-                          fontSize={{ base: "13px", sm: "14px", md: "15px" }}
+                          fontSize={{ base: "12px", sm: "13px", md: "15px" }}
                           lineHeight="1.5"
                         >
                           {item.content}
