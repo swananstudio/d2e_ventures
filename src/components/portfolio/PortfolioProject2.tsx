@@ -22,7 +22,7 @@ import {
   GoChevronRight,
 } from "react-icons/go";
 import { useState, useEffect, type ReactNode } from "react";
-import Navbar from "../../layout/Navbar";
+//import Navbar from "../../layout/Navbar";
 
 import {
   PortfolioProject2Img,
@@ -213,7 +213,7 @@ export default function PortfolioProject2() {
             w="100%"
             h="100%"
           >
-            <Navbar />
+         
 
             <Flex
               flex={1}

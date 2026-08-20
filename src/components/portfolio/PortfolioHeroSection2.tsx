@@ -23,7 +23,7 @@ import {
 } from "react-icons/go";
 import { useState, useEffect, type ReactNode } from "react";
 
-import Navbar from "../../layout/Navbar";
+//import Navbar from "../../layout/Navbar";
 import {
   portfolioherosection,
   portfolio_hero_section_swiper1,
@@ -213,7 +213,7 @@ export default function PortfolioHeroSection2() {
             w="100%"
             h="100%"
           >
-            <Navbar />
+   
 
             <Flex
               flex={1}
