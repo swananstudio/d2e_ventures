@@ -266,8 +266,8 @@ export default function PortfolioProject3() {
                             flex={1}
                             pl={{ base: "6%", md: "6%", lg: "3%" }}
                             pr={{ base: "6%", md: "6%", lg: "0%" }}
-                            pb={{ base: "3%", md: "1.5%", lg: "4%" }}
-                            pt={{ base: 2, md: "auto", lg: 0 }}
+                              pb={{ base: "10%", md: "1.5%", lg: "4%" }}
+              pt={{ base: "88px" , md: "auto", lg: 0 }}
                             direction={{ base: "column", lg: "row" }}
                             justify={{ base: "flex-end", lg: "space-between" }}
                             align={{ base: "stretch", lg: "flex-end" }}
