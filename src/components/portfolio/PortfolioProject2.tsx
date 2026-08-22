@@ -30,7 +30,7 @@ import {
   GC_clientVision,
   GC_ExecutionandDelivery,
   GC_PlanningandStrategy,
-  GC_ProjectOverview,
+  
   GC_ExecutionandDelivery_CoverImg,
   maps,
   areasize,
