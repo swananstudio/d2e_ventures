@@ -22,6 +22,7 @@ import {
   GoChevronRight,
 } from "react-icons/go";
 import { useState, useEffect, type ReactNode } from "react";
+import { createPortal } from "react-dom";
 //import Navbar from "../../layout/Navbar";
 
 import {
@@ -51,7 +52,7 @@ const overviewImages = [
 ];
 
 const projectThumbnails = [
-  { image: GC_ProjectOverview, section: "section1" },
+  { image: GC_Project_Overview_2, section: "section1" },
   { image: GC_clientVision, section: "section2" },
   { image: GC_PlanningandStrategy, section: "section3" },
   { image: GC_ExecutionandDelivery_CoverImg, section: "section4" },
@@ -653,7 +654,11 @@ function DetailLayout({
   isFirst,
   isLast,
 }: DetailLayoutProps) {
-  return (
+  // Portaled to document.body so this "fixed" overlay is actually fixed to
+  // the viewport, instead of being trapped inside Swiper's transformed
+  // .swiper-wrapper (which breaks position: fixed + z-index stacking,
+  // letting the Navbar show through on top of this overlay).
+  const content = (
     <MotionBox
       layoutId={layoutId}
       transition={morphTransition}
@@ -816,6 +821,9 @@ function DetailLayout({
       </Grid>
     </MotionBox>
   );
+
+  if (typeof document === "undefined") return null;
+  return createPortal(content, document.body);
 }
 
 function Detail({ label, value }: { label: string; value: string }) {

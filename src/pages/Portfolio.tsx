@@ -7,7 +7,10 @@ import "swiper/css"
 
 import Navbar from "../layout/Navbar"
 import PortfolioProject2 from "../components/portfolio/PortfolioProject2"
-import PortfolioHeroSection2 from "../components/portfolio/PortfolioHeroSection2"
+
+import PortfolioProject3 from "../components/portfolio/PortfolioProject3"
+import PortfolioProject4 from "../components/portfolio/PortfolioProject4"
+import PortfolioProject1 from "../components/portfolio/PortfolioProject1"
 
 const Portfolio = () => {
     useEffect(() => {
@@ -29,27 +32,35 @@ const Portfolio = () => {
                 <Navbar />
             </Box>
 
-            <Swiper
-                direction="vertical"
-                slidesPerView={1}
-                spaceBetween={0}
-                speed={600}
-                resistanceRatio={0.6}
-                mousewheel={{
-                    forceToAxis: true,
-                    releaseOnEdges: true,
-                    sensitivity: 1,
-                    thresholdDelta: 20,
-                }}
-                modules={[Mousewheel]}
-                className="swiper2"
-            >
+          <Swiper
+    direction="vertical"
+    slidesPerView={1}
+    spaceBetween={0}
+    speed={600}
+    resistanceRatio={0.6}
+    loop={true}
+    mousewheel={{
+        forceToAxis: true,
+        releaseOnEdges: true,
+        sensitivity: 1,
+        thresholdDelta: 20,
+    }}
+    modules={[Mousewheel]}
+    className="swiper2"
+>
                 <SwiperSlide>
-                    <PortfolioHeroSection2 />
+                    <PortfolioProject1 />
                 </SwiperSlide>
 
                 <SwiperSlide>
                     <PortfolioProject2 />
+                </SwiperSlide>
+
+                <SwiperSlide>
+                    <PortfolioProject3 />
+                </SwiperSlide>
+                <SwiperSlide>
+                    <PortfolioProject4 />
                 </SwiperSlide>
             </Swiper>
         </>

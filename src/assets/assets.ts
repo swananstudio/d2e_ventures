@@ -109,6 +109,35 @@ import GC_Project_Overview_2 from './portfolio/herosection/GC_project_overview_2
 import GC_Project_Overview_3 from './portfolio/herosection/GC_project_overview_3.webp'
 import GC_Project_Overview_4 from './portfolio/herosection/GC_project_overview_4.webp'
 import GC_Project_Overview_5 from './portfolio/herosection/GC_project_overview_5.webp'
+
+import KV_ProjectOverview1 from './portfolio/herosection/KV_ProjectOverview1.webp'
+import KV_ProjectOverview2 from './portfolio/herosection/KV_ProjectOverview2.webp'
+import KV_ProjectOverview3 from './portfolio/herosection/KV_ProjectOverview3.webp'
+import KV_ClientVision1 from './portfolio/herosection/KV_ClientVision1.webp'
+import KV_ClientVision2 from './portfolio/herosection/KV_ClientVision2.webp'
+import KV_ClientVision3 from './portfolio/herosection/KV_ClientVision3.webp'
+import KV_DesignandDevelopment from './portfolio/herosection/KV_DesignandDevelopment.mp4'
+import KV_PlanningandStrategy from './portfolio/herosection/KV_PlanningandStrategy.mp4'
+import KV_ExecutionandDelivery5 from './portfolio/herosection/KV_ExecutionandDelivery5.webp'
+import KV_ExecutionandDelivery2 from './portfolio/herosection/KV_ExecutionandDelivery2.webp'
+import KV_ExecutionandDelivery3 from './portfolio/herosection/KV_ExecutionandDelivery3.webp'
+import KV_ExecutionandDelivery4 from './portfolio/herosection/KV_ExecutionandDelivery4.webp'
+import KV_ExecutionandDelivery1 from './portfolio/herosection/KV_ExecutionandDelivery1.webp'
+import KV_MainPageImg from './portfolio/herosection/KV_MainPageImg.webp'
+
+import MB_MainPageImg from './portfolio/herosection/MB_MainPageImg.webp'
+import MB_ProjectOverview1 from './portfolio/herosection/MB_ProjectOverview1.webp'
+import MB_ProjectOverview2 from './portfolio/herosection/MB_ProjectOverview2.webp'
+import MB_ProjectOverview3 from './portfolio/herosection/MB_ProjectOverview3.webp'
+import MB_ProjectOverview4 from './portfolio/herosection/MB_ProjectOverview4.webp'
+import MB_PlanningandStrategy from './portfolio/herosection/MB_PlanningandStrategy.mp4'
+import MB_ClientVision from './portfolio/herosection/MB_ClientVision.mp4'
+
+
+
+
+
+
 export {
     herosection, herosectiongif, homeherosectionvideo, about_hero_section, services_hero_section, contact_hero_section,
     logo, footerlogo,
@@ -129,5 +158,6 @@ export {
   GC_Project_Overview_2,
   GC_Project_Overview_3,
   GC_Project_Overview_4,
-  GC_Project_Overview_5
+  GC_Project_Overview_5 ,  KV_ProjectOverview1 , KV_ProjectOverview2, KV_ProjectOverview3 , KV_ClientVision1, KV_ClientVision2 , KV_ClientVision3 ,KV_DesignandDevelopment , KV_PlanningandStrategy , KV_MainPageImg , KV_ExecutionandDelivery1 , KV_ExecutionandDelivery2, KV_ExecutionandDelivery3, KV_ExecutionandDelivery4, KV_ExecutionandDelivery5,
+  MB_ClientVision, MB_MainPageImg, MB_PlanningandStrategy, MB_ProjectOverview1, MB_ProjectOverview2, MB_ProjectOverview3, MB_ProjectOverview4
 }
