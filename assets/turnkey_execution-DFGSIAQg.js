@@ -1,0 +1,1 @@
+var e=`/assets/services_architecture-DbVZDQMS.webp`,t=`/assets/services_interiors-CgHPH_X3.webp`,n=`/assets/plotting-CcDZKJy5.webp`,r=`/assets/landscape-BGDZ5gKG.webp`,i=`/assets/premium_villa-DjvaXozd.webp`,a=`/assets/turnkey_execution-Dk-0KDkw.webp`;export{t as a,n as i,i as n,e as o,r,a as t};

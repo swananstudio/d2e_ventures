@@ -1,1 +1,0 @@
-var e=`/d2e_ventures/assets/services_architecture-DbVZDQMS.webp`,t=`/d2e_ventures/assets/services_interiors-CgHPH_X3.webp`,n=`/d2e_ventures/assets/plotting-CcDZKJy5.webp`,r=`/d2e_ventures/assets/landscape-BGDZ5gKG.webp`,i=`/d2e_ventures/assets/premium_villa-DjvaXozd.webp`,a=`/d2e_ventures/assets/turnkey_execution-Dk-0KDkw.webp`;export{t as a,n as i,i as n,e as o,r,a as t};
