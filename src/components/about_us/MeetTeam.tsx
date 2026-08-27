@@ -77,7 +77,7 @@ const teamMembers: TeamMemberProps[] = [
 
     {
         name: "Ar. Pranjal Prahlad Patil",
-        role: "Landscape Design Specialist",
+        role: "Design Head | Landscape Design Specialist",
         image: pranjal_patil,
         reverse: true,
 
