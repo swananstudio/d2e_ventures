@@ -133,9 +133,24 @@ import MB_ProjectOverview4 from './portfolio/herosection/MB_ProjectOverview4.web
 import MB_PlanningandStrategy from './portfolio/herosection/MB_PlanningandStrategy.mp4'
 import MB_ClientVision from './portfolio/herosection/MB_ClientVision.mp4'
 
+import UK_MainPageImg from './portfolio/herosection/UK_MainPageImg.webp'
+import UK_ProjectOverview from './portfolio/herosection/UK_ProjectOverview.mp4'
+import UK_ClientVision1 from './portfolio/herosection/UK_ClientVision1.webp'
+import UK_ClientVision2 from './portfolio/herosection/UK_ClientVision2.webp'
+import UK_ClientVision3 from './portfolio/herosection/UK_ClientVision3.webp'
+//import UK_DeliveryandExecution from './portfolio/herosection/UK_DeliveryandExecution.webp'
+import UK_DesignandDevelopment1 from './portfolio/herosection/UK_DesignandDevelopment1.webp'
+import UK_DesignandDevelopment2 from './portfolio/herosection/UK_DesignandDevelopment2.webp'
+import UK_DesignandDevelopment3 from './portfolio/herosection/UK_DesignandDevelopment3.webp'
+import UK_DesignandDevelopment4 from './portfolio/herosection/UK_DesignandDevelopment4.webp'
+import UK_PlanningandStrategy from './portfolio/herosection/UK_PlanningandStrategy.mp4'
+import UK_DeliveryandExecution from './portfolio/herosection/UK_DeliveryandExecution.mp4'
 
 
-
+import About_Us_Carousel1 from './About_Us_Carousel1.webp'
+import About_Us_Carousel2 from './About_Us_Carousel2.webp'
+import About_Us_Carousel3 from './About_Us_Carousel3.webp'
+import About_Us_Carousel4 from './About_Us_Carousel4.webp'
 
 
 export {
@@ -159,5 +174,6 @@ export {
   GC_Project_Overview_3,
   GC_Project_Overview_4,
   GC_Project_Overview_5 ,  KV_ProjectOverview1 , KV_ProjectOverview2, KV_ProjectOverview3 , KV_ClientVision1, KV_ClientVision2 , KV_ClientVision3 ,KV_DesignandDevelopment , KV_PlanningandStrategy , KV_MainPageImg , KV_ExecutionandDelivery1 , KV_ExecutionandDelivery2, KV_ExecutionandDelivery3, KV_ExecutionandDelivery4, KV_ExecutionandDelivery5,
-  MB_ClientVision, MB_MainPageImg, MB_PlanningandStrategy, MB_ProjectOverview1, MB_ProjectOverview2, MB_ProjectOverview3, MB_ProjectOverview4
+  MB_ClientVision, MB_MainPageImg, MB_PlanningandStrategy, MB_ProjectOverview1, MB_ProjectOverview2, MB_ProjectOverview3, MB_ProjectOverview4 , UK_MainPageImg, UK_ProjectOverview , UK_ClientVision1, UK_ClientVision2, UK_ClientVision3, UK_DeliveryandExecution, UK_DesignandDevelopment1, UK_DesignandDevelopment2,UK_DesignandDevelopment3, UK_DesignandDevelopment4, UK_PlanningandStrategy,
+  About_Us_Carousel1, About_Us_Carousel2, About_Us_Carousel3, About_Us_Carousel4
 }

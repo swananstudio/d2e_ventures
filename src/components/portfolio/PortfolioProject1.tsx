@@ -127,6 +127,9 @@ export default function PortfolioProject1() {
   }, []);
 
  const isMobile = useBreakpointValue({ base: true, lg: false }) ?? true;
+  useEffect(() => {
+    setActiveIndex(isMobile ? 0 : 1);
+  }, [isMobile]);
   const goNext = () => {
     setActiveIndex((previous) => (previous + 1) % projectThumbnails.length);
   };
@@ -300,13 +303,19 @@ export default function PortfolioProject1() {
                 direction="column"
                 w={{ base: "100%", lg: "50%" }}
                 maxW={{ base: "100%", lg: "50%" }}
-                gap={{ base: "5%", lg: "6%" }}
+                gap={{ base: 3, md: 4, lg: "6%" }}
+                flexShrink={0}
               >
                 <Box
                   position="relative"
                   w="100%"
-                  height={{ base: "260px", sm: "280px", md: "240px", lg: "300px" }}
-                  mt={{ base: 2, md: 3, lg: 0 }}
+                  height={{
+                    base: "clamp(180px, 33svh, 260px)",
+                    sm: "clamp(195px, 35svh, 275px)",
+                    md: "clamp(200px, 37svh, 255px)",
+                    lg: "300px",
+                  }}
+                  mt={{ base: 1, md: 2, lg: 0 }}
                 >
                   {projectThumbnails.map((project, index) => {
                     const distance = getRelativePosition(index);
@@ -356,7 +365,7 @@ export default function PortfolioProject1() {
                         layoutId={mounted ? `project-card-${index}` : undefined}
                         position="absolute"
                         top={0}
-                        w={{ base: "85%", sm: "70%", md: "46%", lg: "30%" }}
+                        w={{ base: "84%", sm: "68%", md: "48%", lg: "30%" }}
                         h="100%"
                         zIndex={
                           isMobile
@@ -540,10 +549,7 @@ function DetailLayout({
   isLast,
   tallImageMobile,
 }: DetailLayoutProps) {
-  // Portaled to document.body so this "fixed" overlay is actually fixed to
-  // the viewport, instead of being trapped inside Swiper's transformed
-  // .swiper-wrapper (which breaks position: fixed + z-index stacking,
-  // letting the Navbar show through on top of this overlay).
+
   const content = (
     <MotionBox
       layoutId={layoutId}
@@ -554,15 +560,25 @@ function DetailLayout({
       bg="black"
       color="white"
       h="100vh"
-      maxH="100vh"
-      overflow="hidden"
+      overflowY={{ base: "auto", lg: "hidden" }}
+      overflowX="hidden"
+      data-lenis-prevent
+      css={{
+        "&::-webkit-scrollbar": { display: "none" },
+        scrollbarWidth: "none",
+      }}
       px={{ base: 4, sm: 6, md: 8, lg: 12 }}
       pt={{ base: 4, sm: 6, md: 7, lg: 8 }}
       pb={{ base: 4, sm: 6, lg: 8 }}
       display="flex"
       flexDirection="column"
     >
-      <Flex justify="space-between" align="center" mb={{ base: 2, md: 4 }} zIndex={2}>
+      <Flex
+        justify="space-between"
+        align="center"
+        mb={{ base: 2, md: 4 }}
+        zIndex={2}
+      >
         <Flex
           as="button"
           align="center"
@@ -573,7 +589,10 @@ function DetailLayout({
           onClick={onClose}
         >
           <GoArrowLeft size={24} />
-          <Text fontSize={{ base: "14px", sm: "18px", md: "22px", lg: "24px" }} fontWeight="500">
+          <Text
+            fontSize={{ base: "14px", sm: "18px", md: "22px", lg: "24px" }}
+            fontWeight="500"
+          >
             Back to Projects
           </Text>
         </Flex>
@@ -599,47 +618,48 @@ function DetailLayout({
         </Flex>
       </Flex>
 
-      <Box display={{ base: "block", md: "none" }} mb={2}>
-        <Text fontSize="24px" fontWeight="700" lineHeight=".95">
+      <Box display={{ base: "block", lg: "none" }} mb={2}>
+        <Text fontSize={{ base: "24px", md: "34px" }} fontWeight="700" lineHeight=".95">
           {title}
         </Text>
-        <Text fontSize="18px" fontWeight="300">
+        <Text fontSize={{ base: "18px", md: "24px" }} fontWeight="300">
           {subtitle}
         </Text>
       </Box>
 
       <Grid
-        templateColumns={{ base: "1fr", md: "360px minmax(0, 1fr)", lg: "440px minmax(0, 1fr)" }}
-        gap={{ base: 3, md: 6, lg: 12 }}
-        alignItems={{ base: "stretch", md: "flex-end", lg: "stretch" }}
-        flex={1}
-        overflow="hidden"
-        minH={0}
+        templateColumns={{
+          base: "1fr",
+          lg: "440px minmax(0, 1fr)",
+        }}
+        gap={{ base: 4, md: 5, lg: 12 }}
+        alignItems="stretch"
+        flex={{ base: "0 0 auto", lg: 1 }}
+        overflow={{ base: "visible", lg: "hidden" }}
+        minH={{ base: "auto", lg: 0 }}
       >
         <GridItem
-          order={{ base: 2, md: 1 }}
+          order={{ base: 2, lg: 1 }}
           display="flex"
           flexDirection="column"
-          overflowY="auto"
+          justifyContent={{ base: "flex-start", lg: "flex-end" }}
+          overflowY={{ base: "visible", lg: "auto" }}
+          data-lenis-prevent
           pr={{ base: 1, md: 2 }}
-          pb={{ base: 2, md: 0, lg: 6 }}
-          h="100%"
-          minH={0}
+          pb={{ base: 2, lg: 0 }}
+          h={{ base: "auto", lg: "100%" }}
+          minH={{ base: "auto", lg: 0 }}
           css={{
             "&::-webkit-scrollbar": { display: "none" },
             scrollbarWidth: "none",
           }}
         >
-          <Box mt={{ base: 0, md: "auto" }}>
-            <Box display={{ base: "none", md: "block" }} mb={{ md: 3, lg: 3 }}>
-              <Text
-                fontSize={{ md: "38px", lg: "52px" }}
-                fontWeight="700"
-                lineHeight=".95"
-              >
+          <Box>
+            <Box display={{ base: "none", lg: "block" }} mb={3}>
+              <Text fontSize="52px" fontWeight="700" lineHeight=".95">
                 {title}
               </Text>
-              <Text fontSize={{ md: "26px", lg: "34px" }} fontWeight="300">
+              <Text fontSize="34px" fontWeight="300">
                 {subtitle}
               </Text>
             </Box>
@@ -648,23 +668,27 @@ function DetailLayout({
         </GridItem>
 
         <GridItem
-          order={{ base: 1, md: 2 }}
-          h="100%"
+          order={{ base: 1, lg: 2 }}
+          h={{ base: "auto", lg: "100%" }}
           display="flex"
           alignItems="center"
-          justifyContent="center"
+          justifyContent={{ base: "center", lg: "flex-end" }}
           overflow="hidden"
         >
           <Box
             position="relative"
-            h="100%"
             w="100%"
-            maxH={{ base: tallImageMobile ? "30vh" : "26vh", md: "calc(100vh - 90px)" }}
+            h={{ base: "auto", lg: "100%" }}
+            maxH={{
+              base: tallImageMobile ? "48vh" : "42vh",
+              md: tallImageMobile ? "58vh" : "52vh",
+              lg: "calc(100vh - 90px)",
+            }}
+            aspectRatio={{ base: "4 / 3", md: "16 / 9", lg: "auto" }}
             display="flex"
             alignItems="center"
             justifyContent="center"
             bg="black"
-            borderRadius="12px"
             overflow="hidden"
           >
             <AnimatePresence mode="wait">
@@ -679,9 +703,7 @@ function DetailLayout({
                 style={{
                   width: "100%",
                   height: "100%",
-                  maxWidth: "100%",
-                  maxHeight: "100%",
-                  objectFit: "contain",
+                  objectFit: "cover",
                 }}
               />
             </AnimatePresence>
@@ -731,7 +753,7 @@ function OverviewDetails() {
   return (
     <PlainContent>
       <Grid
-        templateColumns="repeat(2, 1fr)"
+        templateColumns={{ base: "repeat(2, 1fr)", md: "repeat(3, 1fr)" }}
         gapX={{ base: 4, md: 8 }}
         gapY={{ base: 2, md: 3 }}
         mb={{ base: 2, md: 3 }}

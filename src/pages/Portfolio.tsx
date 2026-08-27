@@ -11,6 +11,7 @@ import PortfolioProject2 from "../components/portfolio/PortfolioProject2"
 import PortfolioProject3 from "../components/portfolio/PortfolioProject3"
 import PortfolioProject4 from "../components/portfolio/PortfolioProject4"
 import PortfolioProject1 from "../components/portfolio/PortfolioProject1"
+import PortfolioProject5 from "../components/portfolio/PortfolioProject5"
 
 const Portfolio = () => {
     useEffect(() => {
@@ -62,6 +63,10 @@ const Portfolio = () => {
                 <SwiperSlide>
                     <PortfolioProject4 />
                 </SwiperSlide>
+                <SwiperSlide>
+                    <PortfolioProject5 />
+                </SwiperSlide>
+                
             </Swiper>
         </>
     )

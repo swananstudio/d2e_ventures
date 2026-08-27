@@ -2,19 +2,19 @@ import { useEffect, useRef, useState } from "react";
 import { Box, Image } from "@chakra-ui/react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  aboutoverview1,
-  aboutoverview2,
-  aboutoverview3,
-  aboutoverview4,
+  About_Us_Carousel1,
+  About_Us_Carousel2,
+  About_Us_Carousel3,
+  About_Us_Carousel4
 } from "../../assets/assets";
 
 const MotionBox = motion(Box);
 
 const images = [
-  aboutoverview1,
-  aboutoverview2,
-  aboutoverview3,
-  aboutoverview4,
+ About_Us_Carousel1,
+  About_Us_Carousel2,
+  About_Us_Carousel3,
+  About_Us_Carousel4
 ];
 
 // Continuous interval tuned to the bloom speed

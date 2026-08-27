@@ -70,7 +70,7 @@ const projectThumbnails: Thumbnail[] = [
 
 const sectionOrder = ["section1", "section2", "section3", "section4"];
 
-const tallImageSections = new Set(["section1", "section4"]);
+const tallImageSections = new Set(["section1"]);
 
 const morphTransition: Transition = {
   type: "spring",
@@ -148,6 +148,14 @@ export default function PortfolioProject4() {
 
   const isMobile = useBreakpointValue({ base: true, lg: false }) ?? true;
 
+  useEffect(() => {
+    if (isMobile) {
+      setActiveIndex(0);
+    } else {
+      setActiveIndex(1);
+    }
+  }, [isMobile]);
+
   const goNext = () => {
     setActiveIndex((previous) => (previous + 1) % projectThumbnails.length);
   };
@@ -215,8 +223,8 @@ export default function PortfolioProject4() {
     <LayoutGroup>
       <Box position="relative">
         <Flex
-          minH={{ base: "auto", md: "100vh", lg: "100vh" }}
-          h={{ base: "auto", md: "100vh", lg: "100vh" }}
+          minH={{ base: "100svh", md: "100svh", lg: "100vh" }}
+          h={{ base: "auto", md: "auto", lg: "100vh" }}
           w="100%"
           bgImage={`url(${MB_MainPageImg})`}
           bgSize="cover"
@@ -224,7 +232,7 @@ export default function PortfolioProject4() {
           bgRepeat="no-repeat"
           position="relative"
           overflow="hidden"
-          py={{ base: 2, sm: 3, md: 4, lg: 0 }}
+          py={0}
         >
           <Box position="absolute" inset={0} bg="rgba(0,0,0,.35)" />
 
@@ -233,18 +241,19 @@ export default function PortfolioProject4() {
             zIndex={2}
             direction="column"
             w="100%"
-            h="100%"
+            minH={{ base: "100svh", md: "100svh", lg: "100%" }}
+             h={{ base: "auto", md: "auto", lg: "100%" }}
           >
             <Flex
               flex={1}
               pl={{ base: "6%", md: "6%", lg: "3%" }}
               pr={{ base: "6%", md: "6%", lg: "0%" }}
-              pb={{ base: "10%", md: "1.5%", lg: "4%" }}
-              pt={{ base: "88px" , md: "auto", lg: 0 }}
+              pb={{ base: 3, sm: 3, md: 2, lg: "4%" }}
+              pt={{ base: "94px", sm: "100px", md: "106px", lg: 0 }}
               direction={{ base: "column", lg: "row" }}
               justify={{ base: "flex-end", lg: "space-between" }}
               align={{ base: "stretch", lg: "flex-end" }}
-              gap={{ base: 3, md: 3, lg: "3%" }}
+              gap={{ base: 2, sm: 2, md: 2, lg: "3%" }}
             >
               <Box
                 position="relative"
@@ -255,9 +264,9 @@ export default function PortfolioProject4() {
               >
                 <Text
                   fontSize={{
-                    base: "32px",
-                    sm: "42px",
-                    md: "52px",
+                    base: "30px",
+                     sm: "38px",
+                     md: "46px",
                     lg: "72px",
                   }}
                   lineHeight="0.95"
@@ -269,9 +278,9 @@ export default function PortfolioProject4() {
                 <Text
                   mt={{ base: 1, md: 2, lg: 2 }}
                   fontSize={{
-                    base: "22px",
-                    sm: "28px",
-                    md: "34px",
+                    base: "20px",
+                     sm: "25px",
+                     md: "30px",
                     lg: "50px",
                   }}
                   fontWeight="300"
@@ -280,7 +289,7 @@ export default function PortfolioProject4() {
                 </Text>
 
                 <Flex
-                  mt={{ base: 2, md: 3, lg: 8 }}
+                  mt={{ base: 1.5, md: 2, lg: 8 }}
                   gap={{ base: 3, md: 5, lg: 6 }}
                   flexWrap="wrap"
                   color="#F5F5F5"
@@ -298,9 +307,9 @@ export default function PortfolioProject4() {
                 </Flex>
 
                 <Text
-                  mt={{ base: 2, md: 3, lg: 5 }}
+                  mt={{ base: 1.5, md: 2, lg: 5 }}
                   color="#F4F4F4"
-                  lineHeight="1.8"
+                  lineHeight={{ base: "1.55", md: "1.5", lg: "1.8" }}
                   fontSize={{
                     base: "13px",
                     sm: "14px",
@@ -324,18 +333,18 @@ export default function PortfolioProject4() {
                 direction="column"
                 w={{ base: "100%", lg: "50%" }}
                 maxW={{ base: "100%", lg: "50%" }}
-                gap={{ base: "5%", lg: "6%" }}
+                gap={{ base: 2, md: 2, lg: "6%" }}
               >
                 <Box
                   position="relative"
                   w="100%"
                   height={{
-                    base: "260px",
-                    sm: "280px",
-                    md: "240px",
-                    lg: "300px",
-                  }}
-                  mt={{ base: 2, md: 3, lg: 0 }}
+                     base: "clamp(180px, 33svh, 260px)",
+                     sm: "clamp(195px, 35svh, 275px)",
+                     md: "clamp(200px, 37svh, 255px)",
+                     lg: "300px",
+                   }}
+                  mt={{ base: 1, md: 6, lg: 0 }}
                 >
                   {projectThumbnails.map((project, index) => {
                     const distance = getRelativePosition(index);
@@ -388,7 +397,7 @@ export default function PortfolioProject4() {
                         }
                         position="absolute"
                         top={0}
-                        w={{ base: "85%", sm: "70%", md: "46%", lg: "30%" }}
+                        w={{ base: "84%", sm: "68%", md: "48%", lg: "30%" }}
                         h="100%"
                         zIndex={
                           isMobile
@@ -502,7 +511,11 @@ export default function PortfolioProject4() {
                   justify="center"
                   w="100%"
                   gap={4}
-                  mt={{ base: 2, md: 2, lg: 5 }}
+                  mt={{ base: 1, md: 1, lg: 5 }}
+                   flexShrink={0}
+                   position="relative"
+                   zIndex={20}
+                   pb={{ base: 1, md: 0 }}
                 >
                   <Button
                     aria-label="Previous project"
@@ -689,7 +702,13 @@ function DetailLayout({
       color="white"
       h="100vh"
       maxH="100vh"
-      overflow="hidden"
+      overflowY={{ base: "auto", lg: "hidden" }}
+      overflowX="hidden"
+      data-lenis-prevent
+      css={{
+        "&::-webkit-scrollbar": { display: "none" },
+        scrollbarWidth: "none",
+      }}
       px={{ base: 4, sm: 6, md: 8, lg: 12 }}
       pt={{ base: 4, sm: 6, md: 7, lg: 8 }}
       pb={{ base: 4, sm: 6, lg: 8 }}
@@ -741,11 +760,11 @@ function DetailLayout({
         </Flex>
       </Flex>
 
-      <Box display={{ base: "block", md: "none" }} mb={2}>
-        <Text fontSize="24px" fontWeight="700" lineHeight=".95">
+      <Box display={{ base: "block", lg: "none" }} mb={2}>
+        <Text fontSize={{ base: "24px", md: "34px" }} fontWeight="700" lineHeight=".95">
           {title}
         </Text>
-        <Text fontSize="18px" fontWeight="300">
+        <Text fontSize={{ base: "18px", md: "24px" }} fontWeight="300">
           {subtitle}
         </Text>
       </Box>
@@ -753,39 +772,36 @@ function DetailLayout({
       <Grid
         templateColumns={{
           base: "1fr",
-          md: "360px minmax(0, 1fr)",
           lg: "440px minmax(0, 1fr)",
         }}
-        gap={{ base: 3, md: 6, lg: 12 }}
-        alignItems={{ base: "stretch", md: "flex-end", lg: "stretch" }}
-        flex={1}
-        overflow="hidden"
-        minH={0}
+        gap={{ base: 4, md: 5, lg: 12 }}
+        alignItems="stretch"
+        flex={{ base: "0 0 auto", lg: 1 }}
+        overflow={{ base: "visible", lg: "hidden" }}
+        minH={{ base: "auto", lg: 0 }}
       >
         <GridItem
-          order={{ base: 2, md: 1 }}
+          order={{ base: 2, lg: 1 }}
           display="flex"
           flexDirection="column"
-          overflowY="auto"
+          justifyContent={{ base: "flex-start", lg: "flex-end" }}
+          overflowY={{ base: "visible", lg: "auto" }}
+          data-lenis-prevent
           pr={{ base: 1, md: 2 }}
-          pb={{ base: 2, md: 0, lg: 6 }}
-          h="100%"
-          minH={0}
+          pb={{ base: 2, lg: 0 }}
+          h={{ base: "auto", lg: "100%" }}
+          minH={{ base: "auto", lg: 0 }}
           css={{
             "&::-webkit-scrollbar": { display: "none" },
             scrollbarWidth: "none",
           }}
         >
-          <Box mt={{ base: 0, md: "auto" }}>
-            <Box display={{ base: "none", md: "block" }} mb={{ md: 3, lg: 3 }}>
-              <Text
-                fontSize={{ md: "38px", lg: "52px" }}
-                fontWeight="700"
-                lineHeight=".95"
-              >
+          <Box>
+            <Box display={{ base: "none", lg: "block" }} mb={3}>
+              <Text fontSize="52px" fontWeight="700" lineHeight=".95">
                 {title}
               </Text>
-              <Text fontSize={{ md: "26px", lg: "34px" }} fontWeight="300">
+              <Text fontSize="34px" fontWeight="300">
                 {subtitle}
               </Text>
             </Box>
@@ -794,22 +810,24 @@ function DetailLayout({
         </GridItem>
 
         <GridItem
-          order={{ base: 1, md: 2 }}
-          h="100%"
+          order={{ base: 1, lg: 2 }}
+          h={{ base: "auto", lg: "100%" }}
           display="flex"
           alignItems="center"
-          justifyContent="center"
+          justifyContent={{ base: "center", lg: "flex-end" }}
           overflow="hidden"
         >
           {isVideo && typeof image === "string" ? (
             <Box
               position="relative"
               w="100%"
+              h={{ base: "auto", lg: "100%" }}
               maxH={{
-                base: tallImageMobile ? "30vh" : "26vh",
-                md: "calc(100vh - 90px)",
+                base: tallImageMobile ? "48vh" : "42vh",
+                md: tallImageMobile ? "58vh" : "52vh",
+                lg: "calc(100vh - 90px)",
               }}
-              aspectRatio={{ base: "16 / 10", md: "16 / 10" }}
+              aspectRatio={{ base: "4 / 3", md: "16 / 9", lg: "auto" }}
               display="flex"
               alignItems="center"
               justifyContent="center"
@@ -837,12 +855,14 @@ function DetailLayout({
           ) : (
             <Box
               position="relative"
-              h="100%"
               w="100%"
+              h={{ base: "auto", lg: "100%" }}
               maxH={{
-                base: tallImageMobile ? "30vh" : "26vh",
-                md: "calc(100vh - 90px)",
+                base: tallImageMobile ? "48vh" : "42vh",
+                md: tallImageMobile ? "58vh" : "52vh",
+                lg: "calc(100vh - 90px)",
               }}
+              aspectRatio={{ base: "4 / 3", md: "16 / 9", lg: "auto" }}
               display="flex"
               alignItems="center"
               justifyContent="center"
@@ -866,7 +886,7 @@ function DetailLayout({
                       height: "100%",
                       maxWidth: "100%",
                       maxHeight: "100%",
-                      objectFit: "contain",
+                      objectFit: "cover",
                     }}
                   />
                 </AnimatePresence>
@@ -935,8 +955,8 @@ function OverviewDetails() {
   return (
     <PlainContent>
       <Grid
-        templateColumns="repeat(2, 1fr)"
-        gapX={{ base: 4, md: 8 }}
+        templateColumns={{ base: "repeat(2, 1fr)", md: "repeat(3, 1fr)" }}
+        gapX={{ base: 4, md: 6 }}
         gapY={{ base: 2, md: 3 }}
         mb={{ base: 2, md: 3 }}
       >

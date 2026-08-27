@@ -23,44 +23,66 @@ import {
 } from "react-icons/go";
 import { useState, useEffect, type ReactNode } from "react";
 import { createPortal } from "react-dom";
-//import Navbar from "../../layout/Navbar";
 
 import {
-  PortfolioProject2Img,
-  GC_clientVision,
-  GC_ExecutionandDelivery,
-  GC_PlanningandStrategy,
-  
-  GC_ExecutionandDelivery_CoverImg,
+  UK_MainPageImg,
+  UK_ProjectOverview,
+  UK_ClientVision1,
+  UK_ClientVision2,
+  UK_ClientVision3,
+  UK_DeliveryandExecution,
+  UK_DesignandDevelopment1,
+  UK_DesignandDevelopment2,
+  UK_DesignandDevelopment3,
+  UK_DesignandDevelopment4,
+  UK_PlanningandStrategy,
   maps,
   areasize,
-  GC_Project_Overview_1,
-  GC_Project_Overview_2,
-  GC_Project_Overview_3,
-  GC_Project_Overview_4,
-  GC_Project_Overview_5,
 } from "../../assets/assets";
 
 const MotionBox = motion.create(Box);
 
-const overviewImages = [
-  GC_Project_Overview_1,
-  GC_Project_Overview_2,
-  GC_Project_Overview_3,
-  GC_Project_Overview_4,
-  GC_Project_Overview_5,
+// Grouped arrays for sections that use a carousel of multiple images
+const clientVisionImages = [UK_ClientVision1, UK_ClientVision2, UK_ClientVision3];
+const designDevelopmentImages = [
+  UK_DesignandDevelopment1,
+  UK_DesignandDevelopment2,
+  UK_DesignandDevelopment3,
+  UK_DesignandDevelopment4,
 ];
 
-const projectThumbnails = [
-  { image: GC_Project_Overview_2, section: "section1" },
-  { image: GC_clientVision, section: "section2" },
-  { image: GC_PlanningandStrategy, section: "section3" },
-  { image: GC_ExecutionandDelivery_CoverImg, section: "section4" },
+type Thumbnail = {
+  section: string;
+  images?: string[];
+  video?: string;
+};
+
+const projectThumbnails: Thumbnail[] = [
+  {
+    video: UK_ProjectOverview,
+    section: "section1",
+  },
+  {
+    images: clientVisionImages,
+    section: "section2",
+  },
+  {
+    video: UK_PlanningandStrategy,
+    section: "section3",
+  },
+  {
+    images: designDevelopmentImages,
+    section: "section4",
+  },
+  {
+    video: UK_DeliveryandExecution,
+    section: "section5",
+  },
 ];
 
-const sectionOrder = ["section1", "section2", "section3", "section4"];
+const sectionOrder = ["section1", "section2", "section3", "section4", "section5"];
 
-const tallImageSections = new Set(["section1", "section2"]);
+const tallImageSections = new Set(["section1", "section3", "section5"]);
 
 const morphTransition: Transition = {
   type: "spring",
@@ -95,100 +117,51 @@ const sectionDetailsMap: Record<
   section1: {
     title: "PROJECT",
     subtitle: "Overview",
-    image: overviewImages,
+    image: UK_ProjectOverview,
     imageAlt: "Project overview",
-    isCarousel: true,
+    isVideo: true,
   },
   section2: {
     title: "CLIENT",
     subtitle: "Vision",
-    image: GC_clientVision,
-    imageAlt: "Project Goal",
+    image: clientVisionImages,
+    imageAlt: "Client vision",
+    isCarousel: true,
   },
   section3: {
     title: "PLANNING &",
     subtitle: "STRATEGY",
-    image: GC_PlanningandStrategy,
+    image: UK_PlanningandStrategy,
     imageAlt: "Planning and strategy",
+    isVideo: true,
   },
   section4: {
-    title: "EXECUTION",
-    subtitle: "& Delivery",
-    image: GC_ExecutionandDelivery,
+    title: "DESIGN &",
+    subtitle: "Development",
+    image: designDevelopmentImages,
+    imageAlt: "Design and development",
+    isCarousel: true,
+  },
+  section5: {
+    title: "EXECUTION &",
+    subtitle: "Delivery",
+    image: UK_DeliveryandExecution,
     imageAlt: "Execution and delivery",
     isVideo: true,
   },
 };
 
-export default function PortfolioProject2() {
-  const [currentSection, setCurrentSection] = useState<string>("main");
-  const [activeIndex, setActiveIndex] = useState<number>(1);
+export default function PortfolioProject5() {
+  const [currentSection, setCurrentSection] = useState("main");
+  const [activeIndex, setActiveIndex] = useState(1);
   const [openedCardIndex, setOpenedCardIndex] = useState<number | null>(null);
   const [mounted, setMounted] = useState(false);
-  const [loadedThumbs, setLoadedThumbs] = useState<Set<number>>(new Set());
-  const [thumbnailsReady, setThumbnailsReady] = useState(false);
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
   const isMobile = useBreakpointValue({ base: true, lg: false }) ?? true;
-
-  useEffect(() => {
-    let cancelled = false;
-
-    const preloadThumbnails = async () => {
-      await Promise.all(
-        projectThumbnails.map(
-          (project, index) =>
-            new Promise<void>((resolve) => {
-              const image = new window.Image();
-
-              const finish = () => {
-                if (!cancelled) {
-                  setLoadedThumbs((prev) =>
-                    prev.has(index) ? prev : new Set(prev).add(index)
-                  );
-                }
-                resolve();
-              };
-
-              image.onload = async () => {
-                try {
-                  if ("decode" in image) {
-                    await image.decode();
-                  }
-                } catch {
-                  // The browser can still paint the image even if decode rejects.
-                }
-                finish();
-              };
-
-              image.onerror = finish;
-              image.src = project.image;
-
-              if (image.complete) {
-                if (image.naturalWidth > 0) {
-                  image.onload?.(new Event("load"));
-                } else {
-                  finish();
-                }
-              }
-            })
-        )
-      );
-
-      if (!cancelled) {
-        setThumbnailsReady(true);
-      }
-    };
-
-    preloadThumbnails();
-
-    return () => {
-      cancelled = true;
-    };
-  }, []);
 
   const goNext = () => {
     setActiveIndex((previous) => (previous + 1) % projectThumbnails.length);
@@ -212,14 +185,14 @@ export default function PortfolioProject2() {
   };
 
   const getRelativePosition = (index: number) => {
+    const total = projectThumbnails.length;
     let distance = index - activeIndex;
 
-    if (distance > projectThumbnails.length / 2) {
-      distance -= projectThumbnails.length;
+    if (distance > total / 2) {
+      distance -= total;
     }
-
-    if (distance < -projectThumbnails.length / 2) {
-      distance += projectThumbnails.length;
+    if (distance < -total / 2) {
+      distance += total;
     }
 
     return distance;
@@ -255,24 +228,18 @@ export default function PortfolioProject2() {
 
   return (
     <LayoutGroup>
-      <style>{`
-        @keyframes gc-shimmer {
-          0% { background-position: 200% 0; }
-          100% { background-position: -200% 0; }
-        }
-      `}</style>
       <Box position="relative">
         <Flex
-          minH={{ base: "auto", md: "100vh", lg: "100vh" }}
-          h={{ base: "auto", md: "100vh", lg: "100vh" }}
+          minH={{ base: "100svh", md: "100svh", lg: "100vh" }}
+          h={{ base: "auto", md: "auto", lg: "100vh" }}
+          overflow="hidden"
           w="100%"
-          bgImage={`url(${PortfolioProject2Img})`}
+          bgImage={`url(${UK_MainPageImg})`}
           bgSize="cover"
           backgroundPosition="center"
           bgRepeat="no-repeat"
           position="relative"
-          overflow="hidden"
-          py={{ base: 2, sm: 3, md: 4, lg: 0 }} 
+          py={0}
         >
           <Box position="absolute" inset={0} bg="rgba(0,0,0,.35)" />
 
@@ -281,22 +248,20 @@ export default function PortfolioProject2() {
             zIndex={2}
             direction="column"
             w="100%"
-            h="100%"
+            minH={{ base: "100svh", md: "100svh", lg: "100%" }}
+            h={{ base: "auto", md: "auto", lg: "100%" }}
           >
-         
-
             <Flex
               flex={1}
               pl={{ base: "6%", md: "6%", lg: "3%" }}
               pr={{ base: "6%", md: "6%", lg: "0%" }}
-                 pb={{ base: "10%", md: "1.5%", lg: "4%" }}
-              pt={{ base: "88px" , md: "auto", lg: 0 }}
+              pb={{ base: 3, sm: 3, md: 2, lg: "4%" }}
+              pt={{ base: "94px", sm: "100px", md: "106px", lg: 0 }}
               direction={{ base: "column", lg: "row" }}
               justify={{ base: "flex-end", lg: "space-between" }}
               align={{ base: "stretch", lg: "flex-end" }}
-              gap={{ base: 3, md: 3, lg: "3%" }}
+              gap={{ base: 2, sm: 2, md: 2, lg: "3%" }}
             >
-              {/* LEFT SIDE TEXT BLOCK */}
               <Box
                 position="relative"
                 zIndex={1}
@@ -307,76 +272,78 @@ export default function PortfolioProject2() {
                 <Text
                   fontSize={{
                     base: "32px",
-                    sm: "42px",
-                    md: "52px",
-                    lg: "68px",
-                    xl: "76px",
+                    sm: "38px",
+                    md: "44px",
+                    lg: "72px",
                   }}
                   lineHeight="0.95"
                   fontWeight="700"
                 >
-                  GOODWILL
+                  URLI KANCHAN
                 </Text>
 
                 <Text
-                  mt={{ base: 1, md: 2 }}
+                  mt={{ base: 1, md: 2, lg: 2 }}
                   fontSize={{
                     base: "22px",
-                    sm: "28px",
-                    md: "34px",
-                    lg: "42px",
+                    sm: "26px",
+                    md: "28px",
+                    lg: "50px",
                   }}
                   fontWeight="300"
                 >
-                  CRESCENT
+                  OLD AGE HOME
                 </Text>
 
                 <Flex
-                  mt={{ base: 2, md: 3, lg: 8 }}
-                  gap={{ base: 3, md: 5, lg: 6 }}
+                  mt={{ base: 2, md: 2, lg: 8 }}
+                  gap={{ base: 3, md: 4, lg: 6 }}
                   flexWrap="wrap"
                   color="#F5F5F5"
-                  fontSize={{ base: "13px", md: "15px" }}
+                  fontSize={{ base: "13px", md: "15px", lg: "16px" }}
                 >
                   <Flex align="center" gap={2}>
                     <Image src={maps} w="14px" />
-                    <Text fontWeight="700">Pune, Maharashtra</Text>
+                    <Text fontWeight="700">Urli Kanchan, Maharashtra</Text>
                   </Flex>
 
                   <Flex align="center" gap={2}>
                     <Image src={areasize} w="18px" />
-                    <Text fontWeight="700">22,000 Sq.ft.</Text>
+                    <Text fontWeight="700">Completed</Text>
                   </Flex>
                 </Flex>
 
                 <Text
-                  mt={{ base: 2, md: 3, lg: 5 }}
+                  mt={{ base: 1, md: 1, lg: 5 }}
                   color="#F4F4F4"
-                  lineHeight="1.6"
+                  lineHeight={{ base: "1.65", md: "1.5", lg: "1.8" }}
                   fontSize={{
                     base: "13px",
-                    sm: "14px",
-                    md: "15px",
-                    lg: "16px",
+                    sm: "13px",
+                    md: "14px",
+                    lg: "15.5px",
                   }}
-                  letterSpacing="0.01em"
+                  letterSpacing="0.02em"
+                  wordSpacing="0.05em"
                 >
-                  This residential interior is thoughtfully designed to blend
-                  warm wood tones, soft neutrals, and natural textures, creating
-                  a calm and contemporary home. The space balances
-                  functionality with character through custom details, ambient
-                  lighting, curated décor, and earthy accents.
+                  A thoughtfully planned senior living environment shaped
+                  around safety, familiarity, and everyday comfort. Set
+                  within a quiet agricultural landscape, the old age home
+                  uses a simple and practical architectural language,
+                  generous semi-open spaces, natural light, and familiar
+                  domestic-scale interiors to create a place that feels
+                  welcoming rather than institutional.
                 </Text>
               </Box>
 
-              {/* RIGHT SIDE CARDS BLOCK */}
               <Flex
                 position="relative"
                 zIndex={10}
                 direction="column"
                 w={{ base: "100%", lg: "50%" }}
                 maxW={{ base: "100%", lg: "50%" }}
-                align={{ base: "center", lg: "flex-end" }}
+                gap={{ base: 3, md: 4, lg: "6%" }}
+                flexShrink={0}
               >
                 <Box
                   position="relative"
@@ -387,14 +354,7 @@ export default function PortfolioProject2() {
                     md: "clamp(200px, 37svh, 255px)",
                     lg: "300px",
                   }}
-                  minH={{ base: "230px", md: "220px", lg: "300px" }}
-                  maxH={{ base: "320px", md: "260px", lg: "300px" }}
-                  mt={{ base: 2, md: 3, lg: 0 }} /* REDUCED MARGIN TOP ABOVE CARDS */
-                  overflow="visible"
-                  isolation="isolate"
-                  opacity={thumbnailsReady ? 1 : 0}
-                  pointerEvents={thumbnailsReady ? "auto" : "none"}
-                  transition="opacity 0.15s ease"
+                  mt={{ base: 1, md: 2, lg: 0 }}
                 >
                   {projectThumbnails.map((project, index) => {
                     const distance = getRelativePosition(index);
@@ -437,11 +397,14 @@ export default function PortfolioProject2() {
                     };
 
                     const details = sectionDetailsMap[project.section];
+                    const thumbnailImage = project.images?.[0];
 
                     return (
                       <MotionBox
                         key={index}
-                        layoutId={mounted ? `project-card-${index}` : undefined}
+                        layoutId={
+                          mounted ? `project-card-${index}` : undefined
+                        }
                         position="absolute"
                         top={0}
                         w={{ base: "84%", sm: "68%", md: "48%", lg: "30%" }}
@@ -479,44 +442,35 @@ export default function PortfolioProject2() {
                           duration: 0.4,
                           ease: [0.22, 1, 0.36, 1],
                         }}
-                        style={{
-                          willChange: "opacity, transform",
-                        }}
                       >
-                        <Box
-                          position="absolute"
-                          inset={0}
-                          zIndex={0}
-                          bg="linear-gradient(110deg, rgba(255,255,255,.08) 8%, rgba(255,255,255,.18) 18%, rgba(255,255,255,.08) 33%)"
-                          backgroundSize="200% 100%"
-                          opacity={loadedThumbs.has(index) ? 0 : 1}
-                          pointerEvents="none"
-                          transition="opacity 0.25s ease"
-                          style={{
-                            animation: loadedThumbs.has(index)
-                              ? undefined
-                              : "gc-shimmer 1.4s ease infinite",
-                          }}
-                        />
-                        <Image
-                          src={project.image}
-                          w="100%"
-                          h="100%"
-                          objectFit="cover"
-                          draggable={false}
-                          position="relative"
-                          zIndex={0}
-                          alt={details.title}
-                          loading="eager"
-                          fetchPriority={
-                            Math.abs(distance) <= 1 ? "high" : "auto"
-                          }
-                          onLoad={() =>
-                            setLoadedThumbs((prev) =>
-                              prev.has(index) ? prev : new Set(prev).add(index)
-                            )
-                          }
-                        />
+                        {project.video ? (
+                          <video
+                            src={project.video}
+                            autoPlay
+                            loop
+                            muted
+                            playsInline
+                            style={{
+                              width: "100%",
+                              height: "100%",
+                              objectFit: "cover",
+                              position: "relative",
+                              zIndex: 0,
+                              display: "block",
+                            }}
+                          />
+                        ) : (
+                          <Image
+                            src={thumbnailImage}
+                            w="100%"
+                            h="100%"
+                            objectFit="cover"
+                            draggable={false}
+                            position="relative"
+                            zIndex={0}
+                            alt={details.title}
+                          />
+                        )}
 
                         <Box
                           position="absolute"
@@ -563,7 +517,13 @@ export default function PortfolioProject2() {
                   })}
                 </Box>
 
-                <Flex justify="center" w="100%" gap={4} mt={{ base: 2, md: 2, lg: 5 }}> {/* REDUCED MARGIN TOP BELOW CARDS */}
+                <Flex
+                  justify="center"
+                  w="100%"
+                  gap={4}
+                  mt={{ base: 2, md: 2, lg: 5 }}
+                  flexShrink={0}
+                >
                   <Button
                     aria-label="Previous project"
                     onClick={goPrevious}
@@ -574,9 +534,8 @@ export default function PortfolioProject2() {
                     bg="rgba(255,255,255,.15)"
                     color="white"
                     _hover={{ bg: "#C8A96B", color: "#000" }}
-                    flexShrink={0}
                   >
-                    <GoArrowLeft size={isMobile ? 18 : 22} />
+                    <GoArrowLeft size={22} />
                   </Button>
 
                   <Button
@@ -589,9 +548,8 @@ export default function PortfolioProject2() {
                     bg="rgba(255,255,255,.15)"
                     color="white"
                     _hover={{ bg: "#C8A96B", color: "#000" }}
-                    flexShrink={0}
                   >
-                    <GoArrowRight size={isMobile ? 18 : 22} />
+                    <GoArrowRight size={22} />
                   </Button>
                 </Flex>
               </Flex>
@@ -608,13 +566,25 @@ export default function PortfolioProject2() {
             isFirst={currentSectionIndex === 0}
             isLast={currentSectionIndex === sectionOrder.length - 1}
             tallImageMobile={tallImageSections.has(currentSection)}
-            {...(sectionDetailsMap[currentSection] || sectionDetailsMap.section1)}
+            {...(sectionDetailsMap[currentSection] ||
+              sectionDetailsMap.section1)}
           >
             <Box overflow="visible">
-              {currentSection === "section1" && <OverviewDetails />}
-              {currentSection === "section2" && <Section2Content />}
-              {currentSection === "section3" && <Section3Content />}
-              {currentSection === "section4" && <Section4Content />}
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={currentSection}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.2, ease: "easeInOut" }}
+                >
+                  {currentSection === "section1" && <OverviewDetails />}
+                  {currentSection === "section2" && <Section2Content />}
+                  {currentSection === "section3" && <Section3Content />}
+                  {currentSection === "section4" && <Section4Content />}
+                  {currentSection === "section5" && <Section5Content />}
+                </motion.div>
+              </AnimatePresence>
             </Box>
           </DetailLayout>
         )}
@@ -638,8 +608,6 @@ type AccordionItem = { title: string; content: string | string[] };
 function ImageCarousel({ images, alt }: { images: string[]; alt: string }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [loaded, setLoaded] = useState<Set<string>>(() => {
-    // Synchronously check which images are already cached by the browser
-    // so a revisit doesn't blank out while waiting for onload to re-fire.
     const initial = new Set<string>();
     images.forEach((src) => {
       const img = new window.Image();
@@ -731,10 +699,6 @@ function DetailLayout({
   isLast,
   tallImageMobile,
 }: DetailLayoutProps) {
-  // Portaled to document.body so this "fixed" overlay is actually fixed to
-  // the viewport, instead of being trapped inside Swiper's transformed
-  // .swiper-wrapper (which breaks position: fixed + z-index stacking,
-  // letting the Navbar show through on top of this overlay).
   const content = (
     <MotionBox
       layoutId={layoutId}
@@ -745,6 +709,7 @@ function DetailLayout({
       bg="black"
       color="white"
       h="100vh"
+      maxH="100vh"
       overflowY={{ base: "auto", lg: "hidden" }}
       overflowX="hidden"
       data-lenis-prevent
@@ -758,7 +723,12 @@ function DetailLayout({
       display="flex"
       flexDirection="column"
     >
-      <Flex justify="space-between" align="center" mb={{ base: 2, md: 4 }} zIndex={2}>
+      <Flex
+        justify="space-between"
+        align="center"
+        mb={{ base: 2, md: 4 }}
+        zIndex={2}
+      >
         <Flex
           as="button"
           align="center"
@@ -768,8 +738,11 @@ function DetailLayout({
           _hover={{ color: "#d7b47d" }}
           onClick={onClose}
         >
-          <GoArrowLeft size={20} />
-          <Text fontSize={{ base: "14px", sm: "18px", md: "22px", lg: "24px" }} fontWeight="500">
+          <GoArrowLeft size={24} />
+          <Text
+            fontSize={{ base: "14px", sm: "18px", md: "22px", lg: "24px" }}
+            fontWeight="500"
+          >
             Back to Projects
           </Text>
         </Flex>
@@ -781,7 +754,7 @@ function DetailLayout({
             _hover={isFirst ? {} : { color: "#d7b47d" }}
             onClick={isFirst ? undefined : onBack}
           >
-            <GoChevronLeft size={26} />
+            <GoChevronLeft size={30} />
           </Box>
           <Box
             as="button"
@@ -790,7 +763,7 @@ function DetailLayout({
             _hover={isLast ? {} : { color: "#d7b47d" }}
             onClick={isLast ? undefined : onNext}
           >
-            <GoChevronRight size={26} />
+            <GoChevronRight size={30} />
           </Box>
         </Flex>
       </Flex>
@@ -852,25 +825,23 @@ function DetailLayout({
           justifyContent={{ base: "center", lg: "flex-end" }}
           overflow="hidden"
         >
-          <Box
-            position="relative"
-            w="100%"
-            h={{ base: "auto", lg: "100%" }}
-            maxH={{
-              base: tallImageMobile ? "48vh" : "42vh",
-              md: tallImageMobile ? "58vh" : "52vh",
-              lg: "calc(100vh - 90px)",
-            }}
-            aspectRatio={{ base: "4 / 3", md: "16 / 9", lg: "auto" }}
-            display="flex"
-            alignItems="center"
-            justifyContent="center"
-            bg="black"
-            overflow="hidden"
-          >
-            {isCarousel && Array.isArray(image) ? (
-              <ImageCarousel images={image} alt={imageAlt} />
-            ) : isVideo && typeof image === "string" ? (
+          {isVideo && typeof image === "string" ? (
+            <Box
+              position="relative"
+              w="100%"
+              h={{ base: "auto", lg: "100%" }}
+              maxH={{
+                base: tallImageMobile ? "48vh" : "42vh",
+                md: tallImageMobile ? "58vh" : "52vh",
+                lg: "calc(100vh - 90px)",
+              }}
+              aspectRatio={{ base: "4 / 3", md: "16 / 9", lg: "auto" }}
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+              bg="black"
+              overflow="hidden"
+            >
               <motion.video
                 key={image}
                 src={image}
@@ -888,25 +859,48 @@ function DetailLayout({
                   objectPosition: "center",
                 }}
               />
-            ) : (
-              <AnimatePresence mode="wait">
-                <motion.img
-                  key={image as string}
-                  src={image as string}
-                  alt={imageAlt}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.25 }}
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    objectFit: "cover",
-                  }}
-                />
-              </AnimatePresence>
-            )}
-          </Box>
+            </Box>
+          ) : (
+            <Box
+              position="relative"
+              w="100%"
+              h={{ base: "auto", lg: "100%" }}
+              maxH={{
+                base: tallImageMobile ? "48vh" : "42vh",
+                md: tallImageMobile ? "58vh" : "52vh",
+                lg: "calc(100vh - 90px)",
+              }}
+              aspectRatio={{ base: "4 / 3", md: "16 / 9", lg: "auto" }}
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+              bg="black"
+              overflow="hidden"
+            >
+              {isCarousel && Array.isArray(image) ? (
+                <ImageCarousel images={image} alt={imageAlt} />
+              ) : (
+                <AnimatePresence mode="wait">
+                  <motion.img
+                    key={image as string}
+                    src={image as string}
+                    alt={imageAlt}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.25 }}
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      maxWidth: "100%",
+                      maxHeight: "100%",
+                      objectFit: "contain",
+                    }}
+                  />
+                </AnimatePresence>
+              )}
+            </Box>
+          )}
         </GridItem>
       </Grid>
     </MotionBox>
@@ -919,10 +913,14 @@ function DetailLayout({
 function Detail({ label, value }: { label: string; value: string }) {
   return (
     <Box>
-      <Text color="#D6B46A" fontSize={{ base: "12px", sm: "13px", md: "14px" }} fontWeight="500">
+      <Text
+        color="#D6B46A"
+        fontSize={{ base: "13px", sm: "14px", md: "14px" }}
+        fontWeight="500"
+      >
         {label}
       </Text>
-      <Text fontSize={{ base: "13px", sm: "14px", md: "16px" }}>{value}</Text>
+      <Text fontSize={{ base: "14px", sm: "15px", md: "16px" }}>{value}</Text>
     </Box>
   );
 }
@@ -940,28 +938,45 @@ function OverviewDetails() {
   const items: AccordionItem[] = [
     {
       title: "Services",
-      content: ["Interior Design", "Space Planning"],
+      content: [
+        "Architecture & Planning",
+        "Interior Design",
+        "Landscape Design",
+        "Turnkey Execution",
+      ],
     },
     {
       title: "Key Spaces",
-      content:
-        "The residence includes a cozy, modern living area, dining space, modular kitchen, bedrooms, and well-planned storage solutions. Thoughtful space planning, custom joinery, textured finishes, and curated furnishings create a cohesive character in every room.",
+      content: [
+        "Residential / Sleeping Areas",
+        "Common Living & Lounge Areas",
+        "Dining & Community Spaces",
+        "Waiting & Reception Areas",
+        "Staff / Administrative Spaces",
+        "Semi-Open Corridors & Verandahs",
+        "Landscaped Outdoor Areas",
+        "Secure Entry & Circulation Areas",
+      ],
     },
   ];
 
   return (
     <PlainContent>
       <Grid
-        templateColumns="repeat(2, 1fr)"
-        gapX={{ base: 4, md: 8 }}
+        templateColumns={{ base: "repeat(2, 1fr)", md: "repeat(3, 1fr)" }}
+        gapX={{ base: 4, md: 6 }}
         gapY={{ base: 2, md: 3 }}
         mb={{ base: 2, md: 3 }}
       >
-        <Detail label="Project Type" value="Residential Interior" />
+        <Detail
+          label="Project Type"
+          value="Institutional (Old Age Home / Senior Care Facility)"
+        />
         <Detail label="Completion Year" value="2025" />
-        <Detail label="Project Duration" value="1 Month" />
+        <Detail label="Project Duration" value="2 Months" />
+        <Detail label="Site Area" value="3,800 sq.ft." />
+        <Detail label="Built-up Area" value="2,500 sq.ft." />
         <Detail label="Status" value="Completed" />
-        <Detail label="Design Approach" value="Contemporary • Warm Minimalism" />
       </Grid>
 
       <AccordionContent items={items} />
@@ -971,93 +986,122 @@ function OverviewDetails() {
 
 function AccordionContent({ items }: { items: AccordionItem[] }) {
   const [active, setActive] = useState<number | null>(null);
+  const total = items.length;
 
   return (
     <LayoutGroup>
       <motion.div layout transition={{ duration: 0.7, ease }}>
         {items.map((item, index) => {
           const isOpen = active === index;
+          // Items in the bottom half of a long list expand upward instead of
+          // downward, so their content opens into space that's already
+          // visible rather than being pushed off/clipped at the bottom.
+          const opensUpward = index >= Math.ceil(total / 2);
+
+          const panel = (
+            <AnimatePresence key="panel" initial={false}>
+              {isOpen && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: "auto", opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{
+                    height: { duration: 0.6, ease },
+                    opacity: { duration: 0.25, ease: "easeOut" },
+                  }}
+                  style={{ overflow: "hidden" }}
+                >
+                  <Box
+                    border="1px solid"
+                    borderColor="rgba(255, 255, 255, 0.11)"
+                    borderRadius="8px"
+                    px={{ base: 2.5, md: 3 }}
+                    py={{ base: 1.5, md: 2 }}
+                    mt={opensUpward ? { base: 1.5, md: 2 } : 0}
+                    mb={opensUpward ? 0 : { base: 1.5, md: 2 }}
+                  >
+                    {Array.isArray(item.content) ? (
+                      <List.Root
+                        color="whiteAlpha.800"
+                        fontSize={{ base: "13px", sm: "14px", md: "15px" }}
+                        lineHeight="1.5"
+                        ml="16px"
+                      >
+                        {item.content.map((line) => (
+                          <List.Item key={line}>{line}</List.Item>
+                        ))}
+                      </List.Root>
+                    ) : (
+                      <Text
+                        color="whiteAlpha.800"
+                        fontSize={{ base: "13px", sm: "14px", md: "15px" }}
+                        lineHeight="1.5"
+                      >
+                        {item.content}
+                      </Text>
+                    )}
+                  </Box>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          );
+
+          const trigger = (
+            <Flex
+              key="trigger"
+              as="button"
+              w="100%"
+              py={{ base: 1.5, md: 2 }}
+              justify="space-between"
+              align="center"
+              textAlign="left"
+              cursor="pointer"
+              onClick={() => setActive(isOpen ? null : index)}
+              aria-expanded={isOpen}
+            >
+              <Text
+                fontSize={{ base: "16px", sm: "18px", md: "20px" }}
+                fontWeight="500"
+              >
+                {item.title}
+              </Text>
+
+              <motion.div
+                animate={{ rotate: isOpen ? 180 : 0 }}
+                transition={{ duration: 0.35, ease }}
+              >
+                <Text
+                  fontSize={{ base: "20px", md: "24px" }}
+                  lineHeight="1"
+                  color={isOpen ? "#C7A46C" : "white"}
+                >
+                  {isOpen ? "−" : "+"}
+                </Text>
+              </motion.div>
+            </Flex>
+          );
 
           return (
             <motion.div
               key={item.title}
               layout
               transition={{ duration: 0.7, ease }}
+              style={{
+                display: "flex",
+                flexDirection: opensUpward ? "column-reverse" : "column",
+              }}
             >
-              <Flex
-                as="button"
-                w="100%"
-                py={{ base: 1.5, md: 2 }}
-                justify="space-between"
-                align="center"
-                textAlign="left"
-                cursor="pointer"
-                onClick={() => setActive(isOpen ? null : index)}
-                aria-expanded={isOpen}
-              >
-                <Text fontSize={{ base: "15px", sm: "17px", md: "20px" }} fontWeight="500">
-                  {item.title}
-                </Text>
-
-                <motion.div
-                  animate={{ rotate: isOpen ? 180 : 0 }}
-                  transition={{ duration: 0.35, ease }}
-                >
-                  <Text
-                    fontSize={{ base: "18px", md: "24px" }}
-                    lineHeight="1"
-                    color={isOpen ? "#C7A46C" : "white"}
-                  >
-                    {isOpen ? "−" : "+"}
-                  </Text>
-                </motion.div>
-              </Flex>
-
-              <AnimatePresence initial={false}>
-                {isOpen && (
-                  <motion.div
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: "auto", opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    transition={{
-                      height: { duration: 0.6, ease },
-                      opacity: { duration: 0.25, ease: "easeOut" },
-                    }}
-                    style={{ overflow: "hidden" }}
-                  >
-                    <Box
-                      border="1px solid"
-                      borderColor="rgba(255, 255, 255, 0.11)"
-                      borderRadius="8px"
-                      px={{ base: 2.5, md: 3 }}
-                      py={{ base: 1.5, md: 2 }}
-                      mb={{ base: 1.5, md: 2 }}
-                    >
-                      {Array.isArray(item.content) ? (
-                        <List.Root
-                          as="ul"
-                          color="whiteAlpha.800"
-                          fontSize={{ base: "12px", sm: "13px", md: "15px" }}
-                          lineHeight="1.5"
-                          ml="16px"
-                        >
-                          {item.content.map((line) => (
-                            <List.Item key={line}>{line}</List.Item>
-                          ))}
-                        </List.Root>
-                      ) : (
-                        <Text
-                          color="whiteAlpha.800"
-                          fontSize={{ base: "12px", sm: "13px", md: "15px" }}
-                          lineHeight="1.5"
-                        >
-                          {item.content}
-                        </Text>
-                      )}
-                    </Box>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+              {opensUpward ? (
+                <>
+                  {panel}
+                  {trigger}
+                </>
+              ) : (
+                <>
+                  {trigger}
+                  {panel}
+                </>
+              )}
 
               {!isOpen && <Box h="1px" bg="whiteAlpha.300" />}
             </motion.div>
@@ -1073,19 +1117,21 @@ function Section2Content() {
     {
       title: "Project Goal",
       content:
-        "To shape a contemporary home that feels relaxed, personal, and naturally inviting.",
+        "Create an intuitive and easy-to-navigate environment with clear circulation, familiar spatial cues, and comfortable shared spaces that support independent movement, encourage meaningful social interaction, and foster a strong sense of belonging among residents.",
     },
     {
-      title: "Design Requirements",
+      title: "Requirements",
       content: [
-        "Modern residential aesthetic with a sense of warmth",
-        "Balanced use of timber, neutral tones, and tactile finishes",
-        "Efficient planning for comfortable everyday living",
-        "Bespoke cabinetry, furniture, and built-in storage",
-        "Ambient and accent lighting to enhance the interiors",
-        "Distinct living, dining, kitchen, and private spaces",
-        "Consistent material language across the residence",
-        "Personalised elements that make the space feel truly lived-in",
+        "Safe and comfortable spaces suited to the needs of elderly residents",
+        "A familiar residential character that creates a sense of belonging",
+        "Clearly defined common areas for interaction, dining, and recreation",
+        "Generous corridors and semi-open spaces for comfortable movement and informal interaction",
+        "Good natural light, ventilation, and visual connection with the surrounding landscape",
+        "Secure entrances, windows, and circulation areas without creating an overly restrictive environment",
+        "Easy-to-maintain materials and finishes suitable for everyday use",
+        "Practical planning that prioritizes essential comfort while remaining budget-conscious",
+        "Green outdoor areas that provide residents with opportunities to sit, relax, and connect with nature",
+        "A balance between private living spaces and shared community areas",
       ],
     },
   ];
@@ -1095,24 +1141,24 @@ function Section2Content() {
 function Section3Content() {
   const items: AccordionItem[] = [
     {
-      title: "Space Planning",
+      title: "Contextual Planning",
       content:
-        "Optimised layouts were developed to improve circulation, functionality, and everyday usability.",
+        "Set within a rural agricultural landscape, the facility offers open surroundings, expansive views, abundant greenery, and a quiet environment. Its placement among cultivated fields and vegetation makes the natural setting an integral part of residents' daily experience.",
     },
     {
-      title: "Functional Zoning",
+      title: "Spatial Zoning",
       content:
-        "Living, dining, kitchen, and private areas were clearly defined while maintaining visual continuity.",
+        "Organized the facility around a clear separation of residential, communal, dining, administrative, and circulation areas. Common spaces are positioned to remain visually connected and easily accessible, while corridors and verandahs act as transitional spaces between private rooms and shared activities.",
     },
     {
-      title: "Material Strategy",
+      title: "Senior-Centric Planning",
       content:
-        "A restrained palette of wood, neutral finishes, and tactile materials was established to create warmth and cohesion.",
+        "Developed the spaces with everyday senior living in mind, prioritizing simple circulation, visibility, accessibility, security, and ease of use. Wide movement zones, open common areas, ramps for physically disabled residents, controlled entrances, protective grills, and clear connections between spaces contribute to a safer environment.",
     },
     {
-      title: "Lighting Strategy",
+      title: "Landscape Integration",
       content:
-        "Ambient, task, and accent lighting were layered to enhance functionality and establish a comfortable atmosphere.",
+        "Used the surrounding agricultural landscape and existing greenery as an extension of the living environment. Gardens, planted edges, open views, and vegetation around the building soften the built form while providing a calmer and more natural setting for residents.",
     },
   ];
   return <AccordionContent items={items} />;
@@ -1121,19 +1167,55 @@ function Section3Content() {
 function Section4Content() {
   const items: AccordionItem[] = [
     {
-      title: "End-to-End Execution",
+      title: "Architectural Character",
       content:
-        "Translated the design intent into a finished interior through detailed coordination, fabrication, installation, and finishing.",
+        "Retained a straightforward RCC architectural language with clean rectangular volumes, flat roofs, shaded verandahs, and simple façade articulation. The restrained form keeps construction practical and economical while maintaining a welcoming residential character.",
     },
     {
-      title: "Vendor Coordination",
+      title: "Materiality",
       content:
-        "Coordinated carpentry, electrical, lighting, furniture, furnishings, and décor to maintain design consistency.",
+        "Established a durable and budget-conscious material palette using simple plastered surfaces, ceramic and marble-finish flooring, metal grills, painted walls, timber-finish elements, and locally practical materials. The emphasis is on longevity, ease of maintenance, and everyday functionality rather than unnecessary ornamentation.",
     },
     {
-      title: "Quality Control",
+      title: "Interior Character",
       content:
-        "Reviewed finishes, joinery, detailing, and installation at every stage to ensure accuracy and workmanship.",
+        "Created warm, familiar interiors with wood flooring, simple furniture, plants, soft colours, and generous common areas that encourage comfort and social interaction.",
+    },
+    {
+      title: "Budget-Conscious Design",
+      content:
+        "Focused design decisions on essential comfort, durability, and functionality rather than expensive architectural gestures. Simple forms, readily available materials, practical finishes, and efficient use of existing spaces help create a comfortable senior living environment while keeping construction and maintenance requirements manageable.",
+    },
+  ];
+  return <AccordionContent items={items} />;
+}
+
+function Section5Content() {
+  const items: AccordionItem[] = [
+    {
+      title: "Architectural Execution",
+      content:
+        "Translated the planning intent into simple, functional architectural elements suited to senior living.",
+    },
+    {
+      title: "Site Integration",
+      content:
+        "Coordinated built spaces, circulation, landscape, and open areas for a cohesive site experience.",
+    },
+    {
+      title: "Material & Detail Control",
+      content:
+        "Focused on durable, economical materials and straightforward detailing for long-term use.",
+    },
+    {
+      title: "Spatial Quality",
+      content:
+        "Maintained natural light, ventilation, shaded semi-open spaces, and comfortable movement throughout.",
+    },
+    {
+      title: "Functional Delivery",
+      content:
+        "Ensured the built environment remained safe, accessible, easy to navigate, and practical to maintain.",
     },
   ];
   return <AccordionContent items={items} />;
