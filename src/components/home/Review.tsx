@@ -194,11 +194,11 @@ const Review = () => {
                                             base: 5,
                                             md: 6,
                                         }}
-                                        boxShadow={
-                                            review.dark
-                                                ? "none"
-                                                : "0px 4px 5px rgba(0,0,0,0.18)"
-                                        }
+                                        // boxShadow={
+                                        //     review.dark
+                                        //         ? "none"
+                                        //         : "0px 4px 5px rgba(0,0,0,0.18)"
+                                        // }
                                     >
                                         <Text
                                             fontSize={{
@@ -317,11 +317,11 @@ const Review = () => {
                                     display="flex"
                                     flexDirection="column"
                                     justifyContent="space-between"
-                                    boxShadow={
-                                        review.dark
-                                            ? "none"
-                                            : "0px 8px 24px rgba(0,0,0,.15)"
-                                    }
+                                    // boxShadow={
+                                    //     review.dark
+                                    //         ? "none"
+                                    //         : "0px 8px 24px rgba(0,0,0,.15)"
+                                    // }
                                 >
                                     <Text
                                         fontSize="14px"

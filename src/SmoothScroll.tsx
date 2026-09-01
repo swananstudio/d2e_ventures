@@ -10,18 +10,22 @@ const SmoothScroll = ({ children }: Props) => {
         const lenis = new Lenis({
             duration: 1.3,
             smoothWheel: true,
-            wheelMultiplier: 1,
-            touchMultiplier: 2,
+            wheelMultiplier: 0.8,
+            touchMultiplier: 1.5,
+            easing: (t) => 1 - Math.pow(1 - t, 4),
         });
 
-        function raf(time: number) {
-            lenis.raf(time);
-            requestAnimationFrame(raf);
-        }
+        let animationFrameId: number;
 
-        requestAnimationFrame(raf);
+        const raf = (time: number) => {
+            lenis.raf(time);
+            animationFrameId = requestAnimationFrame(raf);
+        };
+
+        animationFrameId = requestAnimationFrame(raf);
 
         return () => {
+            cancelAnimationFrame(animationFrameId);
             lenis.destroy();
         };
     }, []);
