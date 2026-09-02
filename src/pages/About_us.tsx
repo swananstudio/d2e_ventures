@@ -1,10 +1,10 @@
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import Footer from '../layout/Footer';
 import MeetTeam from '../components/about_us/MeetTeam';
 import Overview from '../components/about_us/Overview';
 import InnerHeroSection from './../components/about_us/InnerHeroSection';
 // import Quality from "./../components/about_us/Quality";
-import { Flex } from "@chakra-ui/react"
+import { Center, Flex, Spinner } from "@chakra-ui/react"
 import { QualitySectionImg, QualitySectionImg_mobile } from '../assets/assets';
 
 // Detects actual Safari browser (desktop Safari + Mobile Safari on iOS/iPadOS)
@@ -23,7 +23,11 @@ const isSafari = () => {
 
     return isSafariUA && isAppleVendor;
 };
-
+const Loader = () => (
+    <Center minH="300px">
+        <Spinner size="xl" color="blue.500" />
+    </Center>
+);
 const About_us = () => {
     const [bgAttachment, setBgAttachment] = useState<'fixed' | 'scroll'>('fixed');
 
@@ -35,11 +39,15 @@ const About_us = () => {
 
     return (
         <>
-            <InnerHeroSection />
+            <Suspense fallback={<Loader />}>
+                <InnerHeroSection />
+            </Suspense>
 
             <Flex flexDirection={'column'}>
                 <Flex>
-                    <Overview />
+                    <Suspense fallback={<Loader />}>
+                        <Overview />
+                    </Suspense>
                 </Flex>
                 <Flex
                     h="100dvh"
@@ -54,7 +62,9 @@ const About_us = () => {
                 >
                 </Flex>
                 <Flex>
-                    <MeetTeam />
+                    <Suspense fallback={<Loader />}>
+                        <MeetTeam />
+                    </Suspense>
                 </Flex>
             </Flex>
 

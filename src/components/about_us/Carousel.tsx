@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect,  useState } from "react";
 import { Box, Image } from "@chakra-ui/react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -11,7 +11,7 @@ import {
 const MotionBox = motion(Box);
 
 const images = [
- About_Us_Carousel1,
+  About_Us_Carousel1,
   About_Us_Carousel2,
   About_Us_Carousel3,
   About_Us_Carousel4
@@ -46,42 +46,31 @@ const bloomVariants = {
 
 const Carousel = () => {
   const [current, setCurrent] = useState(0);
-  const currentRef = useRef(current);
-  currentRef.current = current;
+  const [hasMounted, setHasMounted] = useState(false);
 
   useEffect(() => {
+    setHasMounted(true);
+
     const timer = setInterval(() => {
-      setCurrent((currentRef.current + 1) % images.length);
+      setCurrent((prev) => (prev + 1) % images.length);
     }, INTERVAL_MS);
 
     return () => clearInterval(timer);
   }, []);
 
   return (
-    <Box
-      w="100%"
-      h="100%"
-      display="flex"
-      flexDirection="column"
-      alignItems="center"
-      justifyContent="center"
-    >
+    <Box w="100%" h="100%" display="flex" alignItems="center" justifyContent="center">
       <Box position="relative" w="100%" h="100%">
         <AnimatePresence initial={false}>
           <MotionBox
             key={current}
             variants={bloomVariants}
-            initial="enter"
+            initial={hasMounted ? "enter" : false}
             animate="center"
             exit="exit"
             position="absolute"
             left="0"
-            top={{
-              base: "15px",
-              sm: "20px",
-              md: "25px",
-              lg: "50px",
-            }}
+            top={{ base: "15px", sm: "20px", md: "25px", lg: "50px" }}
             w="100%"
             h="100%"
             zIndex={2}

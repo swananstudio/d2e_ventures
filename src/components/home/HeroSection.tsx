@@ -128,7 +128,7 @@ const HeroSection = () => {
 
                         <Text
                             color="whiteAlpha.900"
-                            fontSize="20px"
+                            fontSize={{base:'17px',lg:"20px"}}
                             fontWeight="400"
                         >
                             Integrated Land, Luxury & Development Consultancy.
