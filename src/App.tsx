@@ -1,5 +1,5 @@
 import './App.css'
-import { HashRouter, Routes, Route } from 'react-router'
+import { BrowserRouter, Routes, Route } from 'react-router'
 import { Suspense, lazy, useEffect, useRef } from 'react'
 import Portfolio from './pages/Portfolio'
 import SmoothScroll from './SmoothScroll'
@@ -18,7 +18,7 @@ function App() {
     <>
       <Suspense fallback={<Fallback />}>
         <SmoothScroll>
-          <HashRouter>
+          <BrowserRouter>
             <Routes>
               <Route path='/' element={<Home />} />
               <Route path='/about-us' element={<About_us />} />
@@ -26,7 +26,7 @@ function App() {
               <Route path='/services' element={<Services />} />
               <Route path='/portfolio' element={<Portfolio />} />
             </Routes>
-          </HashRouter>
+          </BrowserRouter>
         </SmoothScroll>
       </Suspense>
 
