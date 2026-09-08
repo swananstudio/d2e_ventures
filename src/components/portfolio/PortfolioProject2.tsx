@@ -21,19 +21,17 @@ import {
   GoChevronLeft,
   GoChevronRight,
 } from "react-icons/go";
-import { useState, useEffect, type ReactNode } from "react";
+import { useState, useEffect, useRef, type ReactNode } from "react";
 import { createPortal } from "react-dom";
-//import Navbar from "../../layout/Navbar";
 
 import {
   PortfolioProject2Img,
   GC_clientVision,
   GC_ExecutionandDelivery,
   GC_PlanningandStrategy,
+
   
-  GC_ExecutionandDelivery_CoverImg,
-  maps,
-  areasize,
+
   GC_Project_Overview_1,
   GC_Project_Overview_2,
   GC_Project_Overview_3,
@@ -55,7 +53,7 @@ const projectThumbnails = [
   { image: GC_Project_Overview_2, section: "section1" },
   { image: GC_clientVision, section: "section2" },
   { image: GC_PlanningandStrategy, section: "section3" },
-  { image: GC_ExecutionandDelivery_CoverImg, section: "section4" },
+  { video: GC_ExecutionandDelivery, section: "section4" },
 ];
 
 const sectionOrder = ["section1", "section2", "section3", "section4"];
@@ -70,6 +68,23 @@ const morphTransition: Transition = {
 };
 
 const ease = [0.22, 1, 0.36, 1] as const;
+
+// Unified motion timing so background, cards, and text move as one coordinated scene.
+const SCENE_DURATION = 1.1;
+const SCENE_EASE = [0.65, 0, 0.35, 1] as const;
+
+// Card-slide timing (matches the horizontal-scroll feel from the original hero cards).
+const CARD_SLIDE_DURATION = 0.4;
+const CARD_SLIDE_EASE = [0.22, 1, 0.36, 1] as const;
+// Input lock should match the actual slide duration, not the (much longer)
+// outer scene-transition duration — otherwise clicks get silently ignored
+// for a few hundred ms after the cards have already finished moving.
+const CARD_SLIDE_LOCK_MS = Math.round(CARD_SLIDE_DURATION * 1000);
+
+const normalTransition = {
+  duration: CARD_SLIDE_DURATION,
+  ease: CARD_SLIDE_EASE,
+};
 
 type SectionProps = {
   layoutId: string;
@@ -120,89 +135,333 @@ const sectionDetailsMap: Record<
   },
 };
 
-export default function PortfolioProject2() {
+type PortfolioProject2Props = {
+  isActive?: boolean;
+  direction?: 1 | -1;
+};
+
+const getDistance = (index: number, active: number, total: number) => {
+  let distance = index - active;
+  if (distance > total / 2) distance -= total;
+  if (distance < -total / 2) distance += total;
+  return distance;
+};
+
+
+export default function PortfolioProject2({
+  isActive = true,
+  direction = 1,
+}: PortfolioProject2Props) {
   const [currentSection, setCurrentSection] = useState<string>("main");
   const [activeIndex, setActiveIndex] = useState<number>(1);
   const [openedCardIndex, setOpenedCardIndex] = useState<number | null>(null);
   const [mounted, setMounted] = useState(false);
-  const [loadedThumbs, setLoadedThumbs] = useState<Set<number>>(new Set());
-  const [thumbnailsReady, setThumbnailsReady] = useState(false);
+  const isCardAnimatingRef = useRef(false);
+  const cardAnimationTimerRef = useRef<number | null>(null);
+  const [mobileExitingIndex, setMobileExitingIndex] = useState<number | null>(null);
+  const [mobileResetIndex, setMobileResetIndex] = useState<number | null>(null);
+  const [mobileHiddenIndex, setMobileHiddenIndex] = useState<number | null>(null);
+  const mobileExitTimerRef = useRef<number | null>(null);
+  const heroCardsRef = useRef<HTMLDivElement | null>(null);
+  //const touchStartYRef = useRef<number | null>(null);
+  const mobileWheelGestureLockedRef = useRef(false);
+  const mobileWheelUnlockTimerRef = useRef<number | null>(null);
+  const moveCardRef = useRef<(step: 1 | -1) => void>(() => {});
+  const pointerTouchStartYRef = useRef<number | null>(null);
+
+  
+  const [desktopCardPositions, setDesktopCardPositions] = useState<number[]>([
+    -1, 0, 1, 2,
+  ]);
+  const desktopCardPositionsRef = useRef<number[]>([-1, 0, 1, 2]);
+  const [desktopResetIndex, setDesktopResetIndex] = useState<number | null>(null);
+  const desktopResetTimerRef = useRef<number | null>(null);
+
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  const isMobile = useBreakpointValue({ base: true, lg: false }) ?? true;
-
   useEffect(() => {
-    let cancelled = false;
-
-    const preloadThumbnails = async () => {
-      await Promise.all(
-        projectThumbnails.map(
-          (project, index) =>
-            new Promise<void>((resolve) => {
-              const image = new window.Image();
-
-              const finish = () => {
-                if (!cancelled) {
-                  setLoadedThumbs((prev) =>
-                    prev.has(index) ? prev : new Set(prev).add(index)
-                  );
-                }
-                resolve();
-              };
-
-              image.onload = async () => {
-                try {
-                  if ("decode" in image) {
-                    await image.decode();
-                  }
-                } catch {
-                  // The browser can still paint the image even if decode rejects.
-                }
-                finish();
-              };
-
-              image.onerror = finish;
-              image.src = project.image;
-
-              if (image.complete) {
-                if (image.naturalWidth > 0) {
-                  image.onload?.(new Event("load"));
-                } else {
-                  finish();
-                }
-              }
-            })
-        )
-      );
-
-      if (!cancelled) {
-        setThumbnailsReady(true);
-      }
-    };
-
-    preloadThumbnails();
-
     return () => {
-      cancelled = true;
+      if (cardAnimationTimerRef.current !== null) {
+        window.clearTimeout(cardAnimationTimerRef.current);
+      }
+      if (mobileExitTimerRef.current !== null) {
+        window.clearTimeout(mobileExitTimerRef.current);
+      }
+      if (mobileWheelUnlockTimerRef.current !== null) {
+        window.clearTimeout(mobileWheelUnlockTimerRef.current);
+      }
+      if (desktopResetTimerRef.current !== null) {
+        window.clearTimeout(desktopResetTimerRef.current);
+      }
     };
   }, []);
 
-  const goNext = () => {
-    setActiveIndex((previous) => (previous + 1) % projectThumbnails.length);
+  const isMobile = useBreakpointValue({ base: true, lg: false }) ?? true;
+
+  useEffect(() => {
+    const initialActive = isMobile ? 0 : 1;
+    setActiveIndex(initialActive);
+
+    if (!isMobile) {
+      const initialPositions = projectThumbnails.map((_, index) => {
+        const distance =
+          ((index - initialActive) % projectThumbnails.length) +
+          projectThumbnails.length;
+        const wrapped = distance % projectThumbnails.length;
+        return wrapped === 3 ? -1 : wrapped === 0 ? 0 : wrapped === 1 ? 1 : 2;
+      });
+      desktopCardPositionsRef.current = initialPositions;
+      setDesktopCardPositions(initialPositions);
+      setDesktopResetIndex(null);
+    }
+  }, [isMobile]);
+
+  const syncDesktopCardPositions = (nextActiveIndex: number) => {
+    const nextPositions = projectThumbnails.map((_, index) => {
+      const wrapped =
+        ((index - nextActiveIndex) % projectThumbnails.length +
+          projectThumbnails.length) %
+        projectThumbnails.length;
+
+      return wrapped === 3 ? -1 : wrapped === 0 ? 0 : wrapped === 1 ? 1 : 2;
+    });
+
+    desktopCardPositionsRef.current = nextPositions;
+    setDesktopCardPositions(nextPositions);
+    setDesktopResetIndex(null);
   };
 
-  const goPrevious = () => {
-    setActiveIndex(
-      (previous) =>
-        (previous - 1 + projectThumbnails.length) % projectThumbnails.length
-    );
+  const lockCardAnimation = () => {
+    isCardAnimatingRef.current = true;
+    if (cardAnimationTimerRef.current !== null) {
+      window.clearTimeout(cardAnimationTimerRef.current);
+    }
+    cardAnimationTimerRef.current = window.setTimeout(() => {
+      isCardAnimatingRef.current = false;
+      cardAnimationTimerRef.current = null;
+    }, CARD_SLIDE_LOCK_MS);
   };
+
+
+  const moveCard = (step: 1 | -1) => {
+    if (isCardAnimatingRef.current || !isActive) return;
+
+    if (isMobile) {
+      const previousIndex = activeIndex;
+      const nextIndex =
+        (activeIndex + step + projectThumbnails.length) %
+        projectThumbnails.length;
+
+      if (mobileExitTimerRef.current !== null) {
+        window.clearTimeout(mobileExitTimerRef.current);
+      }
+
+      setMobileHiddenIndex(null);
+      setMobileResetIndex(null);
+      setMobileExitingIndex(previousIndex);
+      setActiveIndex(nextIndex);
+      lockCardAnimation();
+
+      // The card is allowed to finish its rightward exit + fade. Only after it
+      // is gone is it removed from the visual stack for the instant reset.
+      mobileExitTimerRef.current = window.setTimeout(() => {
+        setMobileHiddenIndex(previousIndex);
+
+        window.requestAnimationFrame(() => {
+          setMobileResetIndex(previousIndex);
+
+          window.requestAnimationFrame(() => {
+            setMobileResetIndex(null);
+            setMobileExitingIndex(null);
+            setMobileHiddenIndex(null);
+          });
+        });
+      }, CARD_SLIDE_DURATION * 1000);
+
+      return;
+    }
+
+    // Desktop: move every card by exactly one physical slot.
+    // This avoids the 4-card modulo-distance seam where a card could jump
+    // from one side of the carousel to the other.
+    const currentPositions = desktopCardPositionsRef.current;
+    const nextPositions = currentPositions.map((position) => position - step);
+
+    desktopCardPositionsRef.current = nextPositions;
+    setDesktopResetIndex(null);
+    setDesktopCardPositions(nextPositions);
+
+    const nextActiveIndex =
+      (activeIndex + step + projectThumbnails.length) %
+      projectThumbnails.length;
+
+    lockCardAnimation();
+    setActiveIndex(nextActiveIndex);
+
+    if (desktopResetTimerRef.current !== null) {
+      window.clearTimeout(desktopResetTimerRef.current);
+    }
+
+    desktopResetTimerRef.current = window.setTimeout(() => {
+      const wrappedPositions = desktopCardPositionsRef.current.map((position) => {
+        if (position < -1) return 2;
+        if (position > 2) return -2;
+        return position;
+      });
+
+      const didWrap = wrappedPositions.some(
+        (position, index) => position !== desktopCardPositionsRef.current[index]
+      );
+
+      if (!didWrap) {
+        desktopResetTimerRef.current = null;
+        return;
+      }
+
+      const wrappedIndex = wrappedPositions.findIndex(
+        (position, index) =>
+          position !== desktopCardPositionsRef.current[index]
+      );
+
+      setDesktopResetIndex(wrappedIndex);
+      desktopCardPositionsRef.current = wrappedPositions;
+      setDesktopCardPositions(wrappedPositions);
+
+      window.requestAnimationFrame(() => {
+        setDesktopResetIndex(null);
+        desktopResetTimerRef.current = null;
+      });
+    }, CARD_SLIDE_DURATION * 1000);
+  };
+  moveCardRef.current = moveCard;
+
+
+  const goNext = () => moveCard(1);
+
+  const goPrevious = () => moveCard(-1);
+
+  useEffect(() => {
+    const el = heroCardsRef.current;
+    if (!el || !isMobile) return;
+
+    let wheelAccum = 0;
+    let resetTimer: number | null = null;
+    let pointerGestureActive = false;
+    let pointerGestureConsumed = false;
+
+    const armWheelGestureUnlock = () => {
+      if (mobileWheelUnlockTimerRef.current !== null) {
+        window.clearTimeout(mobileWheelUnlockTimerRef.current);
+      }
+
+      mobileWheelUnlockTimerRef.current = window.setTimeout(() => {
+        mobileWheelGestureLockedRef.current = false;
+        mobileWheelUnlockTimerRef.current = null;
+      }, 300);
+    };
+
+    const onWheel = (event: WheelEvent) => {
+      event.preventDefault();
+      event.stopPropagation();
+      event.stopImmediatePropagation();
+
+      if (mobileWheelGestureLockedRef.current) return;
+      if (isCardAnimatingRef.current) return;
+
+      wheelAccum += event.deltaY;
+
+      if (resetTimer !== null) {
+        window.clearTimeout(resetTimer);
+      }
+
+      resetTimer = window.setTimeout(() => {
+        wheelAccum = 0;
+      }, 120);
+
+      if (Math.abs(wheelAccum) < 30) return;
+
+      const step: 1 | -1 = wheelAccum > 0 ? 1 : -1;
+      wheelAccum = 0;
+
+      mobileWheelGestureLockedRef.current = true;
+      armWheelGestureUnlock();
+      moveCardRef.current(step);
+    };
+
+    
+    const isInsideCards = (target: EventTarget | null) =>
+      target instanceof Node && el.contains(target);
+
+    const onPointerDown = (event: PointerEvent) => {
+      if (event.pointerType !== "touch") return;
+      if (!isInsideCards(event.target)) return;
+
+      pointerGestureActive = true;
+      pointerGestureConsumed = false;
+      pointerTouchStartYRef.current = event.clientY;
+
+      event.preventDefault();
+      event.stopPropagation();
+    };
+
+    const onPointerMove = (event: PointerEvent) => {
+      if (!pointerGestureActive || event.pointerType !== "touch") return;
+      if (pointerTouchStartYRef.current === null) return;
+
+      event.preventDefault();
+      event.stopPropagation();
+
+      const dy = pointerTouchStartYRef.current - event.clientY;
+      if (Math.abs(dy) < 35 || pointerGestureConsumed) return;
+
+      pointerGestureConsumed = true;
+      pointerGestureActive = false;
+      pointerTouchStartYRef.current = null;
+
+      if (!isCardAnimatingRef.current) {
+        moveCardRef.current(dy > 0 ? 1 : -1);
+      }
+    };
+
+    const onPointerUp = (event: PointerEvent) => {
+      if (event.pointerType !== "touch") return;
+      if (!pointerGestureActive) return;
+
+      event.preventDefault();
+      event.stopPropagation();
+
+      pointerGestureActive = false;
+      pointerTouchStartYRef.current = null;
+    };
+
+    el.addEventListener("wheel", onWheel, { passive: false });
+
+   
+    document.addEventListener("pointerdown", onPointerDown, true);
+    document.addEventListener("pointermove", onPointerMove, { capture: true, passive: false });
+    document.addEventListener("pointerup", onPointerUp, { capture: true, passive: false });
+
+    return () => {
+      el.removeEventListener("wheel", onWheel);
+      document.removeEventListener("pointerdown", onPointerDown, true);
+      document.removeEventListener("pointermove", onPointerMove, { capture: true });
+      document.removeEventListener("pointerup", onPointerUp, { capture: true });
+
+      if (resetTimer !== null) {
+        window.clearTimeout(resetTimer);
+      }
+    };
+  }, [isMobile]);
 
   const openCard = (index: number) => {
+    if (!isActive || isCardAnimatingRef.current) return;
     setActiveIndex(index);
+    if (!isMobile) {
+      syncDesktopCardPositions(index);
+    }
     setOpenedCardIndex(index);
     setCurrentSection(projectThumbnails[index].section);
   };
@@ -211,19 +470,8 @@ export default function PortfolioProject2() {
     setCurrentSection("main");
   };
 
-  const getRelativePosition = (index: number) => {
-    let distance = index - activeIndex;
-
-    if (distance > projectThumbnails.length / 2) {
-      distance -= projectThumbnails.length;
-    }
-
-    if (distance < -projectThumbnails.length / 2) {
-      distance += projectThumbnails.length;
-    }
-
-    return distance;
-  };
+  const getRelativePosition = (index: number) =>
+    getDistance(index, activeIndex, projectThumbnails.length);
 
   const goToPreviousSection = () => {
     const currentIndex = sectionOrder.indexOf(currentSection);
@@ -234,6 +482,9 @@ export default function PortfolioProject2() {
 
     const prevIndex = currentIndex - 1;
     setActiveIndex(prevIndex);
+    if (!isMobile) {
+      syncDesktopCardPositions(prevIndex);
+    }
     setCurrentSection(sectionOrder[prevIndex]);
   };
 
@@ -246,6 +497,9 @@ export default function PortfolioProject2() {
 
     const nextIndex = currentIndex + 1;
     setActiveIndex(nextIndex);
+    if (!isMobile) {
+      syncDesktopCardPositions(nextIndex);
+    }
     setCurrentSection(sectionOrder[nextIndex]);
   };
 
@@ -255,161 +509,115 @@ export default function PortfolioProject2() {
 
   return (
     <LayoutGroup>
-      <style>{`
-        @keyframes gc-shimmer {
-          0% { background-position: 200% 0; }
-          100% { background-position: -200% 0; }
-        }
-      `}</style>
-      <Box position="relative">
-        <Flex
-          minH={{ base: "auto", md: "100vh", lg: "100vh" }}
-          h={{ base: "auto", md: "100vh", lg: "100vh" }}
-          w="100%"
+      <Box position="relative" minH={{ base: "100dvh", md: "100dvh", lg: "100vh" }}
+         h={{ base: "100dvh", md: "100dvh", lg: "100vh" }}
+         w="100%"
+         overflow="hidden">
+        <MotionBox
+          position="absolute"
+          top="-6%"
+          left="-6%"
+          w="112%"
+          h="112%"
           bgImage={`url(${PortfolioProject2Img})`}
           bgSize="cover"
           backgroundPosition="center"
           bgRepeat="no-repeat"
+          zIndex={0}
+          initial={false}
+          animate={{ rotate: isActive ? 0 : direction >= 0 ? 4 : -4 }}
+          transition={{
+            duration: SCENE_DURATION,
+            ease: SCENE_EASE,
+          }}
+        />
+        <Box position="absolute" inset={0} bg="rgba(0,0,0,.35)" zIndex={1} />
+        <Flex
+          minH={{ base: "100dvh", md: "100vh", lg: "100vh" }}
+          h={{ base: "100dvh", md: "100vh", lg: "100vh" }}
+          w="100%"
           position="relative"
           overflow="hidden"
-          py={{ base: 2, sm: 3, md: 4, lg: 0 }} 
+          py={{ base: 2, sm: 3, md: 4, lg: 0 }}
         >
-          <Box position="absolute" inset={0} bg="rgba(0,0,0,.35)" />
-
-          <Flex
-            position="relative"
-            zIndex={2}
-            direction="column"
-            w="100%"
-            h="100%"
-          >
-         
-
+          <Flex position="relative" zIndex={2} direction="column" w="100%" h="100%">
             <Flex
               flex={1}
               pl={{ base: "6%", md: "6%", lg: "3%" }}
               pr={{ base: "6%", md: "6%", lg: "0%" }}
-                 pb={{ base: "10%", md: "1.5%", lg: "4%" }}
-              pt={{ base: "88px" , md: "auto", lg: 0 }}
+              pb={{ base: "10%", md: "1.5%", lg: "4%" }}
+              pt={{ base: "88px", md: "auto", lg: 0 }}
               direction={{ base: "column", lg: "row" }}
-              justify={{ base: "flex-end", lg: "space-between" }}
+              justify={{ base: "flex-end", lg: "flex-end" }}
               align={{ base: "stretch", lg: "flex-end" }}
               gap={{ base: 3, md: 3, lg: "3%" }}
             >
-              {/* LEFT SIDE TEXT BLOCK */}
-              <Box
-                position="relative"
-                zIndex={1}
-                color="white"
-                w={{ base: "100%", lg: "45%" }}
-                mb={{ base: 0, lg: 18 }}
-              >
-                <Text
-                  fontSize={{
-                    base: "32px",
-                    sm: "42px",
-                    md: "52px",
-                    lg: "68px",
-                    xl: "76px",
-                  }}
-                  lineHeight="0.95"
-                  fontWeight="700"
-                >
-                  GOODWILL
-                </Text>
-
-                <Text
-                  mt={{ base: 1, md: 2 }}
-                  fontSize={{
-                    base: "22px",
-                    sm: "28px",
-                    md: "34px",
-                    lg: "42px",
-                  }}
-                  fontWeight="300"
-                >
-                  CRESCENT
-                </Text>
-
-                <Flex
-                  mt={{ base: 2, md: 3, lg: 8 }}
-                  gap={{ base: 3, md: 5, lg: 6 }}
-                  flexWrap="wrap"
-                  color="#F5F5F5"
-                  fontSize={{ base: "13px", md: "15px" }}
-                >
-                  <Flex align="center" gap={2}>
-                    <Image src={maps} w="14px" />
-                    <Text fontWeight="700">Pune, Maharashtra</Text>
-                  </Flex>
-
-                  <Flex align="center" gap={2}>
-                    <Image src={areasize} w="18px" />
-                    <Text fontWeight="700">22,000 Sq.ft.</Text>
-                  </Flex>
-                </Flex>
-
-                <Text
-                  mt={{ base: 2, md: 3, lg: 5 }}
-                  color="#F4F4F4"
-                  lineHeight="1.6"
-                  fontSize={{
-                    base: "13px",
-                    sm: "14px",
-                    md: "15px",
-                    lg: "16px",
-                  }}
-                  letterSpacing="0.01em"
-                >
-                  This residential interior is thoughtfully designed to blend
-                  warm wood tones, soft neutrals, and natural textures, creating
-                  a calm and contemporary home. The space balances
-                  functionality with character through custom details, ambient
-                  lighting, curated décor, and earthy accents.
-                </Text>
-              </Box>
-
               {/* RIGHT SIDE CARDS BLOCK */}
               <Flex
-                position="relative"
+                position={{ base: "absolute", lg: "relative" }}
                 zIndex={10}
                 direction="column"
+                className="hero-cards"
+                ref={heroCardsRef}
                 w={{ base: "100%", lg: "50%" }}
                 maxW={{ base: "100%", lg: "50%" }}
-                align={{ base: "center", lg: "flex-end" }}
-              >
+                ml={{ lg: "auto" }}
+                gap={{ base: 3, md: 4, lg: "6%" }}
+                flexShrink={0}
+                mt={{ base: 0, lg: 0 }}
+                left={{ base: 0, lg: "auto" }}
+                right={{ base: 0, lg: "auto" }}
+                bottom={{ base: "6%", sm: "5%", md: "4%", lg: "auto" }}
+                touchAction={{ base: "none", lg: "auto" }}
+                css={{
+                  "@media (max-width: 991px) and (max-height: 800px)": {
+                    bottom: "5%",
+                  },
+                  
+                  "@media (max-width: 767px) and (min-height: 900px)": {
+                    bottom: "18%",
+                  },
+                }}
+                
+                >
                 <Box
                   position="relative"
                   w="100%"
                   height={{
-                    base: "clamp(180px, 33svh, 260px)",
-                    sm: "clamp(195px, 35svh, 275px)",
-                    md: "clamp(200px, 37svh, 255px)",
+                    base: "300px",
+                    sm: "300px",
+                    md: "300px",
                     lg: "300px",
                   }}
-                  minH={{ base: "230px", md: "220px", lg: "300px" }}
-                  maxH={{ base: "320px", md: "260px", lg: "300px" }}
-                  mt={{ base: 2, md: 3, lg: 0 }} /* REDUCED MARGIN TOP ABOVE CARDS */
+                  css={{
+                    
+                    "@media (max-width: 991px) and (max-height: 800px)": {
+                      height: "260px",
+                    },
+                    "@media (max-width: 479px) and (max-height: 800px)": {
+                      height: "245px",
+                    },
+                  }}
+                  mt={{ base: 1, md: 2, lg: 0 }}
                   overflow="visible"
                   isolation="isolate"
-                  opacity={thumbnailsReady ? 1 : 0}
-                  pointerEvents={thumbnailsReady ? "auto" : "none"}
-                  transition="opacity 0.15s ease"
                 >
                   {projectThumbnails.map((project, index) => {
                     const distance = getRelativePosition(index);
-                    const isActiveDesktop = distance === 0;
-                    const isVisibleDesktop = Math.abs(distance) <= 1;
+                    const desktopPosition = desktopCardPositions[index];
+                    const isActiveDesktop = desktopPosition === 0;
+                    const isVisibleDesktop =
+                      desktopPosition >= -1 && desktopPosition <= 1;
 
                     const left =
-                      distance === -1
-                        ? "0%"
-                        : distance === 0
-                          ? "35%"
-                          : distance === 1
-                            ? "70%"
-                            : distance < -1
-                              ? "-28%"
+                      desktopPosition === -2
+                        ? "-28%"
+                        : desktopPosition === -1
+                          ? "0%"
+                          : desktopPosition === 0
+                            ? "35%"
+                            : desktopPosition === 1
+                              ? "70%"
                               : "98%";
 
                     const stackPosition =
@@ -427,28 +635,72 @@ export default function PortfolioProject2() {
                       scale: isActiveDesktop ? 1 : 0.95,
                     };
 
-                    const mobileAnimate = {
-                      left: "50%",
-                      x: "-50%",
-                      top: 0,
-                      rotate: 0,
-                      opacity: isFrontMobile ? 1 : 0,
-                      scale: 1,
-                    };
+                    const isMobileExiting =
+                      isMobile && mobileExitingIndex === index;
+                    const isMobileResetting =
+                      isMobile && mobileResetIndex === index;
+                    const isMobileHidden =
+                      isMobile && mobileHiddenIndex === index;
+
+                    const stackDepth = Math.min(stackPosition, 3);
+
+                    const mobileAnimate =
+                      isMobileExiting && !isMobileHidden
+                        ? {
+                            left: "50%",
+                            x: "125%",
+                            top: 0,
+                            rotate: 0,
+                            opacity: 0,
+                            scale: 1,
+                          }
+                        : {
+                            left: `${50 - stackDepth * 3}%`,
+                            x: "-50%",
+                            top: 0,
+                            rotate: 0,
+                            opacity: isMobileHidden
+                              ? 0
+                              : stackDepth === 0
+                                ? 1
+                                : stackDepth === 1
+                                  ? 0.95
+                                  : stackDepth === 2
+                                    ? 0.8
+                                    : 0.6,
+                            scale: 1 - stackDepth * 0.035,
+                          };
 
                     const details = sectionDetailsMap[project.section];
+                    const base = isMobile ? mobileAnimate : desktopAnimate;
+
+                    const positionTransition =
+                      (isMobile && isMobileResetting) ||
+                      (!isMobile && desktopResetIndex === index)
+                        ? { duration: 0 }
+                        : {
+                            duration: CARD_SLIDE_DURATION,
+                            ease: CARD_SLIDE_EASE,
+                          };
+
+               
 
                     return (
                       <MotionBox
                         key={index}
                         layoutId={mounted ? `project-card-${index}` : undefined}
+                        layout={false}
                         position="absolute"
                         top={0}
                         w={{ base: "84%", sm: "68%", md: "48%", lg: "30%" }}
                         h="100%"
                         zIndex={
                           isMobile
-                            ? 10 - stackPosition
+                            ? isMobileHidden
+                              ? 0
+                              : isMobileExiting
+                                ? 20
+                                : 10 - stackDepth
                             : isActiveDesktop
                               ? 3
                               : 2
@@ -473,50 +725,64 @@ export default function PortfolioProject2() {
                               : "none"
                         }
                         onClick={() => openCard(index)}
-                        initial={false}
-                        animate={isMobile ? mobileAnimate : desktopAnimate}
+                        initial={{
+                          ...(isMobile ? mobileAnimate : desktopAnimate),
+                          opacity: 0,
+                          scale: 0.85,
+                          rotateY: index % 2 === 0 ? -110 : 110,
+                        }}
+                        animate={{ ...base, rotateY: isActive ? 0 : 100 }}
                         transition={{
-                          duration: 0.4,
-                          ease: [0.22, 1, 0.36, 1],
+                          left: positionTransition,
+                          top: positionTransition,
+                          x: positionTransition,
+                          scale: normalTransition,
+                          opacity: normalTransition,
+                          rotateY: {
+                            duration: SCENE_DURATION * 0.8,
+                            delay: Math.abs(distance) * 0.08,
+                            ease: SCENE_EASE,
+                          },
                         }}
                         style={{
-                          willChange: "opacity, transform",
+                          transformPerspective: 1400,
+                          willChange: "transform, opacity",
+                          visibility:
+                            isMobileHidden ||
+                            isMobileResetting ||
+                            (!isMobile && desktopResetIndex === index)
+                              ? "hidden"
+                              : "visible",
                         }}
                       >
-                        <Box
-                          position="absolute"
-                          inset={0}
-                          zIndex={0}
-                          bg="linear-gradient(110deg, rgba(255,255,255,.08) 8%, rgba(255,255,255,.18) 18%, rgba(255,255,255,.08) 33%)"
-                          backgroundSize="200% 100%"
-                          opacity={loadedThumbs.has(index) ? 0 : 1}
-                          pointerEvents="none"
-                          transition="opacity 0.25s ease"
-                          style={{
-                            animation: loadedThumbs.has(index)
-                              ? undefined
-                              : "gc-shimmer 1.4s ease infinite",
-                          }}
-                        />
-                        <Image
-                          src={project.image}
-                          w="100%"
-                          h="100%"
-                          objectFit="cover"
-                          draggable={false}
-                          position="relative"
-                          zIndex={0}
-                          alt={details.title}
-                          loading="eager"
-                          fetchPriority={
-                            Math.abs(distance) <= 1 ? "high" : "auto"
-                          }
-                          onLoad={() =>
-                            setLoadedThumbs((prev) =>
-                              prev.has(index) ? prev : new Set(prev).add(index)
-                            )
-                          }
-                        />
+                        {project.video ? (
+                          <video
+                            src={project.video}
+                            autoPlay
+                            loop
+                            muted
+                            playsInline
+                            style={{
+                              width: "100%",
+                              height: "100%",
+                              objectFit: "cover",
+                              position: "relative",
+                              zIndex: 0,
+                              display: "block",
+                            }}
+                          />
+                        ) : (
+                          <Image
+                            src={project.image}
+                            w="100%"
+                            h="100%"
+                            objectFit="cover"
+                            draggable={false}
+                            position="relative"
+                            zIndex={0}
+                            alt={details.title}
+                          />
+                        )}
 
                         <Box
                           position="absolute"
@@ -563,10 +829,12 @@ export default function PortfolioProject2() {
                   })}
                 </Box>
 
-                <Flex justify="center" w="100%" gap={4} mt={{ base: 2, md: 2, lg: 5 }}> {/* REDUCED MARGIN TOP BELOW CARDS */}
+                <Flex display={{ base: "none", lg: "flex" }}
+                  justify="center" w="100%" gap={4} mt={{ base: 2, md: 2, lg: 5 }}>
                   <Button
                     aria-label="Previous project"
                     onClick={goPrevious}
+                    disabled={!isActive}
                     w={{ base: "40px", md: "44px", lg: "60px" }}
                     h={{ base: "40px", md: "44px", lg: "60px" }}
                     minW={{ base: "40px", md: "44px", lg: "60px" }}
@@ -582,6 +850,7 @@ export default function PortfolioProject2() {
                   <Button
                     aria-label="Next project"
                     onClick={goNext}
+                    disabled={!isActive}
                     w={{ base: "40px", md: "44px", lg: "60px" }}
                     h={{ base: "40px", md: "44px", lg: "60px" }}
                     minW={{ base: "40px", md: "44px", lg: "60px" }}
@@ -611,10 +880,20 @@ export default function PortfolioProject2() {
             {...(sectionDetailsMap[currentSection] || sectionDetailsMap.section1)}
           >
             <Box overflow="visible">
-              {currentSection === "section1" && <OverviewDetails />}
-              {currentSection === "section2" && <Section2Content />}
-              {currentSection === "section3" && <Section3Content />}
-              {currentSection === "section4" && <Section4Content />}
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={currentSection}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.2, ease: "easeInOut" }}
+                >
+                  {currentSection === "section1" && <OverviewDetails />}
+                  {currentSection === "section2" && <Section2Content />}
+                  {currentSection === "section3" && <Section3Content />}
+                  {currentSection === "section4" && <Section4Content />}
+                </motion.div>
+              </AnimatePresence>
             </Box>
           </DetailLayout>
         )}
@@ -638,8 +917,7 @@ type AccordionItem = { title: string; content: string | string[] };
 function ImageCarousel({ images, alt }: { images: string[]; alt: string }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [loaded, setLoaded] = useState<Set<string>>(() => {
-    // Synchronously check which images are already cached by the browser
-    // so a revisit doesn't blank out while waiting for onload to re-fire.
+   
     const initial = new Set<string>();
     images.forEach((src) => {
       const img = new window.Image();
@@ -979,11 +1257,7 @@ function AccordionContent({ items }: { items: AccordionItem[] }) {
           const isOpen = active === index;
 
           return (
-            <motion.div
-              key={item.title}
-              layout
-              transition={{ duration: 0.7, ease }}
-            >
+            <motion.div key={item.title} layout transition={{ duration: 0.7, ease }}>
               <Flex
                 as="button"
                 w="100%"
@@ -1019,10 +1293,7 @@ function AccordionContent({ items }: { items: AccordionItem[] }) {
                     initial={{ height: 0, opacity: 0 }}
                     animate={{ height: "auto", opacity: 1 }}
                     exit={{ height: 0, opacity: 0 }}
-                    transition={{
-                      height: { duration: 0.6, ease },
-                      opacity: { duration: 0.25, ease: "easeOut" },
-                    }}
+                    transition={{ duration: 0.35, ease }}
                     style={{ overflow: "hidden" }}
                   >
                     <Box

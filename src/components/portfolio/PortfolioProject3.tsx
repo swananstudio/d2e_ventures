@@ -21,7 +21,7 @@ import {
     GoChevronLeft,
     GoChevronRight,
 } from "react-icons/go";
-import { useState, useEffect, type ReactNode } from "react";
+import { useState, useEffect, useRef, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 
 import {
@@ -39,8 +39,7 @@ import {
     KV_ExecutionandDelivery3,
     KV_ExecutionandDelivery4,
     KV_ExecutionandDelivery5,
-    maps,
-    areasize,
+
 } from "../../assets/assets";
 
 const MotionBox = motion.create(Box);
@@ -98,6 +97,18 @@ const morphTransition: Transition = {
 };
 
 const ease = [0.22, 1, 0.36, 1] as const;
+
+// Unified motion timing so background, cards, and text move as one coordinated scene.
+const SCENE_DURATION = 1.1;
+const SCENE_EASE = [0.65, 0, 0.35, 1] as const;
+
+// Card-slide timing (matches the horizontal-scroll feel from the original hero cards).
+const CARD_SLIDE_DURATION = 0.4;
+const CARD_SLIDE_EASE = [0.22, 1, 0.36, 1] as const;
+// Input lock should match the actual slide duration, not the (much longer)
+// outer scene-transition duration — otherwise clicks get silently ignored
+// for a few hundred ms after the cards have already finished moving.
+const CARD_SLIDE_LOCK_MS = Math.round(CARD_SLIDE_DURATION * 1000);
 
 type SectionProps = {
     layoutId: string;
@@ -163,30 +174,214 @@ const sectionDetailsMap: Record<
     },
 };
 
-export default function PortfolioProject3() {
+type PortfolioProject3Props = {
+  isActive?: boolean;
+  direction?: 1 | -1;
+};
+
+export default function PortfolioProject3({
+  isActive = true,
+  direction = 1,
+}: PortfolioProject3Props) {
     const [currentSection, setCurrentSection] = useState("main");
     const [activeIndex, setActiveIndex] = useState(1);
     const [openedCardIndex, setOpenedCardIndex] = useState<number | null>(null);
     const [mounted, setMounted] = useState(false);
+  const isCardAnimatingRef = useRef(false);
+  const cardAnimationTimerRef = useRef<number | null>(null);
+  const [mobileExitingIndex, setMobileExitingIndex] = useState<number | null>(null);
+  const [mobileResetIndex, setMobileResetIndex] = useState<number | null>(null);
+  const [mobileHiddenIndex, setMobileHiddenIndex] = useState<number | null>(null);
+  const mobileExitTimerRef = useRef<number | null>(null);
+  const heroCardsRef = useRef<HTMLDivElement | null>(null);
+  const touchStartYRef = useRef<number | null>(null);
+  const mobileWheelGestureLockedRef = useRef(false);
+  const mobileWheelUnlockTimerRef = useRef<number | null>(null);
+  const moveCardRef = useRef<(step: 1 | -1) => void>(() => {});
 
     useEffect(() => {
         setMounted(true);
     }, []);
 
-    const isMobile = useBreakpointValue({ base: true, lg: false }) ?? true;
+    useEffect(() => {
+    return () => {
+      if (cardAnimationTimerRef.current !== null) {
+        window.clearTimeout(cardAnimationTimerRef.current);
+      }
+      if (mobileExitTimerRef.current !== null) {
+        window.clearTimeout(mobileExitTimerRef.current);
+      }
+      if (mobileWheelUnlockTimerRef.current !== null) {
+        window.clearTimeout(mobileWheelUnlockTimerRef.current);
+      }
+    };
+  }, []);
 
-    const goNext = () => {
-        setActiveIndex((previous) => (previous + 1) % projectThumbnails.length);
+  const isMobile = useBreakpointValue({ base: true, lg: false }) ?? true;
+
+  useEffect(() => {
+    setActiveIndex(isMobile ? 0 : 1);
+  }, [isMobile]);
+
+  const lockCardAnimation = () => {
+    isCardAnimatingRef.current = true;
+    if (cardAnimationTimerRef.current !== null) {
+      window.clearTimeout(cardAnimationTimerRef.current);
+    }
+    cardAnimationTimerRef.current = window.setTimeout(() => {
+      isCardAnimatingRef.current = false;
+      cardAnimationTimerRef.current = null;
+    }, CARD_SLIDE_LOCK_MS);
+  };
+
+  const moveCard = (step: 1 | -1) => {
+    if (isCardAnimatingRef.current || !isActive) return;
+
+    if (isMobile) {
+      const previousIndex = activeIndex;
+      const nextIndex =
+        (activeIndex + step + projectThumbnails.length) %
+        projectThumbnails.length;
+
+      if (mobileExitTimerRef.current !== null) {
+        window.clearTimeout(mobileExitTimerRef.current);
+      }
+
+      setMobileResetIndex(null);
+      setMobileHiddenIndex(null);
+      setMobileExitingIndex(previousIndex);
+      setActiveIndex(nextIndex);
+      lockCardAnimation();
+
+      // Finish the visible exit first.
+      mobileExitTimerRef.current = window.setTimeout(() => {
+        // Hide the old card before it is allowed to change position.
+        setMobileHiddenIndex(previousIndex);
+        setMobileResetIndex(previousIndex);
+
+        window.requestAnimationFrame(() => {
+          window.requestAnimationFrame(() => {
+            setMobileResetIndex(null);
+
+            window.requestAnimationFrame(() => {
+              setMobileExitingIndex(null);
+              setMobileHiddenIndex(null);
+            });
+          });
+        });
+      }, CARD_SLIDE_DURATION * 1000);
+
+      return;
+    }
+
+    lockCardAnimation();
+    setActiveIndex(
+      (previous) =>
+        (previous + step + projectThumbnails.length) %
+        projectThumbnails.length
+    );
+  };
+
+  moveCardRef.current = moveCard;
+
+  const goNext = () => moveCard(1);
+
+  const goPrevious = () => moveCard(-1);
+
+  useEffect(() => {
+    const el = heroCardsRef.current;
+    if (!el || !isMobile) return;
+
+    let wheelAccum = 0;
+    let resetTimer: number | null = null;
+
+    const armWheelGestureUnlock = () => {
+      if (mobileWheelUnlockTimerRef.current !== null) {
+        window.clearTimeout(mobileWheelUnlockTimerRef.current);
+      }
+
+      mobileWheelUnlockTimerRef.current = window.setTimeout(() => {
+        mobileWheelGestureLockedRef.current = false;
+        mobileWheelUnlockTimerRef.current = null;
+      }, 300);
     };
 
-    const goPrevious = () => {
-        setActiveIndex(
-            (previous) =>
-                (previous - 1 + projectThumbnails.length) % projectThumbnails.length
-        );
+    const onWheel = (event: WheelEvent) => {
+      event.preventDefault();
+      event.stopPropagation();
+      event.stopImmediatePropagation();
+      event.stopImmediatePropagation();
+
+      // One wheel/swipe gesture advances exactly one card. Trackpad/mouse
+      // momentum is ignored until the stream has been quiet for 300ms.
+      if (mobileWheelGestureLockedRef.current) {
+        return;
+      }
+
+      if (isCardAnimatingRef.current) return;
+
+      wheelAccum += event.deltaY;
+
+      if (resetTimer !== null) {
+        window.clearTimeout(resetTimer);
+      }
+
+      resetTimer = window.setTimeout(() => {
+        wheelAccum = 0;
+      }, 120);
+
+      if (Math.abs(wheelAccum) < 30) return;
+
+      const step: 1 | -1 = wheelAccum > 0 ? 1 : -1;
+      wheelAccum = 0;
+
+      mobileWheelGestureLockedRef.current = true;
+      armWheelGestureUnlock();
+
+      moveCardRef.current(step);
     };
 
-    const openCard = (index: number) => {
+    const onTouchStart = (event: TouchEvent) => {
+      event.stopPropagation();
+      event.stopImmediatePropagation();
+      event.stopImmediatePropagation();
+      touchStartYRef.current = event.touches[0]?.clientY ?? null;
+    };
+
+    const onTouchEnd = (event: TouchEvent) => {
+      event.stopPropagation();
+      event.stopImmediatePropagation();
+      event.stopImmediatePropagation();
+      if (touchStartYRef.current === null) return;
+
+      const dy =
+        touchStartYRef.current -
+        (event.changedTouches[0]?.clientY ?? touchStartYRef.current);
+
+      touchStartYRef.current = null;
+
+      if (Math.abs(dy) < 35 || isCardAnimatingRef.current) return;
+
+      moveCardRef.current(dy > 0 ? 1 : -1);
+    };
+
+    el.addEventListener("wheel", onWheel, { passive: false });
+    el.addEventListener("touchstart", onTouchStart, { passive: true });
+    el.addEventListener("touchend", onTouchEnd, { passive: true });
+
+    return () => {
+      el.removeEventListener("wheel", onWheel);
+      el.removeEventListener("touchstart", onTouchStart);
+      el.removeEventListener("touchend", onTouchEnd);
+
+      if (resetTimer !== null) {
+        window.clearTimeout(resetTimer);
+      }
+    };
+  }, [isMobile]);
+
+  const openCard = (index: number) => {
+    if (!isActive || isCardAnimatingRef.current) return;
         setActiveIndex(index);
         setOpenedCardIndex(index);
         setCurrentSection(projectThumbnails[index].section);
@@ -240,20 +435,37 @@ export default function PortfolioProject3() {
 
     return (
         <LayoutGroup>
-            <Box position="relative">
-                <Flex
-                    minH={{ base: "auto", md: "100vh", lg: "100vh" }}
-                    h={{ base: "auto", md: "100vh", lg: "100vh" }}
+            <Box position="relative" minH={{ base: "100dvh", md: "100dvh", lg: "100%" }}
+         h={{ base: "100dvh", md: "100dvh", lg: "100%" }}
+         w="100%"
+         overflow="hidden">
+                <MotionBox
+          position="absolute"
+          top="-6%"
+          left="-6%"
+          w="112%"
+          h="112%"
+          bgImage={`url(${KV_MainPageImg})`}
+          bgSize="cover"
+          backgroundPosition="center"
+          bgRepeat="no-repeat"
+          zIndex={0}
+          initial={false}
+          animate={{ rotate: isActive ? 0 : direction >= 0 ? 4 : -4 }}
+          transition={{
+  duration: SCENE_DURATION,
+  ease: SCENE_EASE,
+}}
+        />
+        <Box position="absolute" inset={0} bg="rgba(0,0,0,.35)" zIndex={1} />
+        <Flex
+                    minH={{ base: "100dvh", md: "100dvh", lg: "100vh" }}
+          h={{ base: "100dvh", md: "100dvh", lg: "100vh" }}
                     w="100%"
-                    bgImage={`url(${KV_MainPageImg})`}
-                    bgSize="cover"
-                    backgroundPosition="center"
-                    bgRepeat="no-repeat"
                     position="relative"
                     overflow="hidden"
                     py={{ base: 2, sm: 3, md: 4, lg: 0 }}
                 >
-                    <Box position="absolute" inset={0} bg="rgba(0,0,0,.35)" />
 
                     <Flex
                         position="relative"
@@ -265,106 +477,63 @@ export default function PortfolioProject3() {
                         <Flex
                             flex={1}
                             pl={{ base: "6%", md: "6%", lg: "3%" }}
-                            pr={{ base: "6%", md: "6%", lg: "0%" }}
-                              pb={{ base: "10%", md: "1.5%", lg: "4%" }}
-              pt={{ base: "88px" , md: "auto", lg: 0 }}
-                            direction={{ base: "column", lg: "row" }}
-                            justify={{ base: "flex-end", lg: "space-between" }}
-                            align={{ base: "stretch", lg: "flex-end" }}
-                            gap={{ base: 3, md: 3, lg: "3%" }}
+              pr={{ base: "6%", md: "6%", lg: "0%" }}
+              pb={{ base: "0%", md: "0%", lg: "4%" }}
+              pt={{ base: "88px", md: 0, lg: 0 }}
+              direction={{ base: "column", lg: "row" }}
+              justify={{ base: "flex-end", lg: "flex-end" }}
+              align={{ base: "stretch", lg: "flex-end" }}
+              gap={{ base: 3, md: 3, lg: "3%" }}
                         >
-                            <Box
-                                position="relative"
-                                zIndex={1}
-                                color="white"
-                                w={{ base: "100%", lg: "45%" }}
-                                mb={{ base: 0, lg: 18 }}
-                            >
-                                <Text
-                                    fontSize={{
-                                        base: "32px",
-                                        sm: "42px",
-                                        md: "52px",
-                                        lg: "79px",
-                                    }}
-                                    lineHeight="0.95"
-                                    fontWeight="700"
-                                >
-                                    KOLVAN
-                                </Text>
-
-                                <Text
-                                    mt={{ base: 1, md: 2, lg: 2 }}
-                                    fontSize={{
-                                        base: "22px",
-                                        sm: "28px",
-                                        md: "34px",
-                                        lg: "50px",
-                                    }}
-                                    fontWeight="300"
-                                >
-                                    RESORT
-                                </Text>
-
-                                <Flex
-                                    mt={{ base: 2, md: 3, lg: 8 }}
-                                    gap={{ base: 3, md: 5, lg: 6 }}
-                                    flexWrap="wrap"
-                                    color="#F5F5F5"
-                                    fontSize={{ base: "13px", md: "15px", lg: "16px" }}
-                                >
-                                    <Flex align="center" gap={2}>
-                                        <Image src={maps} w="14px" />
-                                        <Text fontWeight="700">Pune, Maharashtra</Text>
-                                    </Flex>
-
-                                    <Flex align="center" gap={2}>
-                                        <Image src={areasize} w="18px" />
-                                        <Text fontWeight="700">3,800 Sq.ft.</Text>
-                                    </Flex>
-                                </Flex>
-
-                                <Text
-                                    mt={{ base: 2, md: 3, lg: 5 }}
-                                    color="#F4F4F4"
-                                    lineHeight="1.8"
-                                    fontSize={{
-                                        base: "13px",
-                                        sm: "14px",
-                                        md: "15px",
-                                        lg: "15.5px",
-                                    }}
-                                    letterSpacing="0.02em"
-                                    wordSpacing="0.05em"
-                                >
-                                    A vibrant resort concept shaped around leisure, recreation,
-                                    and immersive guest experiences. The project combines
-                                    expressive interiors, landscaped courtyards, private pool
-                                    spaces, and playful outdoor amenities to create a destination
-                                    that feels relaxed, engaging, and distinctly memorable.
-                                </Text>
-                            </Box>
+                            
 
                             <Flex
-                                position="relative"
+                               
                                 zIndex={10}
                                 direction="column"
+                                  className="hero-cards"
+                                ref={heroCardsRef} 
                                 w={{ base: "100%", lg: "50%" }}
                                 maxW={{ base: "100%", lg: "50%" }}
-                                align={{ base: "center", lg: "flex-end" }}
-                            >
+                ml={{ lg: "auto" }}
+                            
+                                mt={{ base: 0, lg: 0 }}
+                position={{ base: "absolute", lg: "relative" }}
+                left={{ base: 0, lg: "auto" }}
+                right={{ base: 0, lg: "auto" }}
+                bottom={{ base: "6%", sm: "5%", md: "4%", lg: "auto" }}
+                css={{
+                  "@media (max-width: 991px) and (max-height: 800px)": {
+                    bottom: "5%",
+                  },
+                  
+                  "@media (max-width: 767px) and (min-height: 900px)": {
+                    bottom: "18%",
+                  },
+                }}
+                
+  gap={{ base: 3, md: 4, lg: "6%" }}
+  flexShrink={0}>
                                 <Box
                                     position="relative"
                                     w="100%"
                                     height={{
-                                        base: "260px",
-                                        sm: "280px",
-                                        md: "240px",
-                                        lg: "300px",
-                                    }}
-                                    minH={{ base: "230px", md: "220px", lg: "300px" }}
-                                    maxH={{ base: "320px", md: "260px", lg: "300px" }}
-                                    mt={{ base: 2, md: 3, lg: 0 }}
+                    base: "300px",
+                    sm: "300px",
+                    md: "300px",
+                    lg: "300px",
+                  }}
+                  css={{
+                    /* Short mobile/tablet viewports get a smaller frame only
+                       when the viewport itself is genuinely short. */
+                    "@media (max-width: 991px) and (max-height: 800px)": {
+                      height: "260px",
+                    },
+                    "@media (max-width: 479px) and (max-height: 800px)": {
+                      height: "245px",
+                    },
+                  }}
+                                    mt={{ base: 1, md: 2, lg: 0 }}
                                     overflow="visible"
                                     isolation="isolate"
                                 >
@@ -398,17 +567,54 @@ export default function PortfolioProject3() {
                                             opacity: isVisibleDesktop ? 1 : 0,
                                             scale: isActiveDesktop ? 1 : 0.95,
                                         };
+                                        
 
-                                        const mobileAnimate = {
-                                            left: "50%",
-                                            x: "-50%",
-                                            top: 0,
-                                            rotate: 0,
-                                            opacity: isFrontMobile ? 1 : 0,
-                                            scale: 1,
-                                        };
+                                        const isMobileExiting =
+                      isMobile && mobileExitingIndex === index;
+                    const isMobileResetting =
+                      isMobile && mobileResetIndex === index;
+                    const isMobileHidden =
+                      isMobile && mobileHiddenIndex === index;
 
-                                        const details = sectionDetailsMap[project.section];
+                    const stackDepth = Math.min(stackPosition, 3);
+
+                    const mobileAnimate =
+                      isMobileExiting && !isMobileHidden
+                        ? {
+                            left: "50%",
+                            x: "125%",
+                            top: 0,
+                            rotate: 0,
+                            opacity: 0,
+                            scale: 1,
+                          }
+                        : {
+                            left: `${50 - stackDepth * 3}%`,
+                            x: "-50%",
+                            top: 0,
+                            rotate: 0,
+                            opacity: isMobileHidden
+                              ? 0
+                              : stackDepth === 0
+                                ? 1
+                                : stackDepth === 1
+                                  ? 0.95
+                                  : stackDepth === 2
+                                    ? 0.8
+                                    : 0.6,
+                            scale: 1 - stackDepth * 0.035,
+                          };
+
+                    const details = sectionDetailsMap[project.section];
+                    const base = isMobile ? mobileAnimate : desktopAnimate;
+
+                    const positionTransition =
+                      isMobile && isMobileResetting
+                        ? { duration: 0 }
+                        : {
+                            duration: CARD_SLIDE_DURATION,
+                            ease: CARD_SLIDE_EASE,
+                          };
                                         const thumbnailImage = project.images?.[0];
 
                                         return (
@@ -417,18 +623,23 @@ export default function PortfolioProject3() {
                                                 layoutId={
                                                     mounted ? `project-card-${index}` : undefined
                                                 }
+                                                layout={false}
                                                 position="absolute"
                                                 top={0}
-                                                w={{ base: "85%", sm: "70%", md: "46%", lg: "30%" }}
+                                                w={{ base: "84%", sm: "68%", md: "48%", lg: "30%" }}
                                                 h="100%"
                                                 zIndex={
-                                                    isMobile
-                                                        ? 10 - stackPosition
-                                                        : isActiveDesktop
-                                                            ? 3
-                                                            : 2
-                                                }
-                                                overflow="hidden"
+                          isMobile
+                            ? isMobileHidden
+                              ? 0
+                              : isMobileExiting
+                                ? 20
+                                : 10 - stackDepth
+                            : isActiveDesktop
+                              ? 3
+                              : 2
+                        }
+                        overflow="hidden"
                                                 borderRadius="20px"
                                                 cursor="pointer"
                                                 bg="rgba(255,255,255,.18)"
@@ -447,13 +658,42 @@ export default function PortfolioProject3() {
                                                             ? "auto"
                                                             : "none"
                                                 }
-                                                onClick={() => openCard(index)}
-                                                initial={false}
-                                                animate={isMobile ? mobileAnimate : desktopAnimate}
+                                                  onClick={() => openCard(index)}
+initial={{
+  ...(isMobile ? mobileAnimate : desktopAnimate),
+  opacity: 0,
+  scale: 0.85,
+  rotateY: index % 2 === 0 ? -110 : 110,
+}}
+animate={{ ...base, rotateY: isActive ? 0 : 100 }}
                                                 transition={{
-                                                    duration: 0.4,
-                                                    ease: [0.22, 1, 0.36, 1],
-                                                }}
+                          left: positionTransition,
+                          top: positionTransition,
+                          x: positionTransition,
+                          scale: {
+                            duration: CARD_SLIDE_DURATION,
+                            ease: CARD_SLIDE_EASE,
+                          },
+                          opacity: {
+                            duration: CARD_SLIDE_DURATION,
+                            ease: CARD_SLIDE_EASE,
+                          },
+                          rotateY: {
+                            duration: SCENE_DURATION * 0.8,
+                            delay: Math.abs(distance) * 0.08,
+                            ease: SCENE_EASE,
+                          },
+                        }}
+                        style={{
+                          transformPerspective: 1400,
+                          willChange: "transform, opacity",
+                          visibility:
+                            isMobileHidden || isMobileResetting
+                              ? "hidden"
+                              : "visible",
+                         
+                        }}
+
                                             >
                                                 {project.video ? (
                                                     <video
@@ -530,7 +770,8 @@ export default function PortfolioProject3() {
                                 </Box>
 
                                 <Flex
-                                    justify="center"
+                                    display={{ base: "none", lg: "flex" }}
+                  justify="center"
                                     w="100%"
                                     gap={4}
                                     mt={{ base: 2, md: 2, lg: 5 }}
@@ -538,6 +779,7 @@ export default function PortfolioProject3() {
                                     <Button
                                         aria-label="Previous project"
                                         onClick={goPrevious}
+                    disabled={!isActive}
                                         w={{ base: "40px", md: "44px", lg: "60px" }}
                                         h={{ base: "40px", md: "44px", lg: "60px" }}
                                         minW={{ base: "40px", md: "44px", lg: "60px" }}
@@ -552,6 +794,7 @@ export default function PortfolioProject3() {
                                     <Button
                                         aria-label="Next project"
                                         onClick={goNext}
+                    disabled={!isActive}
                                         w={{ base: "40px", md: "44px", lg: "60px" }}
                                         h={{ base: "40px", md: "44px", lg: "60px" }}
                                         minW={{ base: "40px", md: "44px", lg: "60px" }}
@@ -1047,10 +1290,7 @@ function AccordionContent({ items }: { items: AccordionItem[] }) {
                                         initial={{ height: 0, opacity: 0 }}
                                         animate={{ height: "auto", opacity: 1 }}
                                         exit={{ height: 0, opacity: 0 }}
-                                        transition={{
-                                            height: { duration: 0.6, ease },
-                                            opacity: { duration: 0.25, ease: "easeOut" },
-                                        }}
+                                        transition={{ duration: 0.35, ease }}
                                         style={{ overflow: "hidden" }}
                                     >
                                         <Box
