@@ -21,15 +21,6 @@ const projectsData = [
       "      A farm development project thoughtfully designed to reflect Indian culture through its architecture, materials, and spatial experience. Nestled amidst lush farmland, it features a personalized residence with curated interiors and a private swimming pool. ",
   },
   {
-    Component: PortfolioProject2,
-    titleLine1: "GOODWILL",
-    titleLine2: "CRESCENT",
-    location: "Pune, Maharashtra",
-    area: "22,000 Sq.ft.",
-    description:
-      "A vibrant resort concept shaped around leisure, recreation, and immersive guest experiences. The project combines expressive interiors, landscaped courtyards, private pool spaces, and playful outdoor amenities to create a destination that feels relaxed, engaging, and distinctly memorable.",
-  },
-  {
     Component: PortfolioProject3,
     titleLine1: "KOLVAN",
     titleLine2: "RESORT",
@@ -39,13 +30,13 @@ const projectsData = [
       "A contemporary villa envisioned as a luxurious escape that embraces Mahabaleshwar's natural character. The design aims to merge seamlessly with its surroundings while maintaining a distinctly modern identity through clean forms, large glass openings, and carefully crafted outdoor spaces.",
   },
   {
-    Component: PortfolioProject4,
-    titleLine1: "MAHABALESHWAR",
-    titleLine2: "VILLA",
-    location: "Mahabaleshwar, Maharashtra",
-    area: "Ongoing",
+    Component: PortfolioProject2,
+    titleLine1: "GOODWILL",
+    titleLine2: "CRESCENT",
+    location: "Pune, Maharashtra",
+    area: "22,000 Sq.ft.",
     description:
-      "A contemporary villa envisioned as a luxurious escape that embraces Mahabaleshwar's natural character. The design aims to merge seamlessly with its surroundings while maintaining a distinctly modern identity through clean forms, large glass openings, and carefully crafted outdoor spaces.",
+      "A vibrant resort concept shaped around leisure, recreation, and immersive guest experiences. The project combines expressive interiors, landscaped courtyards, private pool spaces, and playful outdoor amenities to create a destination that feels relaxed, engaging, and distinctly memorable.",
   },
   {
     Component: PortfolioProject5,
@@ -55,6 +46,15 @@ const projectsData = [
     area: "Completed",
     description:
       "A thoughtfully planned senior living environment shaped around safety, familiarity, and everyday comfort. Set within a quiet agricultural landscape, the old age home uses a simple and practical architectural language, generous semi-open spaces, natural light, and familiar domestic-scale interiors to create a place that feels welcoming rather than institutional.",
+  },
+  {
+    Component: PortfolioProject4,
+    titleLine1: "MAHABALESHWAR",
+    titleLine2: "VILLA",
+    location: "Mahabaleshwar, Maharashtra",
+    area: "Ongoing",
+    description:
+      "A contemporary villa envisioned as a luxurious escape that embraces Mahabaleshwar's natural character. The design aims to merge seamlessly with its surroundings while maintaining a distinctly modern identity through clean forms, large glass openings, and carefully crafted outdoor spaces.",
   },
 ]
 
@@ -272,10 +272,10 @@ const Portfolio = () => {
               <Text
               mt={{base: 6}}
               fontSize={{
-                  base: activeIndex === 3 ? "26px" : "32px",
-                  sm: activeIndex === 3 ? "34px" : "42px",
-                  md: activeIndex === 3 ? "44px" : "52px",
-                  lg: activeIndex === 3 ? "64px" : "79px",
+                  base: activeIndex === 4 ? "26px" : "32px",
+                  sm: activeIndex === 4 ? "34px" : "42px",
+                  md: activeIndex === 4 ? "44px" : "52px",
+                  lg: activeIndex === 4 ? "64px" : "79px",
                 }}
 lineHeight="0.95"
                 fontWeight="700"

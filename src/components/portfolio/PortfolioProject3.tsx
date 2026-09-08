@@ -179,7 +179,7 @@ type PortfolioProject3Props = {
   direction?: 1 | -1;
 };
 
-export default function PortfolioProject3({
+export default function PortfolioProject2({
   isActive = true,
   direction = 1,
 }: PortfolioProject3Props) {

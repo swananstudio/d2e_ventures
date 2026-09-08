@@ -148,7 +148,7 @@ const getDistance = (index: number, active: number, total: number) => {
 };
 
 
-export default function PortfolioProject2({
+export default function PortfolioProject3({
   isActive = true,
   direction = 1,
 }: PortfolioProject2Props) {
@@ -928,7 +928,7 @@ function ImageCarousel({ images, alt }: { images: string[]; alt: string }) {
     });
     return initial;
   });
-  const SLIDE_DURATION = 5000;
+  const SLIDE_DURATION = 3000;
 
   useEffect(() => {
     images.forEach((src) => {
