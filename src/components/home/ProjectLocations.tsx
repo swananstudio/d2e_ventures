@@ -145,6 +145,13 @@ const ProjectLocations = () => {
                     >
                         From Pune to Mumbai, Nagpur to Konkan & Chandrapur, D2E Ventures is shaping premium developments across Maharashtra with a commitment to quality, thoughtful planning, and exceptional execution. As our footprint continues to grow, we're extending the same integrated expertise to landmark developments across India.
                     </Text>
+                    <Text
+                        mt={4}
+                        lineHeight="1.9"
+                        maxW="600px"
+                    >
+                        D2E Ventures designs and builds luxury villas in Pune, Mumbai, Nagpur, and Konkan.
+                    </Text>
                 </Flex>
 
                 <Flex justify="center">
@@ -172,6 +179,7 @@ const ProjectLocations = () => {
                             src={maharashtraMap}
                             w="100%"
                             display="block"
+                            alt="D2E Ventures project locations across Maharashtra – Pune, Mumbai, Nagpur, Konkan, Jalgaon, Chandrapur"
                         />
 
                         {/* Mumbai */}

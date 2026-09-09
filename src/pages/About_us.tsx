@@ -6,6 +6,7 @@ import InnerHeroSection from './../components/about_us/InnerHeroSection';
 // import Quality from "./../components/about_us/Quality";
 import { Center, Flex, Spinner } from "@chakra-ui/react"
 import { QualitySectionImg, QualitySectionImg_mobile } from '../assets/assets';
+import { useSEO } from '..//custom/useSEO';
 
 // Detects actual Safari browser (desktop Safari + Mobile Safari on iOS/iPadOS)
 // Excludes Chrome, Firefox, Edge, and other browsers — even those running on iOS,
@@ -36,7 +37,11 @@ const About_us = () => {
             setBgAttachment('scroll');
         }
     }, []);
-
+    useSEO({
+        title: "About D2E Ventures | Integrated Land & Development Consultancy",
+        description: "5+ years, 50+ projects, one integrated team. Discover how D2E Ventures brings architecture, planning & construction under one roof.",
+        canonical: "https://www.d2eventures.com/about-us",
+    });
     return (
         <>
             <Suspense fallback={<Loader />}>

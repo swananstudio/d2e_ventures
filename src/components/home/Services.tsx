@@ -6,12 +6,12 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/pagination";
 const services = [
-    { title: "ARCHITECTURE", image: homeservicesarchitecture },
-    { title: "INTERIOR", image: homeservicesinterior },
-    { title: "PLOTTING", image: homeservicesplotting },
-    { title: "LANDSCAPE", image: homeserviceslandscape },
-    { title: "PREMIUM VILLAS", image: homeservicespremium_villa },
-    { title: "TURNKEY", image: homeservicesturnkey_execution },
+    { title: "ARCHITECTURE", image: homeservicesarchitecture, alt: "ARCHITECTURE" },
+    { title: "INTERIOR", image: homeservicesinterior, alt: "INTERIOR" },
+    { title: "PLOTTING", image: homeservicesplotting, alt: "PLOTTING" },
+    { title: "LANDSCAPE", image: homeserviceslandscape, alt: "LANDSCAPE" },
+    { title: "PREMIUM VILLAS", image: homeservicespremium_villa, alt: "PREMIUM VILLAS" },
+    { title: "TURNKEY", image: homeservicesturnkey_execution, alt: "TURNKEY" },
 ];
 
 
@@ -46,13 +46,13 @@ const Services = () => {
                     lg: 20,
                 }}
                 h={{ base: "auto", lg: "30%" }}
-               
+
                 py={{ base: 7, lg: 7 }}
                 alignItems="center"
             >
                 <Box>
                     <Text
-                     pt={{base:8, md:6, lg:8}}
+                        pt={{ base: 8, md: 6, lg: 8 }}
                         fontSize={{ base: "38px", lg: "50px" }}
                         fontWeight="700"
                     >
@@ -78,7 +78,7 @@ const Services = () => {
             <Flex display={{ base: "none", lg: "flex" }} h={{ lg: "100%" }} overflow="hidden" onMouseLeave={() => setActive(null)}>
                 {services.map((service, index) => (
                     <Flex
-                    h='700px'
+                        h='700px'
                         key={service.title}
                         flex={
                             active === null
@@ -127,6 +127,7 @@ const Services = () => {
                                     ? "scale(1.08)"
                                     : "scale(1)"
                             }
+                            alt={service.alt}
                         />
 
                         <Box
