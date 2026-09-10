@@ -45,14 +45,16 @@ const PrivacyPolicy = ({ trigger }: PrivacyPolicyProps) => {
         <Dialog.Backdrop />
 
         <Dialog.Positioner>
-          <Dialog.Content
-            maxH="80vh"
-            maxW="750px"
-            borderRadius="20px"
-            overflow="hidden"
-            display="flex"
-            flexDirection="column"
-          >
+         <Dialog.Content
+  w={{ base: "90vw", sm: "90vw", md: "750px" }}
+  maxW={{ base: "90vw", sm: "90vw", md: "750px" }}
+  h={{ base: "75vh", sm: "78vh", md: "auto" }}
+  maxH={{ base: "75vh", sm: "78vh", md: "80vh" }}
+  borderRadius={{ base: "16px", md: "20px" }}
+  overflow="hidden"
+  display="flex"
+  flexDirection="column"
+>
             <Dialog.CloseTrigger asChild></Dialog.CloseTrigger>
 
             <Dialog.Header

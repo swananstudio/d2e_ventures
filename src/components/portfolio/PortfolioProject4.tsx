@@ -80,10 +80,9 @@ const morphTransition: Transition = {
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
-// Unified motion timing so background, cards, and text move as one coordinated scene.
-const SCENE_DURATION = 1.1;
-const SCENE_EASE = [0.65, 0, 0.35, 1] as const;
-
+// Smooth 3D card flip timing shared by every project.
+const CARD_FLIP_DURATION = 0.7;
+const CARD_FLIP_EASE = [0.65, 0, 0.35, 1] as const;
 // Card-slide timing (matches the horizontal-scroll feel from the original hero cards).
 const CARD_SLIDE_DURATION = 0.4;
 const CARD_SLIDE_EASE = [0.22, 1, 0.36, 1] as const;
@@ -152,7 +151,7 @@ type PortfolioProject4Props = {
   direction?: 1 | -1;
 };
 
-export default function PortfolioProject5({
+export default function PortfolioProject4({
   isActive = true,
   direction = 1,
 }: PortfolioProject4Props) {
@@ -291,7 +290,6 @@ export default function PortfolioProject5({
       event.preventDefault();
       event.stopPropagation();
       event.stopImmediatePropagation();
-      event.stopImmediatePropagation();
 
       // One wheel/swipe gesture advances exactly one card. Trackpad/mouse
       // momentum is ignored until the stream has been quiet for 300ms.
@@ -325,13 +323,11 @@ export default function PortfolioProject5({
     const onTouchStart = (event: TouchEvent) => {
       event.stopPropagation();
       event.stopImmediatePropagation();
-      event.stopImmediatePropagation();
       touchStartYRef.current = event.touches[0]?.clientY ?? null;
     };
 
     const onTouchEnd = (event: TouchEvent) => {
       event.stopPropagation();
-      event.stopImmediatePropagation();
       event.stopImmediatePropagation();
       if (touchStartYRef.current === null) return;
 
@@ -420,7 +416,7 @@ export default function PortfolioProject5({
          h={{ base: "100dvh", md: "100dvh", lg: "100%" }}
          w="100%"
          overflow="hidden">
-        <MotionBox
+        <Box
           position="absolute"
           top="-6%"
           left="-6%"
@@ -431,13 +427,7 @@ export default function PortfolioProject5({
           backgroundPosition="center"
           bgRepeat="no-repeat"
           zIndex={0}
-          initial={false}
-          animate={{ rotate: isActive ? 0 : direction >= 0 ? 4 : -4 }}
-         transition={{
-  duration: SCENE_DURATION,
-  ease: SCENE_EASE,
-}}
-        />
+         />
         <Box position="absolute" inset={0} bg="rgba(0,0,0,.35)" zIndex={1} />
         <Flex
           minH={{ base: "100dvh", md: "100dvh", lg: "100vh" }}
@@ -639,12 +629,13 @@ export default function PortfolioProject5({
                         }
                          onClick={() => openCard(index)}
 initial={{
-  ...(isMobile ? mobileAnimate : desktopAnimate),
-  opacity: 0,
-  scale: 0.85,
-  rotateY: index % 2 === 0 ? -110 : 110,
-}}
-animate={{ ...base, rotateY: isActive ? 0 : 100 }}
+                          ...(isMobile ? mobileAnimate : desktopAnimate),
+                          rotateY: 0,
+                        }}
+                        animate={{
+                          ...base,
+                          rotateY: isMobile ? (isActive ? 0 : 90) : isActive ? 0 : (direction >= 0 ? -82 : 82),
+                        }}
                                                 transition={{
                           left: positionTransition,
                           top: positionTransition,
@@ -658,13 +649,16 @@ animate={{ ...base, rotateY: isActive ? 0 : 100 }}
                             ease: CARD_SLIDE_EASE,
                           },
                           rotateY: {
-                            duration: SCENE_DURATION * 0.8,
+                            duration: CARD_FLIP_DURATION,
                             delay: Math.abs(distance) * 0.08,
-                            ease: SCENE_EASE,
+                            ease: CARD_FLIP_EASE,
                           },
                         }}
                         style={{
                           transformPerspective: 1400,
+                          transformStyle: "preserve-3d",
+                          transformOrigin: "50% 50%",
+                          backfaceVisibility: "visible",
                           willChange: "transform, opacity",
                           visibility:
                             isMobileHidden || isMobileResetting
@@ -845,37 +839,67 @@ function ImageCarousel({ images, alt }: { images: string[]; alt: string }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [loaded, setLoaded] = useState<Set<string>>(() => {
     const initial = new Set<string>();
+
     images.forEach((src) => {
       const img = new window.Image();
       img.src = src;
+
       if (img.complete && img.naturalWidth > 0) {
         initial.add(src);
       }
     });
+
     return initial;
   });
-  const SLIDE_DURATION = 5000;
+
+  // Same timing and fade behaviour across every project carousel.
+  const SLIDE_DURATION = 3000;
+  const FADE_DURATION = 1.5;
 
   useEffect(() => {
+    let cancelled = false;
+
     images.forEach((src) => {
       const img = new window.Image();
       img.src = src;
+
       if (img.complete && img.naturalWidth > 0) {
-        setLoaded((prev) => (prev.has(src) ? prev : new Set(prev).add(src)));
+        if (!cancelled) {
+          setLoaded((prev) => {
+            if (prev.has(src)) return prev;
+            const next = new Set(prev);
+            next.add(src);
+            return next;
+          });
+        }
         return;
       }
+
       img.onload = () => {
-        setLoaded((prev) => new Set(prev).add(src));
+        if (cancelled) return;
+
+        setLoaded((prev) => {
+          if (prev.has(src)) return prev;
+          const next = new Set(prev);
+          next.add(src);
+          return next;
+        });
       };
     });
+
+    return () => {
+      cancelled = true;
+    };
   }, [images]);
 
   useEffect(() => {
     if (!images || images.length <= 1) return;
-    const timer = setInterval(() => {
+
+    const timer = window.setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % images.length);
     }, SLIDE_DURATION);
-    return () => clearInterval(timer);
+
+    return () => window.clearInterval(timer);
   }, [images]);
 
   return (
@@ -892,7 +916,7 @@ function ImageCarousel({ images, alt }: { images: string[]; alt: string }) {
               inset: 0,
               opacity: isReady && isActive ? 1 : 0,
               zIndex: isActive ? 1 : 0,
-              transition: "opacity 1.5s ease-in-out",
+              transition: `opacity ${FADE_DURATION}s ease-in-out`,
               willChange: "opacity",
             }}
           >
@@ -901,7 +925,7 @@ function ImageCarousel({ images, alt }: { images: string[]; alt: string }) {
               alt={`${alt} ${i + 1}`}
               animate={isActive ? { scale: 1.08 } : { scale: 1 }}
               transition={{
-                duration: SLIDE_DURATION / 1000 + 1.5,
+                duration: SLIDE_DURATION / 1000 + FADE_DURATION,
                 ease: "linear",
               }}
               style={{

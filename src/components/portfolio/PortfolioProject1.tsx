@@ -64,10 +64,9 @@ const morphTransition: Transition = {
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
-// Unified motion timing so background, cards, and text move as one coordinated scene.
-const SCENE_DURATION = 1.1;
-const SCENE_EASE = [0.65, 0, 0.35, 1] as const;
-
+// Smooth 3D card flip timing shared by every project.
+const CARD_FLIP_DURATION = 0.7;
+const CARD_FLIP_EASE = [0.65, 0, 0.35, 1] as const;
 // Card-slide timing (matches the horizontal-scroll feel from the original hero cards).
 const CARD_SLIDE_DURATION = 0.4;
 const CARD_SLIDE_EASE = [0.22, 1, 0.36, 1] as const;
@@ -139,7 +138,6 @@ export default function PortfolioProject1({
   const [currentSection, setCurrentSection] = useState("main");
   const [activeIndex, setActiveIndex] = useState(1);
   const [openedCardIndex, setOpenedCardIndex] = useState<number | null>(null);
-  const [mounted, setMounted] = useState(false);
   const isCardAnimatingRef = useRef(false);
   const cardAnimationTimerRef = useRef<number | null>(null);
   const [mobileExitingIndex, setMobileExitingIndex] = useState<number | null>(null);
@@ -151,11 +149,7 @@ export default function PortfolioProject1({
   const mobileWheelGestureLockedRef = useRef(false);
   const mobileWheelUnlockTimerRef = useRef<number | null>(null);
   const moveCardRef = useRef<(step: 1 | -1) => void>(() => {});
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
+  const isMobile = useBreakpointValue({ base: true, lg: false }) ?? true;
   useEffect(() => {
     return () => {
       if (cardAnimationTimerRef.current !== null) {
@@ -170,7 +164,6 @@ export default function PortfolioProject1({
     };
   }, []);
 
-  const isMobile = useBreakpointValue({ base: true, lg: false }) ?? true;
   useEffect(() => {
     setActiveIndex(isMobile ? 0 : 1);
   }, [isMobile]);
@@ -379,7 +372,7 @@ export default function PortfolioProject1({
          h={{ base: "100dvh", md: "100dvh", lg: "100%" }}
          w="100%"
          overflow="hidden">
-        <MotionBox
+        <Box
           position="absolute"
           top="-6%"
           left="-6%"
@@ -390,12 +383,6 @@ export default function PortfolioProject1({
           backgroundPosition="center"
           bgRepeat="no-repeat"
           zIndex={0}
-          initial={false}
-          animate={{ rotate: isActive ? 0 : direction >= 0 ? 4 : -4 }}
-          transition={{
-            duration: SCENE_DURATION,
-            ease: SCENE_EASE,
-          }}
         />
         <Box position="absolute" inset={0} bg="rgba(0,0,0,.35)" zIndex={1} />
         <Flex
@@ -446,15 +433,15 @@ export default function PortfolioProject1({
   right={{ base: 0, lg: "auto" }}
   
   bottom={{ base: "6%", sm: "5%", md: "4%", lg: "auto" }}
-                css={{
-                  "@media (max-width: 991px) and (max-height: 800px)": {
-                    bottom: "5%",
-                  },
-                  
-                  "@media (max-width: 767px) and (min-height: 900px)": {
-                    bottom: "18%",
-                  },
-                }}
+  css={{
+    "@media (max-width: 991px) and (max-height: 800px)": {
+      bottom: "5%",
+    },
+
+    "@media (max-width: 767px) and (min-height: 900px)": {
+      bottom: "18%",
+    },
+  }}
   
   >
                 <Box
@@ -548,7 +535,7 @@ export default function PortfolioProject1({
                     const details = sectionDetailsMap[project.section];
                     const base = isMobile ? mobileAnimate : desktopAnimate;
 
-                    const positionTransition =
+                    const positionTransition: Transition =
                       isMobile && isMobileResetting
                         ? { duration: 0 }
                         : {
@@ -559,7 +546,7 @@ export default function PortfolioProject1({
                     return (
                       <MotionBox
                         key={index}
-                        layoutId={mounted ? `project-card-${index}` : undefined}
+                        layoutId={`project-card-${index}`}
                         layout={false}
                         position="absolute"
                         top={0}
@@ -598,11 +585,12 @@ export default function PortfolioProject1({
                         onClick={() => openCard(index)}
                         initial={{
                           ...(isMobile ? mobileAnimate : desktopAnimate),
-                          opacity: 0,
-                          scale: 0.85,
-                          rotateY: index % 2 === 0 ? -110 : 110,
+                          rotateY: 0,
                         }}
-                        animate={{ ...base, rotateY: isActive ? 0 : 100 }}
+                        animate={{
+                          ...base,
+                          rotateY: isMobile ? (isActive ? 0 : 90) : isActive ? 0 : (direction >= 0 ? -82 : 82),
+                        }}
                         transition={{
                           left: positionTransition,
                           top: positionTransition,
@@ -616,14 +604,17 @@ export default function PortfolioProject1({
                             ease: CARD_SLIDE_EASE,
                           },
                           rotateY: {
-                            duration: SCENE_DURATION * 0.8,
+                            duration: CARD_FLIP_DURATION,
                             delay: Math.abs(distance) * 0.08,
-                            ease: SCENE_EASE,
+                            ease: CARD_FLIP_EASE,
                           },
                         }}
                         style={{
                           transformPerspective: 1400,
+                          transformStyle: "preserve-3d",
+                          transformOrigin: "50% 50%",
                           willChange: "transform, opacity",
+                          backfaceVisibility: "visible",
                           visibility:
                             isMobileHidden || isMobileResetting
                               ? "hidden"

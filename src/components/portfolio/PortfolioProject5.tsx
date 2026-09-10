@@ -92,10 +92,9 @@ const morphTransition: Transition = {
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
-// Unified motion timing so background, cards, and text move as one coordinated scene.
-const SCENE_DURATION = 1.1;
-const SCENE_EASE = [0.65, 0, 0.35, 1] as const;
-
+// Smooth 3D card flip timing shared by every project.
+const CARD_FLIP_DURATION = 0.7;
+const CARD_FLIP_EASE = [0.65, 0, 0.35, 1] as const;
 // Card-slide timing (matches the horizontal-scroll feel from the original hero cards).
 const CARD_SLIDE_DURATION = 0.4;
 const CARD_SLIDE_EASE = [0.22, 1, 0.36, 1] as const;
@@ -167,7 +166,7 @@ type PortfolioProject5Props = {
   direction?: 1 | -1;
 };
 
-export default function PortfolioProject4({
+export default function PortfolioProject5({
   isActive = true,
   direction = 1,
 }: PortfolioProject5Props) {
@@ -183,6 +182,7 @@ export default function PortfolioProject4({
   const mobileExitTimerRef = useRef<number | null>(null);
   const heroCardsRef = useRef<HTMLDivElement | null>(null);
   const touchStartYRef = useRef<number | null>(null);
+  const touchStartXRef = useRef<number | null>(null);
   const mobileWheelGestureLockedRef = useRef(false);
   const mobileWheelUnlockTimerRef = useRef<number | null>(null);
   const moveCardRef = useRef<(step: 1 | -1) => void>(() => {});
@@ -295,20 +295,17 @@ export default function PortfolioProject4({
     };
 
     const onWheel = (event: WheelEvent) => {
+      // Vertical wheel/trackpad input must continue to the outer Portfolio
+      // scroller. Only a genuinely horizontal wheel gesture belongs to cards.
+      if (Math.abs(event.deltaX) <= Math.abs(event.deltaY)) return;
+
+      if (mobileWheelGestureLockedRef.current || isCardAnimatingRef.current) return;
+
       event.preventDefault();
       event.stopPropagation();
       event.stopImmediatePropagation();
-      event.stopImmediatePropagation();
 
-      // One wheel/swipe gesture advances exactly one card. Trackpad/mouse
-      // momentum is ignored until the stream has been quiet for 300ms.
-      if (mobileWheelGestureLockedRef.current) {
-        return;
-      }
-
-      if (isCardAnimatingRef.current) return;
-
-      wheelAccum += event.deltaY;
+      wheelAccum += event.deltaX;
 
       if (resetTimer !== null) {
         window.clearTimeout(resetTimer);
@@ -316,7 +313,7 @@ export default function PortfolioProject4({
 
       resetTimer = window.setTimeout(() => {
         wheelAccum = 0;
-      }, 120);
+      }, 100);
 
       if (Math.abs(wheelAccum) < 30) return;
 
@@ -325,41 +322,63 @@ export default function PortfolioProject4({
 
       mobileWheelGestureLockedRef.current = true;
       armWheelGestureUnlock();
-
       moveCardRef.current(step);
     };
 
     const onTouchStart = (event: TouchEvent) => {
+      const touch = event.touches[0];
+      if (!touch) return;
+      touchStartYRef.current = touch.clientY;
+      touchStartXRef.current = touch.clientX;
+    };
+
+    const onTouchMove = (event: TouchEvent) => {
+      if (touchStartXRef.current === null || touchStartYRef.current === null) return;
+
+      const touch = event.touches[0];
+      if (!touch) return;
+
+      const dx = touch.clientX - touchStartXRef.current;
+      const dy = touch.clientY - touchStartYRef.current;
+
+      // Let native/outer scrolling handle vertical gestures.
+      if (Math.abs(dx) <= Math.abs(dy) || Math.abs(dx) < 10) return;
+
+      // Once the gesture is clearly horizontal, prevent the browser from
+      // trying to perform horizontal page movement as well.
+      event.preventDefault();
       event.stopPropagation();
-      event.stopImmediatePropagation();
-      event.stopImmediatePropagation();
-      touchStartYRef.current = event.touches[0]?.clientY ?? null;
     };
 
     const onTouchEnd = (event: TouchEvent) => {
-      event.stopPropagation();
-      event.stopImmediatePropagation();
-      event.stopImmediatePropagation();
-      if (touchStartYRef.current === null) return;
+      if (touchStartXRef.current === null || touchStartYRef.current === null) return;
 
-      const dy =
-        touchStartYRef.current -
-        (event.changedTouches[0]?.clientY ?? touchStartYRef.current);
+      const touch = event.changedTouches[0];
+      if (!touch) return;
 
+      const dx = touch.clientX - touchStartXRef.current;
+      const dy = touch.clientY - touchStartYRef.current;
+
+      touchStartXRef.current = null;
       touchStartYRef.current = null;
 
-      if (Math.abs(dy) < 35 || isCardAnimatingRef.current) return;
+      // Cards own horizontal swipes; Portfolio owns vertical swipes.
+      if (Math.abs(dx) < 35 || Math.abs(dx) <= Math.abs(dy) || isCardAnimatingRef.current) return;
 
-      moveCardRef.current(dy > 0 ? 1 : -1);
+      event.preventDefault();
+      event.stopPropagation();
+      moveCardRef.current(dx < 0 ? 1 : -1);
     };
 
     el.addEventListener("wheel", onWheel, { passive: false });
     el.addEventListener("touchstart", onTouchStart, { passive: true });
-    el.addEventListener("touchend", onTouchEnd, { passive: true });
+    el.addEventListener("touchmove", onTouchMove, { passive: false });
+    el.addEventListener("touchend", onTouchEnd, { passive: false });
 
     return () => {
       el.removeEventListener("wheel", onWheel);
       el.removeEventListener("touchstart", onTouchStart);
+      el.removeEventListener("touchmove", onTouchMove);
       el.removeEventListener("touchend", onTouchEnd);
 
       if (resetTimer !== null) {
@@ -427,7 +446,7 @@ export default function PortfolioProject4({
          h={{ base: "100dvh", md: "100dvh", lg: "100%" }}
          w="100%"
          overflow="hidden">
-        <MotionBox
+        <Box
           position="absolute"
           top="-6%"
           left="-6%"
@@ -438,12 +457,6 @@ export default function PortfolioProject4({
           backgroundPosition="center"
           bgRepeat="no-repeat"
           zIndex={0}
-          initial={false}
-          animate={{ rotate: isActive ? 0 : direction >= 0 ? 4 : -4 }}
-        transition={{
-  duration: SCENE_DURATION,
-  ease: SCENE_EASE,
-}}
         />
         <Box position="absolute" inset={0} bg="rgba(0,0,0,.35)" zIndex={1} />
         <Flex
@@ -631,6 +644,7 @@ export default function PortfolioProject4({
                         overflow="hidden"
                         borderRadius="20px"
                         cursor="pointer"
+                        touchAction={{ base: "pan-y", lg: "auto" }}
                         bg="rgba(255,255,255,.18)"
                         border="1px solid rgba(255,255,255,.2)"
                         boxShadow={
@@ -649,12 +663,13 @@ export default function PortfolioProject4({
                         }
                        onClick={() => openCard(index)}
 initial={{
-  ...(isMobile ? mobileAnimate : desktopAnimate),
-  opacity: 0,
-  scale: 0.85,
-  rotateY: index % 2 === 0 ? -110 : 110,
-}}
-animate={{ ...base, rotateY: isActive ? 0 : 100 }}
+                          ...(isMobile ? mobileAnimate : desktopAnimate),
+                          rotateY: 0,
+                        }}
+                        animate={{
+                          ...base,
+                          rotateY: isMobile ? (isActive ? 0 : 90) : isActive ? 0 : (direction >= 0 ? -82 : 82),
+                        }}
                                                 transition={{
                           left: positionTransition,
                           top: positionTransition,
@@ -668,13 +683,16 @@ animate={{ ...base, rotateY: isActive ? 0 : 100 }}
                             ease: CARD_SLIDE_EASE,
                           },
                           rotateY: {
-                            duration: SCENE_DURATION * 0.8,
+                            duration: CARD_FLIP_DURATION,
                             delay: Math.abs(distance) * 0.08,
-                            ease: SCENE_EASE,
+                            ease: CARD_FLIP_EASE,
                           },
                         }}
                         style={{
                           transformPerspective: 1400,
+                          transformStyle: "preserve-3d",
+                          transformOrigin: "50% 50%",
+                          backfaceVisibility: "visible",
                           willChange: "transform, opacity",
                           visibility:
                             isMobileHidden || isMobileResetting
@@ -687,7 +705,7 @@ animate={{ ...base, rotateY: isActive ? 0 : 100 }}
                         {project.video ? (
                           <video
                             src={project.video}
-                            autoPlay
+                            autoPlay={isActive || !isMobile}
                             loop
                             muted
                             playsInline
@@ -810,6 +828,8 @@ animate={{ ...base, rotateY: isActive ? 0 : 100 }}
             isFirst={currentSectionIndex === 0}
             isLast={currentSectionIndex === sectionOrder.length - 1}
             tallImageMobile={tallImageSections.has(currentSection)}
+            isActive={isActive}
+            isMobile={isMobile}
             {...(sectionDetailsMap[currentSection] ||
               sectionDetailsMap.section1)}
           >
@@ -838,6 +858,8 @@ animate={{ ...base, rotateY: isActive ? 0 : 100 }}
 }
 
 type DetailLayoutProps = SectionProps & {
+  isActive: boolean;
+  isMobile: boolean;
   title: string;
   subtitle: string;
   image: string | string[];
@@ -853,37 +875,67 @@ function ImageCarousel({ images, alt }: { images: string[]; alt: string }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [loaded, setLoaded] = useState<Set<string>>(() => {
     const initial = new Set<string>();
+
     images.forEach((src) => {
       const img = new window.Image();
       img.src = src;
+
       if (img.complete && img.naturalWidth > 0) {
         initial.add(src);
       }
     });
+
     return initial;
   });
-  const SLIDE_DURATION = 5000;
+
+  // Same timing and fade behaviour across every project carousel.
+  const SLIDE_DURATION = 3000;
+  const FADE_DURATION = 1.5;
 
   useEffect(() => {
+    let cancelled = false;
+
     images.forEach((src) => {
       const img = new window.Image();
       img.src = src;
+
       if (img.complete && img.naturalWidth > 0) {
-        setLoaded((prev) => (prev.has(src) ? prev : new Set(prev).add(src)));
+        if (!cancelled) {
+          setLoaded((prev) => {
+            if (prev.has(src)) return prev;
+            const next = new Set(prev);
+            next.add(src);
+            return next;
+          });
+        }
         return;
       }
+
       img.onload = () => {
-        setLoaded((prev) => new Set(prev).add(src));
+        if (cancelled) return;
+
+        setLoaded((prev) => {
+          if (prev.has(src)) return prev;
+          const next = new Set(prev);
+          next.add(src);
+          return next;
+        });
       };
     });
+
+    return () => {
+      cancelled = true;
+    };
   }, [images]);
 
   useEffect(() => {
     if (!images || images.length <= 1) return;
-    const timer = setInterval(() => {
+
+    const timer = window.setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % images.length);
     }, SLIDE_DURATION);
-    return () => clearInterval(timer);
+
+    return () => window.clearInterval(timer);
   }, [images]);
 
   return (
@@ -900,7 +952,7 @@ function ImageCarousel({ images, alt }: { images: string[]; alt: string }) {
               inset: 0,
               opacity: isReady && isActive ? 1 : 0,
               zIndex: isActive ? 1 : 0,
-              transition: "opacity 1.5s ease-in-out",
+              transition: `opacity ${FADE_DURATION}s ease-in-out`,
               willChange: "opacity",
             }}
           >
@@ -909,7 +961,7 @@ function ImageCarousel({ images, alt }: { images: string[]; alt: string }) {
               alt={`${alt} ${i + 1}`}
               animate={isActive ? { scale: 1.08 } : { scale: 1 }}
               transition={{
-                duration: SLIDE_DURATION / 1000 + 1.5,
+                duration: SLIDE_DURATION / 1000 + FADE_DURATION,
                 ease: "linear",
               }}
               style={{
@@ -942,6 +994,8 @@ function DetailLayout({
   isFirst,
   isLast,
   tallImageMobile,
+  isActive,
+  isMobile,
 }: DetailLayoutProps) {
   const content = (
     <MotionBox
@@ -1089,7 +1143,7 @@ function DetailLayout({
               <motion.video
                 key={image}
                 src={image}
-                autoPlay
+                autoPlay={isActive || !isMobile}
                 loop
                 muted
                 playsInline

@@ -3,12 +3,14 @@ import { AnimatePresence, motion } from "framer-motion"
 import { Box, Flex, Image, Text, useBreakpointValue } from "@chakra-ui/react"
 
 import Navbar from "../layout/Navbar"
+import { useLocation } from "react-router"
 import PortfolioProject1 from "../components/portfolio/PortfolioProject1"
 import PortfolioProject2 from "../components/portfolio/PortfolioProject2"
 import PortfolioProject3 from "../components/portfolio/PortfolioProject3"
 import PortfolioProject4 from "../components/portfolio/PortfolioProject4"
 import PortfolioProject5 from "../components/portfolio/PortfolioProject5"
 import { maps, areasize } from "../assets/assets"
+import { useSEO } from "@/custom/useSEO"
 
 const projectsData = [
   {
@@ -21,7 +23,7 @@ const projectsData = [
       "      A farm development project thoughtfully designed to reflect Indian culture through its architecture, materials, and spatial experience. Nestled amidst lush farmland, it features a personalized residence with curated interiors and a private swimming pool. ",
   },
   {
-    Component: PortfolioProject3,
+    Component: PortfolioProject2,
     titleLine1: "KOLVAN",
     titleLine2: "RESORT",
     location: "Pune, Maharashtra",
@@ -30,22 +32,13 @@ const projectsData = [
       "A contemporary villa envisioned as a luxurious escape that embraces Mahabaleshwar's natural character. The design aims to merge seamlessly with its surroundings while maintaining a distinctly modern identity through clean forms, large glass openings, and carefully crafted outdoor spaces.",
   },
   {
-    Component: PortfolioProject2,
+    Component: PortfolioProject3,
     titleLine1: "GOODWILL",
     titleLine2: "CRESCENT",
     location: "Pune, Maharashtra",
     area: "22,000 Sq.ft.",
     description:
       "A vibrant resort concept shaped around leisure, recreation, and immersive guest experiences. The project combines expressive interiors, landscaped courtyards, private pool spaces, and playful outdoor amenities to create a destination that feels relaxed, engaging, and distinctly memorable.",
-  },
-  {
-    Component: PortfolioProject5,
-    titleLine1: "URLI KANCHAN",
-    titleLine2: "OLD AGE HOME",
-    location: "Urli Kanchan, Maharashtra",
-    area: "Completed",
-    description:
-      "A thoughtfully planned senior living environment shaped around safety, familiarity, and everyday comfort. Set within a quiet agricultural landscape, the old age home uses a simple and practical architectural language, generous semi-open spaces, natural light, and familiar domestic-scale interiors to create a place that feels welcoming rather than institutional.",
   },
   {
     Component: PortfolioProject4,
@@ -56,20 +49,72 @@ const projectsData = [
     description:
       "A contemporary villa envisioned as a luxurious escape that embraces Mahabaleshwar's natural character. The design aims to merge seamlessly with its surroundings while maintaining a distinctly modern identity through clean forms, large glass openings, and carefully crafted outdoor spaces.",
   },
+  {
+    Component: PortfolioProject5,
+    titleLine1: "URLI KANCHAN",
+    titleLine2: "OLD AGE HOME",
+    location: "Urli Kanchan, Maharashtra",
+    area: "Completed",
+    description:
+      "A thoughtfully planned senior living environment shaped around safety, familiarity, and everyday comfort. Set within a quiet agricultural landscape, the old age home uses a simple and practical architectural language, generous semi-open spaces, natural light, and familiar domestic-scale interiors to create a place that feels welcoming rather than institutional.",
+  },
 ]
 
-const TRANSITION_MS = 1300
+const TRANSITION_MS = 1000
+const TEXT_TRANSITION_DURATION = 1.0
 
 const Portfolio = () => {
+
+useSEO({
+    title: "Our Projects | 50+ Projects Completed Across Maharashtra",
+    description: "Explore 50+ completed projects - premium villas, farmhouses & plotted developments in Pune, Mumbai, Konkan & beyond. See the vision. See it built.",
+    canonical: "https://www.d2eventures.com/portfolio",
+    ogImage: "https://www.d2eventures.com/images/portfolio-hero.jpg",
+  });
+
   const [activeIndex, setActiveIndex] = useState(0)
   const isSmallMedium =
     useBreakpointValue({ base: true, lg: false }) ?? true
   const [direction, setDirection] = useState<1 | -1>(1)
+  const [transitioningFromIndex, setTransitioningFromIndex] = useState<number | null>(null)
+  const location = useLocation()
+
+  // Keep the first-project text hidden until the portfolio route has actually
+  // mounted/settled, then trigger the same entrance motion as the Home hero.
+  // This guarantees the animation is visible instead of being painted at its
+  // final position before Framer Motion gets a chance to animate it.
+  const [isDesktopEntry] = useState(
+    () => typeof window !== "undefined" && window.innerWidth >= 992
+  )
+  const [entryReady, setEntryReady] = useState(false)
+  const [entryAnimationKey, setEntryAnimationKey] = useState(0)
 
   const containerRef = useRef<HTMLDivElement | null>(null)
   const isAnimatingRef = useRef(false)
   const touchStartY = useRef<number | null>(null)
+  const touchStartX = useRef<number | null>(null)
   const animationTimeoutRef = useRef<number | null>(null)
+
+  useEffect(() => {
+    if (location.pathname !== "/portfolio") return
+
+    setEntryReady(false)
+    setEntryAnimationKey((key) => key + 1)
+
+    let secondFrame: number | null = null
+    const firstFrame = window.requestAnimationFrame(() => {
+      secondFrame = window.requestAnimationFrame(() => {
+        setEntryReady(true)
+      })
+    })
+
+    return () => {
+      window.cancelAnimationFrame(firstFrame)
+      if (secondFrame !== null) {
+        window.cancelAnimationFrame(secondFrame)
+      }
+    }
+  }, [location.pathname])
 
   useEffect(() => {
     const prevOverflow = document.body.style.overflow
@@ -100,6 +145,7 @@ const Portfolio = () => {
       isAnimatingRef.current = true
 
       setDirection(dir)
+      setTransitioningFromIndex(activeIndex)
       setActiveIndex(target)
 
       if (animationTimeoutRef.current !== null) {
@@ -108,6 +154,7 @@ const Portfolio = () => {
 
       animationTimeoutRef.current = window.setTimeout(() => {
         isAnimatingRef.current = false
+        setTransitioningFromIndex(null)
         animationTimeoutRef.current = null
       }, TRANSITION_MS)
     },
@@ -152,14 +199,25 @@ const Portfolio = () => {
     }
 
     const onTouchStart = (e: TouchEvent) => {
-      touchStartY.current = e.touches[0].clientY
+      const touch = e.touches[0]
+      if (!touch) return
+      touchStartY.current = touch.clientY
+      touchStartX.current = touch.clientX
     }
 
     const onTouchEnd = (e: TouchEvent) => {
-      if (touchStartY.current === null) return
-      const dy = touchStartY.current - e.changedTouches[0].clientY
+      if (touchStartY.current === null || touchStartX.current === null) return
+      const touch = e.changedTouches[0]
+      if (!touch) return
+
+      const dy = touchStartY.current - touch.clientY
+      const dx = touch.clientX - touchStartX.current
       touchStartY.current = null
-      if (Math.abs(dy) < 45 || isAnimatingRef.current) return
+      touchStartX.current = null
+
+      // Project navigation owns vertical gestures only. Horizontal gestures
+      // are reserved for the project-card carousel.
+      if (Math.abs(dy) < 45 || Math.abs(dy) <= Math.abs(dx) || isAnimatingRef.current) return
       goDelta(dy > 0 ? 1 : -1)
     }
 
@@ -204,7 +262,7 @@ const Portfolio = () => {
             position="absolute"
             inset={0}
             bg="black"
-            zIndex={i === activeIndex ? 2 : 1}
+            zIndex={i === activeIndex ? 3 : i === transitioningFromIndex ? 2 : 1}
             pointerEvents={
               i === activeIndex ? "auto" : "none"
             }
@@ -243,28 +301,44 @@ const Portfolio = () => {
     },
   }}
 >
-          <AnimatePresence
-            mode="sync"
-            initial={false}
-          >
+          <AnimatePresence mode="sync" initial>
             <motion.div
-              key={activeIndex}
-              initial={{
-                y: 0,
-                opacity: isSmallMedium ? 1 : 0,
-              }}
-              animate={{
-                y: 0,
-                opacity: 1,
-              }}
-              exit={{
-                y: 0,
-                opacity: isSmallMedium ? 1 : 0,
-              }}
-              transition={{
-                duration: isSmallMedium ? 0 : 0.8,
-                ease: [0.22, 1, 0.36, 1],
-              }}
+              key={isSmallMedium ? "portfolio-text-static" : `${activeIndex}-${entryAnimationKey}`}
+              initial={
+                isSmallMedium
+                  ? false
+                  : isDesktopEntry
+                    ? { y: 1000, opacity: 0, scale: 0.5 }
+                    : { y: 0, opacity: 1, scale: 1 }
+              }
+              animate={
+                isSmallMedium
+                  ? { y: 0, opacity: 1, scale: 1 }
+                  : isDesktopEntry && !entryReady
+                    ? { y: 1000, opacity: 0, scale: 0.5 }
+                    : { y: 0, opacity: 1, scale: 1 }
+              }
+              exit={
+                isSmallMedium
+                  ? undefined
+                  : {
+                      y: -100,
+                      opacity: 0,
+                      scale: 1,
+                      transition: {
+                        duration: TEXT_TRANSITION_DURATION,
+                        ease: "easeInOut",
+                      },
+                    }
+              }
+              transition={
+                isSmallMedium
+                  ? { duration: 0 }
+                  : {
+                      duration: TEXT_TRANSITION_DURATION,
+                      ease: "easeInOut",
+                    }
+              }
               style={{
                 willChange: isSmallMedium ? "auto" : "transform, opacity",
               }}
@@ -272,10 +346,10 @@ const Portfolio = () => {
               <Text
               mt={{base: 6}}
               fontSize={{
-                  base: activeIndex === 4 ? "26px" : "32px",
-                  sm: activeIndex === 4 ? "34px" : "42px",
-                  md: activeIndex === 4 ? "44px" : "52px",
-                  lg: activeIndex === 4 ? "64px" : "79px",
+                  base: activeIndex === 3 ? "26px" : "32px",
+                  sm: activeIndex === 3 ? "34px" : "42px",
+                  md: activeIndex === 3 ? "44px" : "52px",
+                  lg: activeIndex === 3 ? "64px" : "79px",
                 }}
 lineHeight="0.95"
                 fontWeight="700"
