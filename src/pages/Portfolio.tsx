@@ -10,7 +10,7 @@ import PortfolioProject3 from "../components/portfolio/PortfolioProject3"
 import PortfolioProject4 from "../components/portfolio/PortfolioProject4"
 import PortfolioProject5 from "../components/portfolio/PortfolioProject5"
 import { maps, areasize } from "../assets/assets"
-import { useSEO } from "@/custom/useSEO"
+import { useSEO } from "../custom/useSEO"
 
 const projectsData = [
   {

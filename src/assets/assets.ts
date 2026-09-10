@@ -1,5 +1,6 @@
 import herosection from './herosection.svg'
-import homeherosectionvideo from './home/herosection/homeherosectionvideo.mp4'
+// import homeherosectionvideo from './home/herosection/homeherosectionvideo.mp4'
+import homeherosectionvideo from './home/herosection/homeherosectionvideo.webm'
 import herosectiongif from './home/herosection/animation.gif'
 import logo from './Vector.png'
 import d2e_logo from './D2e_logo.svg'
