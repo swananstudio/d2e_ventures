@@ -288,6 +288,7 @@ const DevelopmentStage = () => {
                                     _hover={{
                                         transform: "scale(1.05)",
                                     }}
+                                    alt={service.title}
                                 />
                             </Box>
                         </Flex>

@@ -51,7 +51,7 @@ const HeroSection = () => {
                 muted
                 loop
                 playsInline
-                preload="auto"
+                preload="metadata"
                 style={{
                     width: "100%",
                     height: "100%",

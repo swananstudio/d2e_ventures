@@ -7,13 +7,14 @@ import {
 } from "@chakra-ui/react";
 
 import {
-    service_client,
+    // service_client,
     design_execution,
     integrated_development,
     land_values,
     premium_project,
     transparent_coordination,
-    centric_development
+    centric_development,
+    client_trust
 } from "../../assets/assets";
 
 type TrustFeature = {
@@ -161,10 +162,10 @@ const ClientTrust = () => {
                     }}
                     w="100%"
                     h={{
-                        base: "250px",
-                        sm: "320px",
-                        md: "400px",
-                        lg: "460px",
+                        base: "270px",
+                        sm: "340px",
+                        md: "420px",
+                        lg: "480px",
                     }}
                     overflow="hidden"
                     borderRadius={{
@@ -172,12 +173,30 @@ const ClientTrust = () => {
                         md: "18px",
                     }}
                 >
-                    <Image
+                    {/* <Image
                         src={service_client}
                         w="100%"
                         h="100%"
                         objectFit="cover"
-                    />
+                    /> */}
+                    <video
+                        // ref={videoRef}
+                        autoPlay
+                        muted
+                        loop
+                        playsInline
+                        preload="metadata"
+                        style={{
+                            width: "100%",
+                            height: "100%",
+                            objectFit: "cover",
+                            // position: 'absolute',
+                            // top: 0,
+                            // left: 0
+                        }}
+                    >
+                        <source src={client_trust} type="video/mp4" />
+                    </video>
                 </Box>
 
                 {/* FEATURES */}

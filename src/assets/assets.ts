@@ -1,6 +1,7 @@
 import herosection from './herosection.svg'
+import homeherosectionvideo from './home/herosection/chomeherosectionvideo.mp4'
 // import homeherosectionvideo from './home/herosection/homeherosectionvideo.mp4'
-import homeherosectionvideo from './home/herosection/homeherosectionvideo.webm'
+// import homeherosectionvideo from './home/herosection/homeherosectionvideo.webm'
 import herosectiongif from './home/herosection/animation.gif'
 import logo from './Vector.png'
 import d2e_logo from './D2e_logo.svg'
@@ -78,6 +79,7 @@ import homereview3 from './home/review/review3.webp'
 import homereview4 from './home/review/review4.webp'
 
 import service_client from './services/client_trust/main_image.gif'
+import client_trust from './services/client_trust/client_trust.mp4'
 import design_execution from './services/client_trust/design_execution.png'
 import integrated_development from './services/client_trust/integrated_development.png'
 import land_values from './services/client_trust/land_values.png'
@@ -168,30 +170,30 @@ import KP_Planning3 from './portfolio/herosection/KP_Planning3.webp'
 import KP_MainImg from './portfolio/herosection/KP_MainImg.png'
 
 export {
-    herosection, herosectiongif, homeherosectionvideo, about_hero_section, services_hero_section, contact_hero_section,
-    logo, footerlogo,
-    services, homereview1, homereview2, homereview3, homereview4,
-    aboutoverview1, aboutoverview2, aboutoverview3, aboutoverview4,
-    aman_bhagwan, omkar_dhende, pranjal_patil,
-    expertise, responsibilities, philosophy, expertise_white, responsibilities_white, philosophy_white,
-    maps, phone, mail, timing, instagram, linkidin, facebook, twitter, youtube,
-    blackcolormaps, blackcolorphone, blackcolormail, blackcolortiming,
-    home, premium, strategy, concept, transparent, introline,
-    maharashtraMap, clientsIcon, locationIcon, areaIcon, projectCompleted,
-    farmhousefull, entrance, outerarea, servicebeforehouse, serviceafterhouse, before_home_service_mobile, after_home_service_mobile,
-    servicesdemo, homeservicesarchitecture, homeservicesinterior, homeserviceslandscape, homeservicesplotting, homeservicespremium_villa, homeservicesturnkey_execution,
-    service_client, design_execution, integrated_development, land_values, premium_project, transparent_coordination,
-    architecture,
- QualitySectionImg,
-    contact_office_surrounding, loadingimage, centric_development, d2e_logo, QualitySectionImg_mobile , PortfolioProject2Img , GC_ExecutionandDelivery , GC_PlanningandStrategy , GC_clientVision , GC_ProjectOverview , GC_ExecutionandDelivery_CoverImg , GC_Project_Overview_1,
+  herosection, herosectiongif, homeherosectionvideo, about_hero_section, services_hero_section, contact_hero_section,
+  logo, footerlogo,
+  services, homereview1, homereview2, homereview3, homereview4,
+  aboutoverview1, aboutoverview2, aboutoverview3, aboutoverview4,
+  aman_bhagwan, omkar_dhende, pranjal_patil,
+  expertise, responsibilities, philosophy, expertise_white, responsibilities_white, philosophy_white,
+  maps, phone, mail, timing, instagram, linkidin, facebook, twitter, youtube,
+  blackcolormaps, blackcolorphone, blackcolormail, blackcolortiming,
+  home, premium, strategy, concept, transparent, introline,
+  maharashtraMap, clientsIcon, locationIcon, areaIcon, projectCompleted,
+  farmhousefull, entrance, outerarea, servicebeforehouse, serviceafterhouse, before_home_service_mobile, after_home_service_mobile,
+  servicesdemo, homeservicesarchitecture, homeservicesinterior, homeserviceslandscape, homeservicesplotting, homeservicespremium_villa, homeservicesturnkey_execution,
+  service_client, design_execution, integrated_development, land_values, premium_project, transparent_coordination,
+  architecture,
+  QualitySectionImg,
+  contact_office_surrounding, loadingimage, centric_development, d2e_logo, QualitySectionImg_mobile, PortfolioProject2Img, GC_ExecutionandDelivery, GC_PlanningandStrategy, GC_clientVision, GC_ProjectOverview, GC_ExecutionandDelivery_CoverImg, GC_Project_Overview_1,
   GC_Project_Overview_2,
   GC_Project_Overview_3,
   GC_Project_Overview_4,
-  GC_Project_Overview_5 ,  KV_ProjectOverview1 , KV_ProjectOverview2, KV_ProjectOverview3 , KV_ClientVision1, KV_ClientVision2 , KV_ClientVision3 ,KV_DesignandDevelopment , KV_PlanningandStrategy , KV_MainPageImg , KV_ExecutionandDelivery1 , KV_ExecutionandDelivery2, KV_ExecutionandDelivery3, KV_ExecutionandDelivery4, KV_ExecutionandDelivery5,
-  MB_ClientVision, MB_MainPageImg, MB_PlanningandStrategy, MB_ProjectOverview1, MB_ProjectOverview2, MB_ProjectOverview3, MB_ProjectOverview4 , UK_MainPageImg, UK_ProjectOverview , UK_ClientVision1, UK_ClientVision2, UK_ClientVision3, UK_DeliveryandExecution, UK_DesignandDevelopment1, UK_DesignandDevelopment2,UK_DesignandDevelopment3, UK_DesignandDevelopment4, UK_PlanningandStrategy,
+  GC_Project_Overview_5, KV_ProjectOverview1, KV_ProjectOverview2, KV_ProjectOverview3, KV_ClientVision1, KV_ClientVision2, KV_ClientVision3, KV_DesignandDevelopment, KV_PlanningandStrategy, KV_MainPageImg, KV_ExecutionandDelivery1, KV_ExecutionandDelivery2, KV_ExecutionandDelivery3, KV_ExecutionandDelivery4, KV_ExecutionandDelivery5,
+  MB_ClientVision, MB_MainPageImg, MB_PlanningandStrategy, MB_ProjectOverview1, MB_ProjectOverview2, MB_ProjectOverview3, MB_ProjectOverview4, UK_MainPageImg, UK_ProjectOverview, UK_ClientVision1, UK_ClientVision2, UK_ClientVision3, UK_DeliveryandExecution, UK_DesignandDevelopment1, UK_DesignandDevelopment2, UK_DesignandDevelopment3, UK_DesignandDevelopment4, UK_PlanningandStrategy,
   About_Us_Carousel1, About_Us_Carousel2, About_Us_Carousel3, About_Us_Carousel4, KP_ProjectOverview, KP_ClientVision,
   KP_DeliveryandExecution1, KP_DeliveryandExecution2, KP_DeliveryandExecution3,
   KP_DeliveryandExecution4, KP_DeliveryandExecution5, KP_DeliveryandExecution6,
   KP_DesignandDev1, KP_DesignandDev2, KP_DesignandDev3, KP_DesignandDev4, KP_DesignandDev5,
-  KP_Planning1, KP_Planning2, KP_Planning3, areasize, KP_MainImg
+  KP_Planning1, KP_Planning2, KP_Planning3, areasize, KP_MainImg, client_trust
 }
