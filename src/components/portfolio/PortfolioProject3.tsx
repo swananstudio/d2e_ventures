@@ -1047,7 +1047,7 @@ function DetailLayout({
   isLast,
   tallImageMobile,
   isActive,
-  isMobile,
+ 
 }: DetailLayoutProps) {
   // Portaled to document.body so this "fixed" overlay is actually fixed to
   // the viewport, instead of being trapped inside Swiper's transformed

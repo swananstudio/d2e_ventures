@@ -1004,7 +1004,7 @@ function DetailLayout({
   isLast,
   tallImageMobile,
   isActive,
-  isMobile,
+  
 }: DetailLayoutProps) {
   const content = (
     <MotionBox
