@@ -167,6 +167,7 @@ export default function PortfolioProject5({
   const mobileExitTimerRef = useRef<number | null>(null);
   const heroCardsRef = useRef<HTMLDivElement | null>(null);
   const touchStartYRef = useRef<number | null>(null);
+  const touchStartXRef = useRef<number | null>(null);
   const mobileWheelGestureLockedRef = useRef(false);
   const mobileWheelUnlockTimerRef = useRef<number | null>(null);
   const moveCardRef = useRef<(step: 1 | -1) => void>(() => {});
@@ -295,19 +296,15 @@ export default function PortfolioProject5({
     };
 
     const onWheel = (event: WheelEvent) => {
+      if (Math.abs(event.deltaX) <= Math.abs(event.deltaY)) return;
+
+      if (mobileWheelGestureLockedRef.current || isCardAnimatingRef.current) return;
+
       event.preventDefault();
       event.stopPropagation();
       event.stopImmediatePropagation();
 
-      // One wheel/swipe gesture advances exactly one card. Trackpad/mouse
-      // momentum is ignored until the stream has been quiet for 300ms.
-      if (mobileWheelGestureLockedRef.current) {
-        return;
-      }
-
-      if (isCardAnimatingRef.current) return;
-
-      wheelAccum += event.deltaY;
+      wheelAccum += event.deltaX;
 
       if (resetTimer !== null) {
         window.clearTimeout(resetTimer);
@@ -329,34 +326,55 @@ export default function PortfolioProject5({
     };
 
     const onTouchStart = (event: TouchEvent) => {
+      const touch = event.touches[0];
+      if (!touch) return;
+      touchStartYRef.current = touch.clientY;
+      touchStartXRef.current = touch.clientX;
+    };
+
+    const onTouchMove = (event: TouchEvent) => {
+      if (touchStartXRef.current === null || touchStartYRef.current === null) return;
+
+      const touch = event.touches[0];
+      if (!touch) return;
+
+      const dx = touch.clientX - touchStartXRef.current;
+      const dy = touch.clientY - touchStartYRef.current;
+
+      if (Math.abs(dx) <= Math.abs(dy) || Math.abs(dx) < 10) return;
+
+      event.preventDefault();
       event.stopPropagation();
-      event.stopImmediatePropagation();
-      touchStartYRef.current = event.touches[0]?.clientY ?? null;
     };
 
     const onTouchEnd = (event: TouchEvent) => {
-      event.stopPropagation();
-      event.stopImmediatePropagation();
-      if (touchStartYRef.current === null) return;
+      if (touchStartXRef.current === null || touchStartYRef.current === null) return;
 
-      const dy =
-        touchStartYRef.current -
-        (event.changedTouches[0]?.clientY ?? touchStartYRef.current);
+      const touch = event.changedTouches[0];
+      if (!touch) return;
 
+      const dx = touch.clientX - touchStartXRef.current;
+      const dy = touchStartYRef.current - touch.clientY;
+
+      touchStartXRef.current = null;
       touchStartYRef.current = null;
 
-      if (Math.abs(dy) < 35 || isCardAnimatingRef.current) return;
+      if (Math.abs(dx) < 35 || Math.abs(dx) <= Math.abs(dy) || isCardAnimatingRef.current) return;
 
-      moveCardRef.current(dy > 0 ? 1 : -1);
+      event.preventDefault();
+      event.stopPropagation();
+      moveCardRef.current(dx < 0 ? 1 : -1);
     };
 
     el.addEventListener("wheel", onWheel, { passive: false });
     el.addEventListener("touchstart", onTouchStart, { passive: true });
-    el.addEventListener("touchend", onTouchEnd, { passive: true });
+    el.addEventListener("touchmove", onTouchMove, { passive: false });
+    el.addEventListener("touchend", onTouchEnd, { passive: false });
 
     return () => {
       el.removeEventListener("wheel", onWheel);
       el.removeEventListener("touchstart", onTouchStart);
+      el.removeEventListener("touchmove", onTouchMove);
       el.removeEventListener("touchend", onTouchEnd);
 
       if (resetTimer !== null) {

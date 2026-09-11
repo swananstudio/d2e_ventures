@@ -179,6 +179,7 @@ export default function PortfolioProject1({
   const mobileExitTimerRef = useRef<number | null>(null);
   const heroCardsRef = useRef<HTMLDivElement | null>(null);
   const touchStartYRef = useRef<number | null>(null);
+  const touchStartXRef = useRef<number | null>(null);
   const mobileWheelGestureLockedRef = useRef(false);
   const mobileWheelUnlockTimerRef = useRef<number | null>(null);
   const moveCardRef = useRef<(step: 1 | -1) => void>(() => {});
@@ -286,14 +287,15 @@ export default function PortfolioProject1({
   };
 
   const onWheel = (event: WheelEvent) => {
+    if (Math.abs(event.deltaX) <= Math.abs(event.deltaY)) return;
+
+    if (mobileWheelGestureLockedRef.current || isCardAnimatingRef.current) return;
+
     event.preventDefault();
     event.stopPropagation();
     event.stopImmediatePropagation();
 
-    if (mobileWheelGestureLockedRef.current) return;
-    if (isCardAnimatingRef.current) return;
-
-    wheelAccum += event.deltaY;
+    wheelAccum += event.deltaX;
 
     if (resetTimer !== null) window.clearTimeout(resetTimer);
     resetTimer = window.setTimeout(() => { wheelAccum = 0; }, 120);
@@ -309,34 +311,50 @@ export default function PortfolioProject1({
   };
 
   const onTouchStart = (event: TouchEvent) => {
-    touchStartYRef.current = event.touches[0]?.clientY ?? null;
+    const touch = event.touches[0];
+    if (!touch) return;
+    touchStartYRef.current = touch.clientY;
+    touchStartXRef.current = touch.clientX;
   };
 
-  // NEW — this is the actual fix for the janky/double-firing swipe
   const onTouchMove = (event: TouchEvent) => {
-    if (touchStartYRef.current === null) return;
-    event.preventDefault();       // stop native scroll/bounce from fighting the card animation
-    event.stopImmediatePropagation();
+    if (touchStartXRef.current === null || touchStartYRef.current === null) return;
+
+    const touch = event.touches[0];
+    if (!touch) return;
+
+    const dx = touch.clientX - touchStartXRef.current;
+    const dy = touch.clientY - touchStartYRef.current;
+
+    if (Math.abs(dx) <= Math.abs(dy) || Math.abs(dx) < 10) return;
+
+    event.preventDefault();
+    event.stopPropagation();
   };
 
   const onTouchEnd = (event: TouchEvent) => {
-    event.stopPropagation();
-    event.stopImmediatePropagation();
-    if (touchStartYRef.current === null) return;
+    if (touchStartXRef.current === null || touchStartYRef.current === null) return;
 
-    const dy = touchStartYRef.current - (event.changedTouches[0]?.clientY ?? touchStartYRef.current);
+    const touch = event.changedTouches[0];
+    if (!touch) return;
+
+    const dx = touch.clientX - touchStartXRef.current;
+    const dy = touch.clientY - touchStartYRef.current;
+
+    touchStartXRef.current = null;
     touchStartYRef.current = null;
 
-    // slightly higher threshold to avoid accidental double-counts on the bounce
-    if (Math.abs(dy) < 45 || isCardAnimatingRef.current) return;
+    if (Math.abs(dx) < 35 || Math.abs(dx) <= Math.abs(dy) || isCardAnimatingRef.current) return;
 
-    moveCardRef.current(dy > 0 ? 1 : -1);
+    event.preventDefault();
+    event.stopPropagation();
+    moveCardRef.current(dx < 0 ? 1 : -1);
   };
 
   el.addEventListener("wheel", onWheel, { passive: false });
   el.addEventListener("touchstart", onTouchStart, { passive: true });
   el.addEventListener("touchmove", onTouchMove, { passive: false }); // must be non-passive to preventDefault
-  el.addEventListener("touchend", onTouchEnd, { passive: true });
+  el.addEventListener("touchend", onTouchEnd, { passive: false });
 
   return () => {
     el.removeEventListener("wheel", onWheel);
