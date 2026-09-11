@@ -1,4 +1,4 @@
-import { useEffect, useRef, useCallback, useState } from "react"
+import { memo, useEffect, useRef, useCallback, useState } from "react"
 import { AnimatePresence, motion } from "framer-motion"
 import { Box, Flex, Image, Text, useBreakpointValue } from "@chakra-ui/react"
 
@@ -12,9 +12,24 @@ import PortfolioProject5 from "../components/portfolio/PortfolioProject5"
 import { maps, areasize } from "../assets/assets"
 import { useSEO } from "../custom/useSEO"
 
+type ProjectSceneProps = { isActive?: boolean; direction?: 1 | -1 }
+
+const areProjectScenePropsEqual = (
+  previous: ProjectSceneProps,
+  next: ProjectSceneProps,
+) =>
+  previous.isActive === next.isActive &&
+  (!next.isActive || previous.direction === next.direction)
+
+const Project1Scene = memo(PortfolioProject1, areProjectScenePropsEqual)
+const Project2Scene = memo(PortfolioProject2, areProjectScenePropsEqual)
+const Project3Scene = memo(PortfolioProject3, areProjectScenePropsEqual)
+const Project4Scene = memo(PortfolioProject4, areProjectScenePropsEqual)
+const Project5Scene = memo(PortfolioProject5, areProjectScenePropsEqual)
+
 const projectsData = [
   {
-    Component: PortfolioProject1,
+    Component: Project1Scene,
     titleLine1: "KALPADHAN",
     titleLine2: "FARM",
     location: "Pune, Maharashtra",
@@ -23,7 +38,7 @@ const projectsData = [
       "      A farm development project thoughtfully designed to reflect Indian culture through its architecture, materials, and spatial experience. Nestled amidst lush farmland, it features a personalized residence with curated interiors and a private swimming pool. ",
   },
   {
-    Component: PortfolioProject2,
+    Component: Project2Scene,
     titleLine1: "KOLVAN",
     titleLine2: "RESORT",
     location: "Pune, Maharashtra",
@@ -32,7 +47,7 @@ const projectsData = [
       "A contemporary villa envisioned as a luxurious escape that embraces Mahabaleshwar's natural character. The design aims to merge seamlessly with its surroundings while maintaining a distinctly modern identity through clean forms, large glass openings, and carefully crafted outdoor spaces.",
   },
   {
-    Component: PortfolioProject3,
+    Component: Project3Scene,
     titleLine1: "GOODWILL",
     titleLine2: "CRESCENT",
     location: "Pune, Maharashtra",
@@ -40,17 +55,8 @@ const projectsData = [
     description:
       "A vibrant resort concept shaped around leisure, recreation, and immersive guest experiences. The project combines expressive interiors, landscaped courtyards, private pool spaces, and playful outdoor amenities to create a destination that feels relaxed, engaging, and distinctly memorable.",
   },
-  {
-    Component: PortfolioProject4,
-    titleLine1: "MAHABALESHWAR",
-    titleLine2: "VILLA",
-    location: "Mahabaleshwar, Maharashtra",
-    area: "Ongoing",
-    description:
-      "A contemporary villa envisioned as a luxurious escape that embraces Mahabaleshwar's natural character. The design aims to merge seamlessly with its surroundings while maintaining a distinctly modern identity through clean forms, large glass openings, and carefully crafted outdoor spaces.",
-  },
-  {
-    Component: PortfolioProject5,
+   {
+    Component: Project4Scene,
     titleLine1: "URLI KANCHAN",
     titleLine2: "OLD AGE HOME",
     location: "Urli Kanchan, Maharashtra",
@@ -58,6 +64,16 @@ const projectsData = [
     description:
       "A thoughtfully planned senior living environment shaped around safety, familiarity, and everyday comfort. Set within a quiet agricultural landscape, the old age home uses a simple and practical architectural language, generous semi-open spaces, natural light, and familiar domestic-scale interiors to create a place that feels welcoming rather than institutional.",
   },
+  {
+    Component: Project5Scene,
+    titleLine1: "MAHABALESHWAR",
+    titleLine2: "VILLA",
+    location: "Mahabaleshwar, Maharashtra",
+    area: "Ongoing",
+    description:
+      "A contemporary villa envisioned as a luxurious escape that embraces Mahabaleshwar's natural character. The design aims to merge seamlessly with its surroundings while maintaining a distinctly modern identity through clean forms, large glass openings, and carefully crafted outdoor spaces.",
+  },
+ 
 ]
 
 const TRANSITION_MS = 1000
@@ -346,10 +362,10 @@ useSEO({
               <Text
               mt={{base: 6}}
               fontSize={{
-                  base: activeIndex === 3 ? "26px" : "32px",
-                  sm: activeIndex === 3 ? "34px" : "42px",
-                  md: activeIndex === 3 ? "44px" : "52px",
-                  lg: activeIndex === 3 ? "64px" : "79px",
+                  base: activeIndex === 4 ? "26px" : "32px",
+                  sm: activeIndex === 4 ? "34px" : "42px",
+                  md: activeIndex === 4 ? "44px" : "52px",
+                  lg: activeIndex === 4 ? "64px" : "79px",
                 }}
 lineHeight="0.95"
                 fontWeight="700"

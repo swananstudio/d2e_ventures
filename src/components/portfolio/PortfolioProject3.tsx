@@ -110,26 +110,26 @@ const sectionDetailsMap: Record<
     title: "PROJECT",
     subtitle: "Overview",
     image: overviewImages,
-    imageAlt: "Project overview",
+    imageAlt: "Goodwill Crescent project overview image",
     isCarousel: true,
   },
   section2: {
     title: "CLIENT",
     subtitle: "Vision",
     image: GC_clientVision,
-    imageAlt: "Project Goal",
+    imageAlt: "Goodwill Crescent client vision image",
   },
   section3: {
     title: "PLANNING &",
     subtitle: "STRATEGY",
     image: GC_PlanningandStrategy,
-    imageAlt: "Planning and strategy",
+    imageAlt: "Goodwill Crescent planning and strategy image",
   },
   section4: {
     title: "EXECUTION",
     subtitle: "& Delivery",
     image: GC_ExecutionandDelivery,
-    imageAlt: "Execution and delivery",
+    imageAlt: "Goodwill Crescent execution and delivery image",
     isVideo: true,
   },
 };
@@ -199,6 +199,14 @@ export default function PortfolioProject3({
   }, []);
 
   const isMobile = useBreakpointValue({ base: true, lg: false }) ?? true;
+
+  useEffect(() => {
+    const videos = heroCardsRef.current?.querySelectorAll("video");
+    videos?.forEach((video) => {
+      if (isActive) void video.play().catch(() => undefined);
+      else video.pause();
+    });
+  }, [isActive]);
 
   useEffect(() => {
     const initialActive = isMobile ? 0 : 1;
@@ -344,7 +352,7 @@ export default function PortfolioProject3({
 
   useEffect(() => {
     const el = heroCardsRef.current;
-    if (!el || !isMobile) return;
+    if (!el || !isMobile || !isActive) return;
 
     let wheelAccum = 0;
     let resetTimer: number | null = null;
@@ -451,7 +459,7 @@ export default function PortfolioProject3({
         window.clearTimeout(resetTimer);
       }
     };
-  }, [isMobile]);
+  }, [isMobile, isActive]);
 
   const openCard = (index: number) => {
     if (!isActive || isCardAnimatingRef.current) return;
@@ -754,7 +762,8 @@ export default function PortfolioProject3({
                         {project.video ? (
                           <video
                             src={project.video}
-                            autoPlay={isActive || !isMobile}
+                            autoPlay={isActive}
+                            preload={isActive ? "auto" : "metadata"}
                             loop
                             muted
                             playsInline
@@ -776,7 +785,7 @@ export default function PortfolioProject3({
                             draggable={false}
                             position="relative"
                             zIndex={0}
-                            alt={details.title}
+                            alt={`Goodwill Crescent ${details.title.toLowerCase()} ${details.subtitle.toLowerCase()} image`}
                           />
                         )}
 
@@ -996,12 +1005,13 @@ function ImageCarousel({ images, alt }: { images: string[]; alt: string }) {
               opacity: isReady && isActive ? 1 : 0,
               zIndex: isActive ? 1 : 0,
               transition: `opacity ${FADE_DURATION}s ease-in-out`,
-              willChange: "opacity",
+              willChange: isActive ? "opacity" : "auto",
             }}
           >
             <motion.img
               src={src}
               alt={`${alt} ${i + 1}`}
+              decoding="async"
               animate={isActive ? { scale: 1.08 } : { scale: 1 }}
               transition={{
                 duration: SLIDE_DURATION / 1000 + FADE_DURATION,
@@ -1011,8 +1021,7 @@ function ImageCarousel({ images, alt }: { images: string[]; alt: string }) {
                 width: "100%",
                 height: "100%",
                 objectFit: "cover",
-                willChange: "transform",
-                transform: "translateZ(0)",
+                willChange: isActive ? "transform" : "auto",
               }}
             />
           </motion.div>
@@ -1183,7 +1192,8 @@ function DetailLayout({
               <motion.video
                 key={image}
                 src={image}
-                autoPlay={isActive || !isMobile}
+                autoPlay={isActive}
+                preload={isActive ? "auto" : "metadata"}
                 loop
                 muted
                 playsInline

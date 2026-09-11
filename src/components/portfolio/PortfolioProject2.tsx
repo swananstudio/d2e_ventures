@@ -134,28 +134,28 @@ const sectionDetailsMap: Record<
         title: "PROJECT",
         subtitle: "Overview",
         image: [KV_ProjectOverview1, KV_ProjectOverview2, KV_ProjectOverview3],
-        imageAlt: "Project overview",
+        imageAlt: "Kolvan Resort project overview image",
         isCarousel: true,
     },
     section2: {
         title: "CLIENT",
         subtitle: "Vision",
         image: [KV_ClientVision1, KV_ClientVision2, KV_ClientVision3],
-        imageAlt: "Client vision",
+        imageAlt: "Kolvan Resort client vision image",
         isCarousel: true,
     },
     section3: {
         title: "PLANNING &",
         subtitle: "STRATEGY",
         image: KV_PlanningandStrategy,
-        imageAlt: "Planning and strategy",
+        imageAlt: "Kolvan Resort planning and strategy image",
         isVideo: true,
     },
     section4: {
         title: "DESIGN",
         subtitle: "Development",
         image: KV_DesignandDevelopment,
-        imageAlt: "Design development",
+        imageAlt: "Kolvan Resort design development image",
         isVideo: true,
     },
     section5: {
@@ -168,7 +168,7 @@ const sectionDetailsMap: Record<
             KV_ExecutionandDelivery4,
             KV_ExecutionandDelivery5,
         ],
-        imageAlt: "Execution and delivery",
+        imageAlt: "Kolvan Resort execution and delivery image",
         isCarousel: true,
     },
 };
@@ -218,6 +218,14 @@ export default function PortfolioProject2({
   }, []);
 
   const isMobile = useBreakpointValue({ base: true, lg: false }) ?? true;
+
+  useEffect(() => {
+    const videos = heroCardsRef.current?.querySelectorAll("video");
+    videos?.forEach((video) => {
+      if (isActive) void video.play().catch(() => undefined);
+      else video.pause();
+    });
+  }, [isActive]);
 
   useEffect(() => {
     setActiveIndex(isMobile ? 0 : 1);
@@ -290,7 +298,7 @@ export default function PortfolioProject2({
 
   useEffect(() => {
     const el = heroCardsRef.current;
-    if (!el || !isMobile) return;
+    if (!el || !isMobile || !isActive) return;
 
     let wheelAccum = 0;
     let resetTimer: number | null = null;
@@ -397,7 +405,7 @@ export default function PortfolioProject2({
         window.clearTimeout(resetTimer);
       }
     };
-  }, [isMobile]);
+  }, [isMobile, isActive]);
 
   const openCard = (index: number) => {
     if (!isActive || isCardAnimatingRef.current) return;
@@ -716,7 +724,8 @@ initial={{
                                                 {project.video ? (
                                                     <video
                                                         src={project.video}
-                                                        autoPlay={isActive || !isMobile}
+                                                        autoPlay={isActive}
+                                                        preload={isActive ? "auto" : "metadata"}
                                                         loop
                                                         muted
                                                         playsInline
@@ -738,7 +747,7 @@ initial={{
                                                         draggable={false}
                                                         position="relative"
                                                         zIndex={0}
-                                                        alt={details.title}
+                                                        alt={`Kolvan Resort ${details.title.toLowerCase()} ${details.subtitle.toLowerCase()} image`}
                                                     />
                                                 )}
 
@@ -963,12 +972,13 @@ function ImageCarousel({ images, alt }: { images: string[]; alt: string }) {
               opacity: isReady && isActive ? 1 : 0,
               zIndex: isActive ? 1 : 0,
               transition: `opacity ${FADE_DURATION}s ease-in-out`,
-              willChange: "opacity",
+              willChange: isActive ? "opacity" : "auto",
             }}
           >
             <motion.img
               src={src}
               alt={`${alt} ${i + 1}`}
+              decoding="async"
               animate={isActive ? { scale: 1.08 } : { scale: 1 }}
               transition={{
                 duration: SLIDE_DURATION / 1000 + FADE_DURATION,
@@ -978,8 +988,7 @@ function ImageCarousel({ images, alt }: { images: string[]; alt: string }) {
                 width: "100%",
                 height: "100%",
                 objectFit: "cover",
-                willChange: "transform",
-                transform: "translateZ(0)",
+                willChange: isActive ? "transform" : "auto",
               }}
             />
           </motion.div>
@@ -1152,7 +1161,8 @@ function DetailLayout({
                             <motion.video
                                 key={image}
                                 src={image}
-                                autoPlay={isActive || !isMobile}
+                                autoPlay={isActive}
+                                preload={isActive ? "auto" : "metadata"}
                                 loop
                                 muted
                                 playsInline

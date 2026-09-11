@@ -25,17 +25,30 @@ import { useState, useEffect, useRef, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 
 import {
-  MB_ClientVision,
-  MB_MainPageImg,
-  MB_PlanningandStrategy,
-  MB_ProjectOverview1,
-  MB_ProjectOverview2,
-  MB_ProjectOverview3,
-  MB_ProjectOverview4,
+  UK_MainPageImg,
+  UK_ProjectOverview,
+  UK_ClientVision1,
+  UK_ClientVision2,
+  UK_ClientVision3,
+  UK_DeliveryandExecution,
+  UK_DesignandDevelopment1,
+  UK_DesignandDevelopment2,
+  UK_DesignandDevelopment3,
+  UK_DesignandDevelopment4,
+  UK_PlanningandStrategy,
 
 } from "../../assets/assets";
 
 const MotionBox = motion.create(Box);
+
+// Grouped arrays for sections that use a carousel of multiple images
+const clientVisionImages = [UK_ClientVision1, UK_ClientVision2, UK_ClientVision3];
+const designDevelopmentImages = [
+  UK_DesignandDevelopment1,
+  UK_DesignandDevelopment2,
+  UK_DesignandDevelopment3,
+  UK_DesignandDevelopment4,
+];
 
 type Thumbnail = {
   section: string;
@@ -45,31 +58,30 @@ type Thumbnail = {
 
 const projectThumbnails: Thumbnail[] = [
   {
-    images: [
-      MB_ProjectOverview1,
-      MB_ProjectOverview2,
-      MB_ProjectOverview3,
-      MB_ProjectOverview4,
-    ],
+    video: UK_ProjectOverview,
     section: "section1",
   },
   {
-    video: MB_ClientVision,
+    images: clientVisionImages,
     section: "section2",
   },
   {
-    video: MB_PlanningandStrategy,
+    video: UK_PlanningandStrategy,
     section: "section3",
   },
   {
-    images: [MB_ProjectOverview4],
+    images: designDevelopmentImages,
     section: "section4",
+  },
+  {
+    video: UK_DeliveryandExecution,
+    section: "section5",
   },
 ];
 
-const sectionOrder = ["section1", "section2", "section3", "section4"];
+const sectionOrder = ["section1", "section2", "section3", "section4", "section5"];
 
-const tallImageSections = new Set(["section1"]);
+const tallImageSections = new Set(["section1", "section3", "section5"]);
 
 const morphTransition: Transition = {
   type: "spring",
@@ -115,38 +127,41 @@ const sectionDetailsMap: Record<
   section1: {
     title: "PROJECT",
     subtitle: "Overview",
-    image: [
-      MB_ProjectOverview1,
-      MB_ProjectOverview2,
-      MB_ProjectOverview3,
-      MB_ProjectOverview4,
-    ],
-    imageAlt: "Project overview",
-    isCarousel: true,
+    image: UK_ProjectOverview,
+    imageAlt: "Urli Kanchan Old Age Home project overview image",
+    isVideo: true,
   },
   section2: {
     title: "CLIENT",
     subtitle: "Vision",
-    image: MB_ClientVision,
-    imageAlt: "Client vision",
-    isVideo: true,
+    image: clientVisionImages,
+    imageAlt: "Urli Kanchan Old Age Home client vision image",
+    isCarousel: true,
   },
   section3: {
     title: "PLANNING &",
     subtitle: "STRATEGY",
-    image: MB_PlanningandStrategy,
-    imageAlt: "Planning and strategy",
+    image: UK_PlanningandStrategy,
+    imageAlt: "Urli Kanchan Old Age Home planning and strategy image",
     isVideo: true,
   },
   section4: {
-    title: "DESIGN, DEVELOPMENT",
-    subtitle: "& Execution",
-    image: MB_ProjectOverview4,
-    imageAlt: "Design, development and execution",
+    title: "DESIGN &",
+    subtitle: "Development",
+    image: designDevelopmentImages,
+    imageAlt: "Urli Kanchan Old Age Home design and development image",
+    isCarousel: true,
+  },
+  section5: {
+    title: "EXECUTION &",
+    subtitle: "Delivery",
+    image: UK_DeliveryandExecution,
+    imageAlt: "Urli Kanchan Old Age Home execution and delivery image",
+    isVideo: true,
   },
 };
 
-type PortfolioProject4Props = {
+type PortfolioProject5Props = {
   isActive?: boolean;
   direction?: 1 | -1;
 };
@@ -154,7 +169,7 @@ type PortfolioProject4Props = {
 export default function PortfolioProject4({
   isActive = true,
   direction = 1,
-}: PortfolioProject4Props) {
+}: PortfolioProject5Props) {
   const [currentSection, setCurrentSection] = useState("main");
   const [activeIndex, setActiveIndex] = useState(1);
   const [openedCardIndex, setOpenedCardIndex] = useState<number | null>(null);
@@ -167,6 +182,7 @@ export default function PortfolioProject4({
   const mobileExitTimerRef = useRef<number | null>(null);
   const heroCardsRef = useRef<HTMLDivElement | null>(null);
   const touchStartYRef = useRef<number | null>(null);
+  const touchStartXRef = useRef<number | null>(null);
   const mobileWheelGestureLockedRef = useRef(false);
   const mobileWheelUnlockTimerRef = useRef<number | null>(null);
   const moveCardRef = useRef<(step: 1 | -1) => void>(() => {});
@@ -192,15 +208,15 @@ export default function PortfolioProject4({
   const isMobile = useBreakpointValue({ base: true, lg: false }) ?? true;
 
   useEffect(() => {
-    setActiveIndex(isMobile ? 0 : 1);
-  }, [isMobile]);
+    const videos = heroCardsRef.current?.querySelectorAll("video");
+    videos?.forEach((video) => {
+      if (isActive) void video.play().catch(() => undefined);
+      else video.pause();
+    });
+  }, [isActive]);
 
   useEffect(() => {
-    if (isMobile) {
-      setActiveIndex(0);
-    } else {
-      setActiveIndex(1);
-    }
+    setActiveIndex(isMobile ? 0 : 1);
   }, [isMobile]);
 
   const lockCardAnimation = () => {
@@ -270,7 +286,7 @@ export default function PortfolioProject4({
 
   useEffect(() => {
     const el = heroCardsRef.current;
-    if (!el || !isMobile) return;
+    if (!el || !isMobile || !isActive) return;
 
     let wheelAccum = 0;
     let resetTimer: number | null = null;
@@ -287,19 +303,17 @@ export default function PortfolioProject4({
     };
 
     const onWheel = (event: WheelEvent) => {
+      // Vertical wheel/trackpad input must continue to the outer Portfolio
+      // scroller. Only a genuinely horizontal wheel gesture belongs to cards.
+      if (Math.abs(event.deltaX) <= Math.abs(event.deltaY)) return;
+
+      if (mobileWheelGestureLockedRef.current || isCardAnimatingRef.current) return;
+
       event.preventDefault();
       event.stopPropagation();
       event.stopImmediatePropagation();
 
-      // One wheel/swipe gesture advances exactly one card. Trackpad/mouse
-      // momentum is ignored until the stream has been quiet for 300ms.
-      if (mobileWheelGestureLockedRef.current) {
-        return;
-      }
-
-      if (isCardAnimatingRef.current) return;
-
-      wheelAccum += event.deltaY;
+      wheelAccum += event.deltaX;
 
       if (resetTimer !== null) {
         window.clearTimeout(resetTimer);
@@ -307,7 +321,7 @@ export default function PortfolioProject4({
 
       resetTimer = window.setTimeout(() => {
         wheelAccum = 0;
-      }, 120);
+      }, 100);
 
       if (Math.abs(wheelAccum) < 30) return;
 
@@ -316,46 +330,70 @@ export default function PortfolioProject4({
 
       mobileWheelGestureLockedRef.current = true;
       armWheelGestureUnlock();
-
       moveCardRef.current(step);
     };
 
     const onTouchStart = (event: TouchEvent) => {
+      const touch = event.touches[0];
+      if (!touch) return;
+      touchStartYRef.current = touch.clientY;
+      touchStartXRef.current = touch.clientX;
+    };
+
+    const onTouchMove = (event: TouchEvent) => {
+      if (touchStartXRef.current === null || touchStartYRef.current === null) return;
+
+      const touch = event.touches[0];
+      if (!touch) return;
+
+      const dx = touch.clientX - touchStartXRef.current;
+      const dy = touch.clientY - touchStartYRef.current;
+
+      // Let native/outer scrolling handle vertical gestures.
+      if (Math.abs(dx) <= Math.abs(dy) || Math.abs(dx) < 10) return;
+
+      // Once the gesture is clearly horizontal, prevent the browser from
+      // trying to perform horizontal page movement as well.
+      event.preventDefault();
       event.stopPropagation();
-      event.stopImmediatePropagation();
-      touchStartYRef.current = event.touches[0]?.clientY ?? null;
     };
 
     const onTouchEnd = (event: TouchEvent) => {
-      event.stopPropagation();
-      event.stopImmediatePropagation();
-      if (touchStartYRef.current === null) return;
+      if (touchStartXRef.current === null || touchStartYRef.current === null) return;
 
-      const dy =
-        touchStartYRef.current -
-        (event.changedTouches[0]?.clientY ?? touchStartYRef.current);
+      const touch = event.changedTouches[0];
+      if (!touch) return;
 
+      const dx = touch.clientX - touchStartXRef.current;
+      const dy = touch.clientY - touchStartYRef.current;
+
+      touchStartXRef.current = null;
       touchStartYRef.current = null;
 
-      if (Math.abs(dy) < 35 || isCardAnimatingRef.current) return;
+      // Cards own horizontal swipes; Portfolio owns vertical swipes.
+      if (Math.abs(dx) < 35 || Math.abs(dx) <= Math.abs(dy) || isCardAnimatingRef.current) return;
 
-      moveCardRef.current(dy > 0 ? 1 : -1);
+      event.preventDefault();
+      event.stopPropagation();
+      moveCardRef.current(dx < 0 ? 1 : -1);
     };
 
     el.addEventListener("wheel", onWheel, { passive: false });
     el.addEventListener("touchstart", onTouchStart, { passive: true });
-    el.addEventListener("touchend", onTouchEnd, { passive: true });
+    el.addEventListener("touchmove", onTouchMove, { passive: false });
+    el.addEventListener("touchend", onTouchEnd, { passive: false });
 
     return () => {
       el.removeEventListener("wheel", onWheel);
       el.removeEventListener("touchstart", onTouchStart);
+      el.removeEventListener("touchmove", onTouchMove);
       el.removeEventListener("touchend", onTouchEnd);
 
       if (resetTimer !== null) {
         window.clearTimeout(resetTimer);
       }
     };
-  }, [isMobile]);
+  }, [isMobile, isActive]);
 
   const openCard = (index: number) => {
     if (!isActive || isCardAnimatingRef.current) return;
@@ -422,19 +460,19 @@ export default function PortfolioProject4({
           left="-6%"
           w="112%"
           h="112%"
-          bgImage={`url(${MB_MainPageImg})`}
+          bgImage={`url(${UK_MainPageImg})`}
           bgSize="cover"
           backgroundPosition="center"
           bgRepeat="no-repeat"
           zIndex={0}
-         />
+        />
         <Box position="absolute" inset={0} bg="rgba(0,0,0,.35)" zIndex={1} />
         <Flex
           minH={{ base: "100dvh", md: "100dvh", lg: "100vh" }}
           h={{ base: "100dvh", md: "100dvh", lg: "100vh" }}
+          overflow="hidden"
           w="100%"
           position="relative"
-          overflow="hidden"
           py={0}
         >
 
@@ -442,9 +480,10 @@ export default function PortfolioProject4({
             position="relative"
             zIndex={2}
             direction="column"
+             className="hero-copy"
             w="100%"
-            minH={{ base: "100dvh", md: "100dvh", lg: "100%" }}
-             h={{ base: "100dvh", md: "100dvh", lg: "100%" }}
+            minH={{ base: "100svh", md: "100svh", lg: "100%" }}
+            h={{ base: "auto", md: "auto", lg: "100%" }}
           >
             <Flex
               flex={1}
@@ -460,15 +499,16 @@ export default function PortfolioProject4({
               
 
               <Flex
-                
+               
                 zIndex={10}
-                direction="column"
-                  className="hero-cards"
+                 className="hero-cards"
                                 ref={heroCardsRef} 
+                direction="column"
                 w={{ base: "100%", lg: "50%" }}
                 maxW={{ base: "100%", lg: "50%" }}
                 ml={{ lg: "auto" }}
                 gap={{ base: 3, md: 4, lg: "6%" }}
+                flexShrink={0}
               
                                 mt={{ base: 0, lg: 0 }}
                 position={{ base: "absolute", lg: "relative" }}
@@ -484,8 +524,7 @@ export default function PortfolioProject4({
                     bottom: "18%",
                   },
                 }}
-                
-  flexShrink={0}>
+                >
                 <Box
                   position="relative"
                   w="100%"
@@ -508,6 +547,8 @@ export default function PortfolioProject4({
                   mt={{ base: 1, md: 2, lg: 0 }}
                 >
                   {projectThumbnails.map((project, index) => {
+
+
                     const distance = getRelativePosition(index);
                     const isActiveDesktop = distance === 0;
                     const isVisibleDesktop = Math.abs(distance) <= 1;
@@ -611,6 +652,7 @@ export default function PortfolioProject4({
                         overflow="hidden"
                         borderRadius="20px"
                         cursor="pointer"
+                        touchAction={{ base: "pan-y", lg: "auto" }}
                         bg="rgba(255,255,255,.18)"
                         border="1px solid rgba(255,255,255,.2)"
                         boxShadow={
@@ -627,7 +669,7 @@ export default function PortfolioProject4({
                               ? "auto"
                               : "none"
                         }
-                         onClick={() => openCard(index)}
+                       onClick={() => openCard(index)}
 initial={{
                           ...(isMobile ? mobileAnimate : desktopAnimate),
                           rotateY: 0,
@@ -664,14 +706,15 @@ initial={{
                             isMobileHidden || isMobileResetting
                               ? "hidden"
                               : "visible",
-                         
+                       
                         }}
 >
                       
                         {project.video ? (
                           <video
                             src={project.video}
-                            autoPlay
+                            autoPlay={isActive}
+                            preload={isActive ? "auto" : "metadata"}
                             loop
                             muted
                             playsInline
@@ -693,7 +736,7 @@ initial={{
                             draggable={false}
                             position="relative"
                             zIndex={0}
-                            alt={details.title}
+                          alt={`Urli Kanchan Old Age Home ${details.title.toLowerCase()} ${details.subtitle.toLowerCase()} image`}
                           />
                         )}
 
@@ -747,11 +790,8 @@ initial={{
                   justify="center"
                   w="100%"
                   gap={4}
-                  mt={{ base: 1, md: 1, lg: 5 }}
-                   flexShrink={0}
-                   position="relative"
-                   zIndex={20}
-                   pb={{ base: 1, md: 0 }}
+                  mt={{ base: 2, md: 2, lg: 5 }}
+                  flexShrink={0}
                 >
                   <Button
                     aria-label="Previous project"
@@ -797,6 +837,8 @@ initial={{
             isFirst={currentSectionIndex === 0}
             isLast={currentSectionIndex === sectionOrder.length - 1}
             tallImageMobile={tallImageSections.has(currentSection)}
+            isActive={isActive}
+            isMobile={isMobile}
             {...(sectionDetailsMap[currentSection] ||
               sectionDetailsMap.section1)}
           >
@@ -813,6 +855,7 @@ initial={{
                   {currentSection === "section2" && <Section2Content />}
                   {currentSection === "section3" && <Section3Content />}
                   {currentSection === "section4" && <Section4Content />}
+                  {currentSection === "section5" && <Section5Content />}
                 </motion.div>
               </AnimatePresence>
             </Box>
@@ -824,6 +867,8 @@ initial={{
 }
 
 type DetailLayoutProps = SectionProps & {
+  isActive: boolean;
+  isMobile: boolean;
   title: string;
   subtitle: string;
   image: string | string[];
@@ -917,12 +962,13 @@ function ImageCarousel({ images, alt }: { images: string[]; alt: string }) {
               opacity: isReady && isActive ? 1 : 0,
               zIndex: isActive ? 1 : 0,
               transition: `opacity ${FADE_DURATION}s ease-in-out`,
-              willChange: "opacity",
+              willChange: isActive ? "opacity" : "auto",
             }}
           >
             <motion.img
               src={src}
               alt={`${alt} ${i + 1}`}
+              decoding="async"
               animate={isActive ? { scale: 1.08 } : { scale: 1 }}
               transition={{
                 duration: SLIDE_DURATION / 1000 + FADE_DURATION,
@@ -932,8 +978,7 @@ function ImageCarousel({ images, alt }: { images: string[]; alt: string }) {
                 width: "100%",
                 height: "100%",
                 objectFit: "cover",
-                willChange: "transform",
-                transform: "translateZ(0)",
+                willChange: isActive ? "transform" : "auto",
               }}
             />
           </motion.div>
@@ -958,6 +1003,8 @@ function DetailLayout({
   isFirst,
   isLast,
   tallImageMobile,
+  isActive,
+  isMobile,
 }: DetailLayoutProps) {
   const content = (
     <MotionBox
@@ -1105,7 +1152,8 @@ function DetailLayout({
               <motion.video
                 key={image}
                 src={image}
-                autoPlay
+                autoPlay={isActive}
+                preload={isActive ? "auto" : "metadata"}
                 loop
                 muted
                 playsInline
@@ -1154,7 +1202,7 @@ function DetailLayout({
                       height: "100%",
                       maxWidth: "100%",
                       maxHeight: "100%",
-                      objectFit: "cover",
+                      objectFit: "contain",
                     }}
                   />
                 </AnimatePresence>
@@ -1208,14 +1256,14 @@ function OverviewDetails() {
     {
       title: "Key Spaces",
       content: [
-        "Living & Dining",
-        "Bedrooms & Suites",
-        "Kitchen",
-        "Private Terraces",
-        "Outdoor Seating",
-        "Landscaped Areas",
-        "Pool / Leisure Area",
-        "Parking",
+        "Residential / Sleeping Areas",
+        "Common Living & Lounge Areas",
+        "Dining & Community Spaces",
+        "Waiting & Reception Areas",
+        "Staff / Administrative Spaces",
+        "Semi-Open Corridors & Verandahs",
+        "Landscaped Outdoor Areas",
+        "Secure Entry & Circulation Areas",
       ],
     },
   ];
@@ -1228,10 +1276,15 @@ function OverviewDetails() {
         gapY={{ base: 2, md: 3 }}
         mb={{ base: 2, md: 3 }}
       >
-        <Detail label="Project Type" value="Luxury Private Villa" />
-        <Detail label="Year of Commencement" value="2026" />
-        <Detail label="Project Status" value="Ongoing" />
-        <Detail label="Design Approach" value="Contemporary Modern Luxury" />
+        <Detail
+          label="Project Type"
+          value="Institutional (Old Age Home / Senior Care Facility)"
+        />
+        <Detail label="Completion Year" value="2025" />
+        <Detail label="Project Duration" value="2 Months" />
+        <Detail label="Site Area" value="3,800 sq.ft." />
+        <Detail label="Built-up Area" value="2,500 sq.ft." />
+        <Detail label="Status" value="Completed" />
       </Grid>
 
       <AccordionContent items={items} />
@@ -1241,92 +1294,119 @@ function OverviewDetails() {
 
 function AccordionContent({ items }: { items: AccordionItem[] }) {
   const [active, setActive] = useState<number | null>(null);
+  const total = items.length;
 
   return (
     <LayoutGroup>
       <motion.div layout transition={{ duration: 0.7, ease }}>
         {items.map((item, index) => {
           const isOpen = active === index;
+          // Items in the bottom half of a long list expand upward instead of
+          // downward, so their content opens into space that's already
+          // visible rather than being pushed off/clipped at the bottom.
+          const opensUpward = index >= Math.ceil(total / 2);
+
+          const panel = (
+            <AnimatePresence key="panel" initial={false}>
+              {isOpen && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: "auto", opacity: 1 }}
+                                        exit={{ height: 0, opacity: 0 }}
+                                        transition={{ duration: 0.35, ease }}
+                                        style={{ overflow: "hidden" }}
+                >
+                  <Box
+                    border="1px solid"
+                    borderColor="rgba(255, 255, 255, 0.11)"
+                    borderRadius="8px"
+                    px={{ base: 2.5, md: 3 }}
+                    py={{ base: 1.5, md: 2 }}
+                    mt={opensUpward ? { base: 1.5, md: 2 } : 0}
+                    mb={opensUpward ? 0 : { base: 1.5, md: 2 }}
+                  >
+                    {Array.isArray(item.content) ? (
+                      <List.Root
+                        color="whiteAlpha.800"
+                        fontSize={{ base: "13px", sm: "14px", md: "15px" }}
+                        lineHeight="1.5"
+                        ml="16px"
+                      >
+                        {item.content.map((line) => (
+                          <List.Item key={line}>{line}</List.Item>
+                        ))}
+                      </List.Root>
+                    ) : (
+                      <Text
+                        color="whiteAlpha.800"
+                        fontSize={{ base: "13px", sm: "14px", md: "15px" }}
+                        lineHeight="1.5"
+                      >
+                        {item.content}
+                      </Text>
+                    )}
+                  </Box>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          );
+
+          const trigger = (
+            <Flex
+              key="trigger"
+              as="button"
+              w="100%"
+              py={{ base: 1.5, md: 2 }}
+              justify="space-between"
+              align="center"
+              textAlign="left"
+              cursor="pointer"
+              onClick={() => setActive(isOpen ? null : index)}
+              aria-expanded={isOpen}
+            >
+              <Text
+                fontSize={{ base: "16px", sm: "18px", md: "20px" }}
+                fontWeight="500"
+              >
+                {item.title}
+              </Text>
+
+              <motion.div
+                animate={{ rotate: isOpen ? 180 : 0 }}
+                transition={{ duration: 0.35, ease }}
+              >
+                <Text
+                  fontSize={{ base: "20px", md: "24px" }}
+                  lineHeight="1"
+                  color={isOpen ? "#C7A46C" : "white"}
+                >
+                  {isOpen ? "−" : "+"}
+                </Text>
+              </motion.div>
+            </Flex>
+          );
 
           return (
             <motion.div
               key={item.title}
               layout
               transition={{ duration: 0.7, ease }}
+              style={{
+                display: "flex",
+                flexDirection: opensUpward ? "column-reverse" : "column",
+              }}
             >
-              <Flex
-                as="button"
-                w="100%"
-                py={{ base: 1.5, md: 2 }}
-                justify="space-between"
-                align="center"
-                textAlign="left"
-                cursor="pointer"
-                onClick={() => setActive(isOpen ? null : index)}
-                aria-expanded={isOpen}
-              >
-                <Text
-                  fontSize={{ base: "16px", sm: "18px", md: "20px" }}
-                  fontWeight="500"
-                >
-                  {item.title}
-                </Text>
-
-                <motion.div
-                  animate={{ rotate: isOpen ? 180 : 0 }}
-                  transition={{ duration: 0.35, ease }}
-                >
-                  <Text
-                    fontSize={{ base: "20px", md: "24px" }}
-                    lineHeight="1"
-                    color={isOpen ? "#C7A46C" : "white"}
-                  >
-                    {isOpen ? "−" : "+"}
-                  </Text>
-                </motion.div>
-              </Flex>
-
-              <AnimatePresence initial={false}>
-                {isOpen && (
-                  <motion.div
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: "auto", opacity: 1 }}
-                                        exit={{ height: 0, opacity: 0 }}
-                                        transition={{ duration: 0.35, ease }}
-                                        style={{ overflow: "hidden" }}
-                  >
-                    <Box
-                      border="1px solid"
-                      borderColor="rgba(255, 255, 255, 0.11)"
-                      borderRadius="8px"
-                      px={{ base: 2.5, md: 3 }}
-                      py={{ base: 1.5, md: 2 }}
-                      mb={{ base: 1.5, md: 2 }}
-                    >
-                      {Array.isArray(item.content) ? (
-                        <List.Root
-                          color="whiteAlpha.800"
-                          fontSize={{ base: "13px", sm: "14px", md: "15px" }}
-                          lineHeight="1.5"
-                          ml="16px"
-                        >
-                          {item.content.map((line) => (
-                            <List.Item key={line}>{line}</List.Item>
-                          ))}
-                        </List.Root>
-                      ) : (
-                        <Text
-                          color="whiteAlpha.800"
-                          fontSize={{ base: "13px", sm: "14px", md: "15px" }}
-                          lineHeight="1.5"
-                        >
-                          {item.content}
-                        </Text>
-                      )}
-                    </Box>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+              {opensUpward ? (
+                <>
+                  {panel}
+                  {trigger}
+                </>
+              ) : (
+                <>
+                  {trigger}
+                  {panel}
+                </>
+              )}
 
               {!isOpen && <Box h="1px" bg="whiteAlpha.300" />}
             </motion.div>
@@ -1342,18 +1422,21 @@ function Section2Content() {
     {
       title: "Project Goal",
       content:
-        "To create a modern luxury villa filled with natural light, offering a sense of openness, privacy, and refined comfort while providing an elevated setting for relaxed family living and leisure.",
+        "Create an intuitive and easy-to-navigate environment with clear circulation, familiar spatial cues, and comfortable shared spaces that support independent movement, encourage meaningful social interaction, and foster a strong sense of belonging among residents.",
     },
     {
       title: "Requirements",
       content: [
-        "Modern architectural expression with a luxurious yet understated character",
-        "Spacious interiors designed for comfort",
-        "Large glazed openings to maximise daylight and outdoor views",
-        "Generous terraces for leisure and social gatherings",
-        "Premium materials and refined detailing throughout",
-        "Spaces designed for both family living and private relaxation",
-        "Architecture which thoughtfully complements the site's natural setting",
+        "Safe and comfortable spaces suited to the needs of elderly residents",
+        "A familiar residential character that creates a sense of belonging",
+        "Clearly defined common areas for interaction, dining, and recreation",
+        "Generous corridors and semi-open spaces for comfortable movement and informal interaction",
+        "Good natural light, ventilation, and visual connection with the surrounding landscape",
+        "Secure entrances, windows, and circulation areas without creating an overly restrictive environment",
+        "Easy-to-maintain materials and finishes suitable for everyday use",
+        "Practical planning that prioritizes essential comfort while remaining budget-conscious",
+        "Green outdoor areas that provide residents with opportunities to sit, relax, and connect with nature",
+        "A balance between private living spaces and shared community areas",
       ],
     },
   ];
@@ -1363,24 +1446,24 @@ function Section2Content() {
 function Section3Content() {
   const items: AccordionItem[] = [
     {
-      title: "Site Planning",
+      title: "Contextual Planning",
       content:
-        "The villa is positioned to work with Mahabaleshwar's sloping terrain, dense greenery, and changing site levels, allowing the built form to sit naturally within the existing setting.",
+        "Set within a rural agricultural landscape, the facility offers open surroundings, expansive views, abundant greenery, and a quiet environment. Its placement among cultivated fields and vegetation makes the natural setting an integral part of residents' daily experience.",
     },
     {
-      title: "Functional Zoning",
+      title: "Spatial Zoning",
       content:
-        "The planning separates family spaces, guest areas, bedrooms, services, and leisure zones while keeping the villa practical for both private stays and larger gatherings.",
+        "Organized the facility around a clear separation of residential, communal, dining, administrative, and circulation areas. Common spaces are positioned to remain visually connected and easily accessible, while corridors and verandahs act as transitional spaces between private rooms and shared activities.",
     },
     {
-      title: "View Planning",
+      title: "Senior-Centric Planning",
       content:
-        "Key living spaces, bedrooms, and terraces are oriented towards the surrounding hills and greenery, using the site's natural views as an integral part of the planning.",
+        "Developed the spaces with everyday senior living in mind, prioritizing simple circulation, visibility, accessibility, security, and ease of use. Wide movement zones, open common areas, ramps for physically disabled residents, controlled entrances, protective grills, and clear connections between spaces contribute to a safer environment.",
     },
     {
-      title: "Climate Response",
+      title: "Landscape Integration",
       content:
-        "The planning responds to Mahabaleshwar's cool, wet climate through sheltered outdoor areas, protected circulation, controlled openings, and carefully positioned spaces that remain comfortable across changing weather conditions.",
+        "Used the surrounding agricultural landscape and existing greenery as an extension of the living environment. Gardens, planted edges, open views, and vegetation around the building soften the built form while providing a calmer and more natural setting for residents.",
     },
   ];
   return <AccordionContent items={items} />;
@@ -1389,29 +1472,55 @@ function Section3Content() {
 function Section4Content() {
   const items: AccordionItem[] = [
     {
-      title: "Architectural Composition",
+      title: "Architectural Character",
       content:
-        "The villa is developed through a controlled composition of solid and open elements, giving each elevation its own character while maintaining a consistent architectural language.",
+        "Retained a straightforward RCC architectural language with clean rectangular volumes, flat roofs, shaded verandahs, and simple façade articulation. The restrained form keeps construction practical and economical while maintaining a welcoming residential character.",
     },
     {
-      title: "Form Development",
+      title: "Materiality",
       content:
-        "The massing is refined through projections, recesses, horizontal planes, and varying volumes to create depth and visual hierarchy across the villa.",
+        "Established a durable and budget-conscious material palette using simple plastered surfaces, ceramic and marble-finish flooring, metal grills, painted walls, timber-finish elements, and locally practical materials. The emphasis is on longevity, ease of maintenance, and everyday functionality rather than unnecessary ornamentation.",
     },
     {
-      title: "Structural Integration",
+      title: "Interior Character",
       content:
-        "Architectural and structural systems are developed together, allowing large openings, projecting elements, and complex volumes to be achieved without compromising the integrity of the design.",
+        "Created warm, familiar interiors with wood flooring, simple furniture, plants, soft colours, and generous common areas that encourage comfort and social interaction.",
     },
     {
-      title: "Detail Development",
+      title: "Budget-Conscious Design",
       content:
-        "The character of the villa is carried through carefully resolved architectural details, from façade junctions and balcony edges to railings, frames, parapets, and transitions between different materials.",
+        "Focused design decisions on essential comfort, durability, and functionality rather than expensive architectural gestures. Simple forms, readily available materials, practical finishes, and efficient use of existing spaces help create a comfortable senior living environment while keeping construction and maintenance requirements manageable.",
+    },
+  ];
+  return <AccordionContent items={items} />;
+}
+
+function Section5Content() {
+  const items: AccordionItem[] = [
+    {
+      title: "Architectural Execution",
+      content:
+        "Translated the planning intent into simple, functional architectural elements suited to senior living.",
     },
     {
-      title: "On-Site Realisation",
+      title: "Site Integration",
       content:
-        "As construction progresses, the design is continuously reviewed and refined on site, allowing architectural details to respond to actual conditions while preserving the overall design intent and visual consistency.",
+        "Coordinated built spaces, circulation, landscape, and open areas for a cohesive site experience.",
+    },
+    {
+      title: "Material & Detail Control",
+      content:
+        "Focused on durable, economical materials and straightforward detailing for long-term use.",
+    },
+    {
+      title: "Spatial Quality",
+      content:
+        "Maintained natural light, ventilation, shaded semi-open spaces, and comfortable movement throughout.",
+    },
+    {
+      title: "Functional Delivery",
+      content:
+        "Ensured the built environment remained safe, accessible, easy to navigate, and practical to maintain.",
     },
   ];
   return <AccordionContent items={items} />;

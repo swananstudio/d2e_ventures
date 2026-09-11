@@ -85,12 +85,6 @@ import premium_project from './services/client_trust/premium_project.png'
 import transparent_coordination from './services/client_trust/transparent_coordination.png'
 import centric_development from './services/client_trust/centric_development.png'
 
-import portfolioherosection from './portfolio/herosection/heroimage.png'
-import portfolio_hero_section_swiper1 from './portfolio/herosection/swiper1.webp'
-import portfolio_hero_section_swiper2 from './portfolio/herosection/swiper2.webp'
-import portfolio_hero_section_swiper3 from './portfolio/herosection/swiper3.webp'
-import portfolio_hero_section_swiper4 from './portfolio/herosection/swiper4.webp'
-import portfolio_hero_section_swiper5 from './portfolio/herosection/swiper5.webp'
 
 import architecture from './services/development_stage/architecture.png'
 import areasize from './portfolio/herosection/areasize.png'
@@ -154,6 +148,25 @@ import About_Us_Carousel3 from './About_Us_Carousel3.webp'
 import About_Us_Carousel4 from './About_Us_Carousel4.webp'
 
 
+import KP_ProjectOverview from './portfolio/herosection/KP_ProjectOverveiw.mp4'
+import KP_ClientVision from './portfolio/herosection/KP_ClientVision.webp'
+import KP_DeliveryandExecution1 from './portfolio/herosection/KP_DeliveryandExecution1.webp'
+import KP_DeliveryandExecution2 from './portfolio/herosection/KP_DeliveryandExecution2.webp'
+import KP_DeliveryandExecution3 from './portfolio/herosection/KP_DeliveryandExecution3.webp'
+import KP_DeliveryandExecution4 from './portfolio/herosection/KP_DeliveryandExecution4.webp'
+import KP_DeliveryandExecution5 from './portfolio/herosection/KP_DeliveryandExecution5.webp'
+import KP_DeliveryandExecution6 from './portfolio/herosection/KP_DeliveryandExecution6.webp'
+import KP_DesignandDev1 from './portfolio/herosection/KP_DesignandDev1.webp'
+import KP_DesignandDev2 from './portfolio/herosection/KP_DesignandDev2.webp'
+import KP_DesignandDev3 from './portfolio/herosection/KP_DesignandDev3.webp'
+import KP_DesignandDev4 from './portfolio/herosection/KP_DesignandDev4.webp'
+import KP_DesignandDev5 from './portfolio/herosection/KP_DesignandDev5.webp'
+import KP_Planning1 from './portfolio/herosection/KP_Planning1.webp'
+import KP_Planning2 from './portfolio/herosection/KP_Planning2.webp'
+import KP_Planning3 from './portfolio/herosection/KP_Planning3.webp'
+
+import KP_MainImg from './portfolio/herosection/KP_MainImg.png'
+
 export {
     herosection, herosectiongif, homeherosectionvideo, about_hero_section, services_hero_section, contact_hero_section,
     logo, footerlogo,
@@ -169,12 +182,16 @@ export {
     servicesdemo, homeservicesarchitecture, homeservicesinterior, homeserviceslandscape, homeservicesplotting, homeservicespremium_villa, homeservicesturnkey_execution,
     service_client, design_execution, integrated_development, land_values, premium_project, transparent_coordination,
     architecture,
-    portfolioherosection, areasize, portfolio_hero_section_swiper1, portfolio_hero_section_swiper2, portfolio_hero_section_swiper3, portfolio_hero_section_swiper4, portfolio_hero_section_swiper5, QualitySectionImg,
+ QualitySectionImg,
     contact_office_surrounding, loadingimage, centric_development, d2e_logo, QualitySectionImg_mobile , PortfolioProject2Img , GC_ExecutionandDelivery , GC_PlanningandStrategy , GC_clientVision , GC_ProjectOverview , GC_ExecutionandDelivery_CoverImg , GC_Project_Overview_1,
   GC_Project_Overview_2,
   GC_Project_Overview_3,
   GC_Project_Overview_4,
   GC_Project_Overview_5 ,  KV_ProjectOverview1 , KV_ProjectOverview2, KV_ProjectOverview3 , KV_ClientVision1, KV_ClientVision2 , KV_ClientVision3 ,KV_DesignandDevelopment , KV_PlanningandStrategy , KV_MainPageImg , KV_ExecutionandDelivery1 , KV_ExecutionandDelivery2, KV_ExecutionandDelivery3, KV_ExecutionandDelivery4, KV_ExecutionandDelivery5,
   MB_ClientVision, MB_MainPageImg, MB_PlanningandStrategy, MB_ProjectOverview1, MB_ProjectOverview2, MB_ProjectOverview3, MB_ProjectOverview4 , UK_MainPageImg, UK_ProjectOverview , UK_ClientVision1, UK_ClientVision2, UK_ClientVision3, UK_DeliveryandExecution, UK_DesignandDevelopment1, UK_DesignandDevelopment2,UK_DesignandDevelopment3, UK_DesignandDevelopment4, UK_PlanningandStrategy,
-  About_Us_Carousel1, About_Us_Carousel2, About_Us_Carousel3, About_Us_Carousel4
+  About_Us_Carousel1, About_Us_Carousel2, About_Us_Carousel3, About_Us_Carousel4, KP_ProjectOverview, KP_ClientVision,
+  KP_DeliveryandExecution1, KP_DeliveryandExecution2, KP_DeliveryandExecution3,
+  KP_DeliveryandExecution4, KP_DeliveryandExecution5, KP_DeliveryandExecution6,
+  KP_DesignandDev1, KP_DesignandDev2, KP_DesignandDev3, KP_DesignandDev4, KP_DesignandDev5,
+  KP_Planning1, KP_Planning2, KP_Planning3, areasize, KP_MainImg
 }

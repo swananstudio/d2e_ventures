@@ -26,23 +26,50 @@ import { createPortal } from "react-dom";
 
 //import Navbar from "../../layout/Navbar";
 import {
-  portfolioherosection,
-  portfolio_hero_section_swiper1,
-  portfolio_hero_section_swiper2,
-  portfolio_hero_section_swiper3,
-  portfolio_hero_section_swiper4,
-  portfolio_hero_section_swiper5,
+KP_ProjectOverview,
+ KP_ClientVision,
+
+  KP_DeliveryandExecution1,
+   KP_DeliveryandExecution2, 
+   KP_DeliveryandExecution3,
+
+  KP_DeliveryandExecution4,
+   KP_DeliveryandExecution5, 
+   KP_DeliveryandExecution6,
+
+  KP_DesignandDev1,
+   KP_DesignandDev2,
+    KP_DesignandDev3,
+     KP_DesignandDev4,
+      KP_DesignandDev5,
+  KP_Planning1,
+   KP_Planning2,
+    KP_Planning3,
+    KP_MainImg
 
 } from "../../assets/assets";
 
 const MotionBox = motion.create(Box);
 
-const projectThumbnails = [
-  { image: portfolio_hero_section_swiper1, section: "section1" },
-  { image: portfolio_hero_section_swiper2, section: "section2" },
-  { image: portfolio_hero_section_swiper3, section: "section3" },
-  { image: portfolio_hero_section_swiper4, section: "section4" },
-  { image: portfolio_hero_section_swiper5, section: "section5" },
+type Thumbnail = {
+  section: string;
+  image?: string;
+  images?: string[];
+  video?: string;
+};
+
+const projectThumbnails: Thumbnail[] = [
+  { video: KP_ProjectOverview, section: "section1" },
+  { image: KP_ClientVision, section: "section2" },
+  { images: [KP_Planning1, KP_Planning2, KP_Planning3], section: "section3" },
+  {
+    images: [KP_DesignandDev1, KP_DesignandDev2, KP_DesignandDev3, KP_DesignandDev4, KP_DesignandDev5],
+    section: "section4",
+  },
+  {
+    images: [KP_DeliveryandExecution1, KP_DeliveryandExecution2, KP_DeliveryandExecution3, KP_DeliveryandExecution4, KP_DeliveryandExecution5, KP_DeliveryandExecution6],
+    section: "section5",
+  },
 ];
 
 const sectionOrder = [
@@ -90,39 +117,45 @@ const sectionDetailsMap: Record<
   {
     title: string;
     subtitle: string;
-    image: string;
+    image: string | string[];
     imageAlt: string;
+    isVideo?: boolean;
+    isCarousel?: boolean;
   }
 > = {
   section1: {
     title: "PROJECT",
     subtitle: "Overview",
-    image: portfolio_hero_section_swiper1,
-    imageAlt: "Project overview",
+    image: KP_ProjectOverview,
+    imageAlt: "Kalpadhan Farm project overview video",
+    isVideo: true,
   },
   section2: {
     title: "CLIENT",
     subtitle: "Vision",
-    image: portfolio_hero_section_swiper2,
-    imageAlt: "Client vision",
+    image: KP_ClientVision,
+    imageAlt: "Kalpadhan Farm client vision image",
   },
   section3: {
     title: "PLANNING &",
     subtitle: "STRATEGY",
-    image: portfolio_hero_section_swiper3,
-    imageAlt: "Planning and strategy",
+    image: [KP_Planning1, KP_Planning2, KP_Planning3],
+    imageAlt: "Kalpadhan Farm planning and strategy image",
+    isCarousel: true,
   },
   section4: {
     title: "DESIGN",
     subtitle: "Development",
-    image: portfolio_hero_section_swiper4,
-    imageAlt: "Design development",
+    image: [KP_DesignandDev1, KP_DesignandDev2, KP_DesignandDev3, KP_DesignandDev4, KP_DesignandDev5],
+    imageAlt: "Kalpadhan Farm design development image",
+    isCarousel: true,
   },
   section5: {
     title: "Execution",
     subtitle: "& Delivery",
-    image: portfolio_hero_section_swiper5,
-    imageAlt: "Execution and delivery",
+    image: [KP_DeliveryandExecution1, KP_DeliveryandExecution2, KP_DeliveryandExecution3, KP_DeliveryandExecution4, KP_DeliveryandExecution5, KP_DeliveryandExecution6],
+    imageAlt: "Kalpadhan Farm execution and delivery image",
+    isCarousel: true,
   },
 };
 
@@ -235,7 +268,7 @@ export default function PortfolioProject1({
 
  useEffect(() => {
   const el = heroCardsRef.current;
-  if (!el || !isMobile) return;
+  if (!el || !isMobile || !isActive) return;
 
   let wheelAccum = 0;
   let resetTimer: number | null = null;
@@ -312,7 +345,7 @@ export default function PortfolioProject1({
     el.removeEventListener("touchend", onTouchEnd);
     if (resetTimer !== null) window.clearTimeout(resetTimer);
   };
-}, [isMobile]);
+}, [isMobile, isActive]);
   const openCard = (index: number) => {
     if (!isActive || isCardAnimatingRef.current) return;
     setActiveIndex(index);
@@ -378,7 +411,7 @@ export default function PortfolioProject1({
           left="-6%"
           w="112%"
           h="112%"
-          bgImage={`url(${portfolioherosection})`}
+          bgImage={`url(${KP_MainImg})`}
           bgSize="cover"
           backgroundPosition="center"
           bgRepeat="no-repeat"
@@ -534,6 +567,7 @@ export default function PortfolioProject1({
 
                     const details = sectionDetailsMap[project.section];
                     const base = isMobile ? mobileAnimate : desktopAnimate;
+                    const thumbnailImage = project.image ?? project.images?.[0];
 
                     const positionTransition: Transition =
                       isMobile && isMobileResetting
@@ -622,15 +656,34 @@ export default function PortfolioProject1({
                           
                         }}
                       >
-                        <Image
-                          src={project.image}
-                          w="100%"
-                          h="100%"
-                          objectFit="cover"
-                          draggable={false}
-                          position="relative"
-                          zIndex={0}
-                        />
+                        {project.video ? (
+                          <video
+                            src={project.video}
+                            autoPlay={isActive}
+                            loop
+                            muted
+                            playsInline
+                            style={{
+                              width: "100%",
+                              height: "100%",
+                              objectFit: "cover",
+                              position: "relative",
+                              zIndex: 0,
+                              display: "block",
+                            }}
+                          />
+                        ) : (
+                          <Image
+                            src={thumbnailImage}
+                            w="100%"
+                            h="100%"
+                            objectFit="cover"
+                            draggable={false}
+                            position="relative"
+                            zIndex={0}
+                            alt={`Kalpadhan Farm ${details.title.toLowerCase()} ${details.subtitle.toLowerCase()} image`}
+                          />
+                        )}
 
                         <Box
                           position="absolute"
@@ -729,6 +782,7 @@ export default function PortfolioProject1({
             isFirst={currentSectionIndex === 0}
             isLast={currentSectionIndex === sectionOrder.length - 1}
             tallImageMobile={tallImageSections.has(currentSection)}
+            isActive={isActive}
             {...(sectionDetailsMap[currentSection] || sectionDetailsMap.section1)}
           >
             <Box overflow="visible">
@@ -756,20 +810,115 @@ export default function PortfolioProject1({
 }
 
 type DetailLayoutProps = SectionProps & {
+  isActive: boolean;
   title: string;
   subtitle: string;
-  image: string;
+  image: string | string[];
   imageAlt: string;
+  isVideo?: boolean;
+  isCarousel?: boolean;
   children: ReactNode;
 };
 
 type AccordionItem = { title: string; content: string | string[] };
+
+function ImageCarousel({ images, alt }: { images: string[]; alt: string }) {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [loaded, setLoaded] = useState<Set<string>>(() => {
+    const initial = new Set<string>();
+
+    images.forEach((src) => {
+      const img = new window.Image();
+      img.src = src;
+      if (img.complete && img.naturalWidth > 0) initial.add(src);
+    });
+
+    return initial;
+  });
+
+  const SLIDE_DURATION = 3000;
+  const FADE_DURATION = 1.5;
+
+  useEffect(() => {
+    let cancelled = false;
+
+    images.forEach((src) => {
+      const img = new window.Image();
+      img.src = src;
+
+      const markLoaded = () => {
+        if (cancelled) return;
+        setLoaded((previous) => {
+          if (previous.has(src)) return previous;
+          const next = new Set(previous);
+          next.add(src);
+          return next;
+        });
+      };
+
+      if (img.complete && img.naturalWidth > 0) markLoaded();
+      else img.onload = markLoaded;
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [images]);
+
+  useEffect(() => {
+    if (images.length <= 1) return;
+    const timer = window.setInterval(() => {
+      setCurrentIndex((previous) => (previous + 1) % images.length);
+    }, SLIDE_DURATION);
+
+    return () => window.clearInterval(timer);
+  }, [images]);
+
+  return (
+    <Box position="relative" w="100%" h="100%" overflow="hidden" bg="black">
+      {images.map((src, index) => {
+        const isActive = index === currentIndex;
+        const isReady = loaded.has(src);
+
+        return (
+          <motion.div
+            key={src}
+            style={{
+              position: "absolute",
+              inset: 0,
+              opacity: isReady && isActive ? 1 : 0,
+              zIndex: isActive ? 1 : 0,
+              transition: `opacity ${FADE_DURATION}s ease-in-out`,
+              willChange: isActive ? "opacity" : "auto",
+            }}
+          >
+            <motion.img
+              src={src}
+              alt={`${alt} ${index + 1}`}
+              decoding="async"
+              animate={isActive ? { scale: 1.08 } : { scale: 1 }}
+              transition={{ duration: SLIDE_DURATION / 1000 + FADE_DURATION, ease: "linear" }}
+              style={{
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+                willChange: isActive ? "transform" : "auto",
+              }}
+            />
+          </motion.div>
+        );
+      })}
+    </Box>
+  );
+}
 
 function DetailLayout({
   title,
   subtitle,
   image,
   imageAlt,
+  isVideo,
+  isCarousel,
   children,
   layoutId,
   onClose,
@@ -778,6 +927,7 @@ function DetailLayout({
   isFirst,
   isLast,
   tallImageMobile,
+  isActive,
 }: DetailLayoutProps) {
 
   const content = (
@@ -921,22 +1071,44 @@ function DetailLayout({
             bg="black"
             overflow="hidden"
           >
-            <AnimatePresence mode="wait">
-              <motion.img
+            {isVideo && typeof image === "string" ? (
+              <motion.video
                 key={image}
                 src={image}
-                alt={imageAlt}
-                initial={{ opacity: 0 }}
+                autoPlay={isActive}
+                loop
+                muted
+                playsInline
+                initial={{ opacity: 0.8 }}
                 animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.25 }}
+                transition={{ duration: 0.3 }}
                 style={{
                   width: "100%",
                   height: "100%",
                   objectFit: "cover",
+                  objectPosition: "center",
                 }}
               />
-            </AnimatePresence>
+            ) : isCarousel && Array.isArray(image) ? (
+              <ImageCarousel images={image} alt={imageAlt} />
+            ) : (
+              <AnimatePresence mode="wait">
+                <motion.img
+                  key={image as string}
+                  src={image as string}
+                  alt={imageAlt}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.25 }}
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                  }}
+                />
+              </AnimatePresence>
+            )}
           </Box>
         </GridItem>
       </Grid>
