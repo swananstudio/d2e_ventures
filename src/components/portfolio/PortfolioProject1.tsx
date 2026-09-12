@@ -169,7 +169,7 @@ export default function PortfolioProject1({
   direction = 1,
 }: PortfolioProject1Props) {
   const [currentSection, setCurrentSection] = useState("main");
-  const [activeIndex, setActiveIndex] = useState(1);
+  const [activeIndex, setActiveIndex] = useState(0);
   const [openedCardIndex, setOpenedCardIndex] = useState<number | null>(null);
   const isCardAnimatingRef = useRef(false);
   const cardAnimationTimerRef = useRef<number | null>(null);
@@ -302,7 +302,7 @@ export default function PortfolioProject1({
 
     if (Math.abs(wheelAccum) < 30) return;
 
-    const step: 1 | -1 = wheelAccum > 0 ? 1 : -1;
+     const step: 1 | -1 = wheelAccum > 0 ? -1 : 1;
     wheelAccum = 0;
 
     mobileWheelGestureLockedRef.current = true;
@@ -348,7 +348,7 @@ export default function PortfolioProject1({
 
     event.preventDefault();
     event.stopPropagation();
-    moveCardRef.current(dx < 0 ? 1 : -1);
+   moveCardRef.current(dx < 0 ? -1 : 1);
   };
 
   el.addEventListener("wheel", onWheel, { passive: false });
@@ -610,7 +610,7 @@ export default function PortfolioProject1({
                               ? 0
                               : isMobileExiting
                                 ? 20
-                                : 10 - stackDepth
+                                : 10 - stackPosition
                             : isActiveDesktop
                               ? 3
                               : 2

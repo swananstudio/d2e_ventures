@@ -324,8 +324,7 @@ export default function PortfolioProject4({
       }, 100);
 
       if (Math.abs(wheelAccum) < 30) return;
-
-      const step: 1 | -1 = wheelAccum > 0 ? 1 : -1;
+ const step: 1 | -1 = wheelAccum > 0 ? -1 : 1;
       wheelAccum = 0;
 
       mobileWheelGestureLockedRef.current = true;
@@ -375,7 +374,7 @@ export default function PortfolioProject4({
 
       event.preventDefault();
       event.stopPropagation();
-      moveCardRef.current(dx < 0 ? 1 : -1);
+     moveCardRef.current(dx < 0 ? -1 : 1);
     };
 
     el.addEventListener("wheel", onWheel, { passive: false });

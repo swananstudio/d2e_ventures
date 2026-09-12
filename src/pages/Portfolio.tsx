@@ -271,24 +271,29 @@ useSEO({
         overflow="hidden"
         bg="black"
       >
-        {/* Every project's background + cards stay mounted */}
-        {projectsData.map(({ Component }, i) => (
-          <Box
-            key={i}
-            position="absolute"
-            inset={0}
-            bg="black"
-            zIndex={i === activeIndex ? 3 : i === transitioningFromIndex ? 2 : 1}
-            pointerEvents={
-              i === activeIndex ? "auto" : "none"
-            }
-          >
-            <Component
-              isActive={i === activeIndex}
-              direction={direction}
-            />
-          </Box>
-        ))}
+        {/* Keep only the active project and the project currently transitioning out mounted. */}
+        {projectsData.map(({ Component }, i) => {
+          const shouldMount =
+            i === activeIndex || i === transitioningFromIndex
+
+          if (!shouldMount) return null
+
+          return (
+            <Box
+              key={i}
+              position="absolute"
+              inset={0}
+              bg="black"
+              zIndex={i === activeIndex ? 3 : 2}
+              pointerEvents={i === activeIndex ? "auto" : "none"}
+            >
+              <Component
+                isActive={i === activeIndex}
+                direction={direction}
+              />
+            </Box>
+          )
+        })}
 
         {/* Shared text carousel */}
     
@@ -397,14 +402,14 @@ lineHeight="0.95"
                
               >
                 <Flex align="center" gap={2}>
-                  <Image src={maps} w="14px" />
+                  <Image src={maps} w="14px" loading="lazy" />
                   <Text fontWeight="700">
                     {active.location}
                   </Text>
                 </Flex>
 
                 <Flex align="center" gap={2}>
-                  <Image src={areasize} w="18px" />
+                  <Image src={areasize} w="18px" loading="lazy" />
                   <Text fontWeight="700">
                     {active.area}
                   </Text>
