@@ -50,6 +50,7 @@ KP_ProjectOverview,
 } from "../../assets/assets";
 
 const MotionBox = motion.create(Box);
+const MotionText = motion.create(Text);
 
 type Thumbnail = {
   section: string;
@@ -183,6 +184,7 @@ export default function PortfolioProject1({
   const mobileWheelGestureLockedRef = useRef(false);
   const mobileWheelUnlockTimerRef = useRef<number | null>(null);
   const moveCardRef = useRef<(step: 1 | -1) => void>(() => {});
+  const [showScrollHint, setShowScrollHint] = useState(true);
   const isMobile = useBreakpointValue({ base: true, lg: false }) ?? true;
   useEffect(() => {
     return () => {
@@ -215,6 +217,8 @@ export default function PortfolioProject1({
 
   const moveCard = (step: 1 | -1) => {
     if (isCardAnimatingRef.current || !isActive) return;
+
+    setShowScrollHint(false);
 
     if (isMobile) {
       const previousIndex = activeIndex;
@@ -366,6 +370,7 @@ export default function PortfolioProject1({
 }, [isMobile, isActive]);
   const openCard = (index: number) => {
     if (!isActive || isCardAnimatingRef.current) return;
+    setShowScrollHint(false);
     setActiveIndex(index);
     setOpenedCardIndex(index);
     setCurrentSection(projectThumbnails[index].section);
@@ -452,7 +457,33 @@ export default function PortfolioProject1({
             w="100%"
             h="100%"
           >
-   
+            {!isSectionActive && showScrollHint && (
+              <MotionText
+                initial={{ opacity: 0 }}
+                whileInView={{
+                  opacity: [0, 1, 0, 1, 0, 1, 0],
+                  transition: {
+                    duration: 8,
+                    times: [0, 1 / 6, 2 / 6, 3 / 6, 4 / 6, 5 / 6, 1],
+                  },
+                }}
+                viewport={{ once: true, amount: 0.5 }}
+                onAnimationComplete={() => setShowScrollHint(false)}
+                position="absolute"
+                bottom={{ base: "0.5%", sm: "0.5%", md: "1.5%", lg: "2%" }}
+                left="50%"
+                transform="translateX(-50%)"
+                color="white"
+                fontWeight="300"
+                fontSize={{ base: "12px", md: "16px" }}
+                textShadow="0px 2px 6px rgba(0,0,0,.5)"
+                zIndex={5}
+                whiteSpace="nowrap"
+                pointerEvents="none"
+              >
+                Scroll To Explore More Projects
+              </MotionText>
+            )}
 
             <Flex
               flex={1}
