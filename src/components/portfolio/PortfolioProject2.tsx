@@ -712,7 +712,7 @@ initial={{
                           transformPerspective: 1400,
                           transformStyle: "preserve-3d",
                           transformOrigin: "50% 50%",
-                          backfaceVisibility: "hidden",
+                          backfaceVisibility: "visible",
                           willChange: "transform, opacity",
                           visibility:
                             isMobileHidden || isMobileResetting

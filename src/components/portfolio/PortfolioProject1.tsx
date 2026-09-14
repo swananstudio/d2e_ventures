@@ -697,7 +697,7 @@ export default function PortfolioProject1({
                           transformStyle: "preserve-3d",
                           transformOrigin: "50% 50%",
                           willChange: "transform, opacity",
-                          backfaceVisibility: "hidden",
+                          backfaceVisibility: "visible",
                           visibility:
                             isMobileHidden || isMobileResetting
                               ? "hidden"
