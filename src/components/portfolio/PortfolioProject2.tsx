@@ -688,7 +688,7 @@ initial={{
                         }}
                         animate={{
                           ...base,
-                          rotateY: isMobile ? (isActive ? 0 : 360) : isActive ? 0 : (direction >= 0 ? -82 : 82),
+                          rotateY: isMobile ? (isActive ? 0 : 90) : isActive ? 0 : (direction >= 0 ? -180 : 180),
                         }}
                                                 transition={{
                           left: positionTransition,
@@ -712,7 +712,7 @@ initial={{
                           transformPerspective: 1400,
                           transformStyle: "preserve-3d",
                           transformOrigin: "50% 50%",
-                          backfaceVisibility: "visible",
+                          backfaceVisibility: "hidden",
                           willChange: "transform, opacity",
                           visibility:
                             isMobileHidden || isMobileResetting

@@ -672,7 +672,7 @@ export default function PortfolioProject1({
                         }}
                         animate={{
                           ...base,
-                          rotateY: isMobile ? (isActive ? 0 : 360) : isActive ? 0 : (direction >= 0 ? -82 : 82),
+                          rotateY: isMobile ? (isActive ? 0 : 90) : isActive ? 0 : (direction >= 0 ? -180 : 180),
                         }}
                         transition={{
                           left: positionTransition,
@@ -697,7 +697,7 @@ export default function PortfolioProject1({
                           transformStyle: "preserve-3d",
                           transformOrigin: "50% 50%",
                           willChange: "transform, opacity",
-                          backfaceVisibility: "visible",
+                          backfaceVisibility: "hidden",
                           visibility:
                             isMobileHidden || isMobileResetting
                               ? "hidden"

@@ -33,7 +33,7 @@ const projectsData = [
     titleLine1: "KALPADHAN",
     titleLine2: "FARM",
     location: "Pune, Maharashtra",
-    area: "22,000 Sq.ft.",
+    type: "Luxury Farmhouse",
     description:
       "      A farm development project thoughtfully designed to reflect Indian culture through its architecture, materials, and spatial experience. Nestled amidst lush farmland, it features a personalized residence with curated interiors and a private swimming pool. ",
   },
@@ -42,7 +42,7 @@ const projectsData = [
     titleLine1: "KOLVAN",
     titleLine2: "RESORT",
     location: "Pune, Maharashtra",
-    area: "3,800 Sq.ft.",
+    type: "Luxury Resort",
     description:
       "A contemporary villa envisioned as a luxurious escape that embraces Mahabaleshwar's natural character. The design aims to merge seamlessly with its surroundings while maintaining a distinctly modern identity through clean forms, large glass openings, and carefully crafted outdoor spaces.",
   },
@@ -51,7 +51,7 @@ const projectsData = [
     titleLine1: "GOODWILL",
     titleLine2: "CRESCENT",
     location: "Pune, Maharashtra",
-    area: "22,000 Sq.ft.",
+    type: "Residential Interior",
     description:
       "A vibrant resort concept shaped around leisure, recreation, and immersive guest experiences. The project combines expressive interiors, landscaped courtyards, private pool spaces, and playful outdoor amenities to create a destination that feels relaxed, engaging, and distinctly memorable.",
   },
@@ -60,7 +60,7 @@ const projectsData = [
     titleLine1: "URLI KANCHAN",
     titleLine2: "OLD AGE HOME",
     location: "Urli Kanchan, Maharashtra",
-    area: "Completed",
+    type: "Institutional (Old Age Home / Senior Care Facility)",
     description:
       "A thoughtfully planned senior living environment shaped around safety, familiarity, and everyday comfort. Set within a quiet agricultural landscape, the old age home uses a simple and practical architectural language, generous semi-open spaces, natural light, and familiar domestic-scale interiors to create a place that feels welcoming rather than institutional.",
   },
@@ -69,7 +69,7 @@ const projectsData = [
     titleLine1: "MAHABALESHWAR",
     titleLine2: "VILLA",
     location: "Mahabaleshwar, Maharashtra",
-    area: "Ongoing",
+    type: "Luxury Private Villa",
     description:
       "A contemporary villa envisioned as a luxurious escape that embraces Mahabaleshwar's natural character. The design aims to merge seamlessly with its surroundings while maintaining a distinctly modern identity through clean forms, large glass openings, and carefully crafted outdoor spaces.",
   },
@@ -111,6 +111,40 @@ useSEO({
   const touchStartX = useRef<number | null>(null)
   const animationTimeoutRef = useRef<number | null>(null)
 
+  // --- Description "See more / See less" handling ---
+  // The description is clamped to 4 lines by default. Because users can
+  // bump up their browser/OS font size, or view on very small screens,
+  // a description that fits in 4 lines at one size may overflow at
+  // another. Rather than guessing based on character count, we measure
+  // the actual rendered element and only show the toggle when the text
+  // is genuinely being cut off.
+  const [isDescExpanded, setIsDescExpanded] = useState(false)
+  const [isDescClamped, setIsDescClamped] = useState(false)
+  const descRef = useRef<HTMLParagraphElement | null>(null)
+  // Hidden clone of the description, always rendered in the clamped (4-line)
+  // state. We measure THIS element rather than the visible one, so overflow
+  // detection never depends on whether the user has expanded the text —
+  // avoids the button flickering/disappearing on toggle, and avoids relying
+  // on the visible element's css switching on/off.
+  const descMeasureRef = useRef<HTMLParagraphElement | null>(null)
+
+  useEffect(() => {
+    const prevOverflow = document.body.style.overflow
+    const prevHeight = document.body.style.height
+
+    document.body.style.overflow = "hidden"
+    document.body.style.height = "100%"
+
+    return () => {
+      document.body.style.overflow = prevOverflow
+      document.body.style.height = prevHeight
+
+      if (animationTimeoutRef.current !== null) {
+        window.clearTimeout(animationTimeoutRef.current)
+      }
+    }
+  }, [])
+
   useEffect(() => {
     if (location.pathname !== "/portfolio") return
 
@@ -132,22 +166,48 @@ useSEO({
     }
   }, [location.pathname])
 
+  // Collapse the description back down whenever the active project changes,
+  // so the next project always opens in the clamped state.
   useEffect(() => {
-    const prevOverflow = document.body.style.overflow
-    const prevHeight = document.body.style.height
+    setIsDescExpanded(false)
+  }, [activeIndex])
 
-    document.body.style.overflow = "hidden"
-    document.body.style.height = "100%"
+  // Detect whether the description text actually overflows 4 lines. We
+  // measure the hidden always-clamped clone (descMeasureRef), not the
+  // visible text, so this is independent of isDescExpanded. Uses
+  // ResizeObserver (catches width/font/zoom changes) and waits for web
+  // fonts to finish loading before the first measurement, since measuring
+  // against a fallback font can under- or over-report line count.
+  useEffect(() => {
+    const el = descMeasureRef.current
+    if (!el) return
+
+    const checkClamp = () => {
+      const node = descMeasureRef.current
+      if (!node) return
+      setIsDescClamped(node.scrollHeight > node.clientHeight + 2)
+    }
+
+    // Double rAF: wait for the browser to actually paint the current
+    // layout before measuring, so we're not reading stale/zero sizes.
+    let raf1 = 0
+    let raf2 = 0
+    raf1 = window.requestAnimationFrame(() => {
+      raf2 = window.requestAnimationFrame(checkClamp)
+    })
+
+    const fontsReady = (document as any).fonts?.ready as Promise<unknown> | undefined
+    fontsReady?.then(checkClamp).catch(() => {})
+
+    const resizeObserver = new ResizeObserver(checkClamp)
+    resizeObserver.observe(el)
 
     return () => {
-      document.body.style.overflow = prevOverflow
-      document.body.style.height = prevHeight
-
-      if (animationTimeoutRef.current !== null) {
-        window.clearTimeout(animationTimeoutRef.current)
-      }
+      window.cancelAnimationFrame(raf1)
+      window.cancelAnimationFrame(raf2)
+      resizeObserver.disconnect()
     }
-  }, [])
+  }, [activeIndex])
 
   const goToIndex = useCallback(
     (target: number, dir: 1 | -1) => {
@@ -247,6 +307,7 @@ useSEO({
       el.removeEventListener("touchend", onTouchEnd)
       if (resetTimer !== null) window.clearTimeout(resetTimer)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [goDelta, isSmallMedium])
 
   const active = projectsData[activeIndex]
@@ -425,23 +486,75 @@ lineHeight="0.95"
                 <Flex align="center" gap={2}>
                   <Image src={areasize} w="18px" loading="lazy" />
                   <Text fontWeight="700">
-                    {active.area}
+                    {active.type}
                   </Text>
                 </Flex>
               </Flex>
 
               <Text
-                
+                ref={descRef}
                 color="#F4F4F4"
-              
-               mt={{ base: 2, md: 3, lg: 5 }}
+                mt={{ base: 2, md: 3, lg: 5 }}
                 fontSize={{ base: "13px", sm: "14px", md: "15px", lg: "15.5px" }}
                 lineHeight="1.8"
-
                 letterSpacing="0.02em"
+                css={
+                  isDescExpanded
+                    ? undefined
+                    : {
+                        display: "-webkit-box",
+                        WebkitLineClamp: 4,
+                        WebkitBoxOrient: "vertical",
+                        overflow: "hidden",
+                      }
+                }
               >
                 {active.description}
               </Text>
+
+              {/* Hidden measurement clone — always clamped to 4 lines,
+                  never visible. Its only job is to let us detect overflow
+                  independent of the visible text's expanded state. Must
+                  share the same width, font size, line height and
+                  letter spacing as the visible text above. */}
+              <Text
+                ref={descMeasureRef}
+                aria-hidden="true"
+                position="absolute"
+                top={0}
+                left={0}
+                w="full"
+                visibility="hidden"
+                pointerEvents="none"
+                mt={{ base: 2, md: 3, lg: 5 }}
+                fontSize={{ base: "13px", sm: "14px", md: "15px", lg: "15.5px" }}
+                lineHeight="1.8"
+                letterSpacing="0.02em"
+                css={{
+                  display: "-webkit-box",
+                  WebkitLineClamp: 4,
+                  WebkitBoxOrient: "vertical",
+                  overflow: "hidden",
+                }}
+              >
+                {active.description}
+              </Text>
+
+              {isDescClamped && (
+                <Text
+                  as="button"
+                  onClick={() => setIsDescExpanded((v) => !v)}
+                  mt={1}
+                  fontSize={{ base: "12px", md: "13px" }}
+                  fontWeight="700"
+                  textDecoration="underline"
+                  color="white"
+                  cursor="pointer"
+                  pointerEvents="auto"
+                >
+                  {isDescExpanded ? "See less" : "See more"}
+                </Text>
+              )}
             </motion.div>
           </AnimatePresence>
         </Box>
