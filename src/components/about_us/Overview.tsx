@@ -339,7 +339,7 @@ const Overview = () => {
                         }}
                         w="100%"
                         maxW={{
-                            base: "100%",
+                            base: "95%",
                             md: "100%",
                             lg: "380px",
                         }}
@@ -350,7 +350,7 @@ const Overview = () => {
                             lg: "14px",   // restore
                         }}
                         textAlign={{
-                            base: "center",
+                            base: "left ",
                             md: "center",
                             lg: "left",   // restore desktop
                         }}
