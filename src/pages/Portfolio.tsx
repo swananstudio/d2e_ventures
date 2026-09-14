@@ -278,13 +278,27 @@ useSEO({
 
           if (!shouldMount) return null
 
+          // The project we're LEAVING needs to render ON TOP during the
+          // transition — its cards are the ones playing the flip-away
+          // animation, and every project's background is a fully opaque,
+          // full-bleed image. If the incoming project (which mounts
+          // instantly at full opacity, no fade-in) were stacked above it,
+          // that opaque background would paint directly over the outgoing
+          // project from the very first frame — the flip would still be
+          // running under the hood, just permanently hidden. Putting the
+          // outgoing project on top lets its flip actually be seen; the
+          // incoming one only becomes visible once the outgoing one
+          // finishes and unmounts (transitioningFromIndex -> null).
+          const zIndex =
+            i === transitioningFromIndex ? 4 : i === activeIndex ? 3 : 2
+
           return (
             <Box
               key={i}
               position="absolute"
               inset={0}
               bg="black"
-              zIndex={i === activeIndex ? 3 : 2}
+              zIndex={zIndex}
               pointerEvents={i === activeIndex ? "auto" : "none"}
             >
               <Component

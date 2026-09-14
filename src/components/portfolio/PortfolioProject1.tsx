@@ -672,7 +672,7 @@ export default function PortfolioProject1({
                         }}
                         animate={{
                           ...base,
-                          rotateY: isMobile ? (isActive ? 0 : 90) : isActive ? 0 : (direction >= 0 ? -82 : 82),
+                          rotateY: isMobile ? (isActive ? 0 : 360) : isActive ? 0 : (direction >= 0 ? -82 : 82),
                         }}
                         transition={{
                           left: positionTransition,
