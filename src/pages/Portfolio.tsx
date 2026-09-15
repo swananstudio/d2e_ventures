@@ -60,7 +60,7 @@ const projectsData = [
     titleLine1: "URLI KANCHAN",
     titleLine2: "OLD AGE HOME",
     location: "Urli Kanchan, Maharashtra",
-    type: "Institutional (Old Age Home / Senior Care Facility)",
+    type: "Senior Care Facility",
     description:
       "A thoughtfully planned senior living environment shaped around safety, familiarity, and everyday comfort. Set within a quiet agricultural landscape, the old age home uses a simple and practical architectural language, generous semi-open spaces, natural light, and familiar domestic-scale interiors to create a place that feels welcoming rather than institutional.",
   },
@@ -75,6 +75,48 @@ const projectsData = [
   },
  
 ]
+
+// Shared clamp style for the visible description AND its hidden measuring
+// clone below — they must always match exactly, or overflow detection
+// (isDescClamped) will be wrong. On very small / short phones (e.g. the
+// 340x690 case) we drop to a 3-line clamp so there's more room left for
+// the "See more" toggle and the hero card underneath to not collide.
+const descriptionClampCss = {
+  display: "-webkit-box",
+  WebkitLineClamp: 4,
+  WebkitBoxOrient: "vertical",
+  overflow: "hidden",
+  "@media (max-width: 380px) and (max-height: 700px)": {
+    WebkitLineClamp: 3,
+  },
+} as const
+
+// Shared font metrics for the description text and its hidden measuring
+// clone, and for the collapsed "See more" button so it can sit on the
+// same baseline as the last visible line of text. Bumped up for mobile /
+// medium breakpoints for readability.
+const descriptionFontSize = {
+  base: "15px",
+  sm: "16px",
+  md: "17px",
+  lg: "15.5px",
+} as const
+const descriptionLineHeight = "1.8"
+const descriptionLetterSpacing = "0.02em"
+
+// Horizontal space reserved at the right edge of the description (and its
+// measuring clone) for the absolutely-positioned See more / See less
+// toggle. Without this the toggle simply paints on top of whatever word
+// happens to sit under it. Reserving the gutter means the text wraps /
+// ellipsises before it, so the button always lands in empty space on the
+// same baseline as the last line. Roughly the rendered width of the
+// widest label at the matching font size, plus a little breathing room.
+const toggleGutter = {
+  base: "84px",
+  sm: "88px",
+  md: "94px",
+  lg: "86px",
+} as const
 
 const TRANSITION_MS = 1000
 const TEXT_TRANSITION_DURATION = 1.0
@@ -128,6 +170,12 @@ useSEO({
   // on the visible element's css switching on/off.
   const descMeasureRef = useRef<HTMLParagraphElement | null>(null)
 
+  // Measure the complete visible text stack so the hero cards can respond to
+  // real rendered text height (including larger font sizes / browser zoom),
+  // instead of relying only on viewport-size guesses.
+  const textStackRef = useRef<HTMLDivElement | null>(null)
+  const [textStackHeight, setTextStackHeight] = useState(0)
+
   useEffect(() => {
     const prevOverflow = document.body.style.overflow
     const prevHeight = document.body.style.height
@@ -172,12 +220,36 @@ useSEO({
     setIsDescExpanded(false)
   }, [activeIndex])
 
+  // Measure the full text stack. ResizeObserver catches width/font/zoom
+  // changes, while the font promise catches late-loading web fonts.
+  useEffect(() => {
+    const el = textStackRef.current
+    if (!el) return
+
+    const measure = () => setTextStackHeight(el.scrollHeight)
+
+    measure()
+
+    const resizeObserver = new ResizeObserver(measure)
+    resizeObserver.observe(el)
+
+    const fontsReady = (document as any).fonts?.ready as Promise<unknown> | undefined
+    fontsReady?.then(measure).catch(() => {})
+
+    return () => resizeObserver.disconnect()
+  }, [activeIndex, isDescExpanded])
+
   // Detect whether the description text actually overflows 4 lines. We
   // measure the hidden always-clamped clone (descMeasureRef), not the
   // visible text, so this is independent of isDescExpanded. Uses
-  // ResizeObserver (catches width/font/zoom changes) and waits for web
-  // fonts to finish loading before the first measurement, since measuring
-  // against a fallback font can under- or over-report line count.
+  // ResizeObserver (catches width/font/zoom changes), a resize/orientation
+  // fallback for devices that don't reliably fire ResizeObserver/font-ready
+  // callbacks in time, and waits for web fonts to finish loading before the
+  // first measurement, since measuring against a fallback font can under-
+  // or over-report line count. The extra fallback timer + window resize /
+  // orientationchange listeners fix cases where the toggle silently never
+  // appeared on some smaller devices because the very first measurement
+  // ran before layout had actually settled.
   useEffect(() => {
     const el = descMeasureRef.current
     if (!el) return
@@ -196,16 +268,26 @@ useSEO({
       raf2 = window.requestAnimationFrame(checkClamp)
     })
 
+    // Fallback in case the rAF pair or ResizeObserver's first callback
+    // fires before layout has truly settled (seen on some smaller/older
+    // mobile devices) — re-check a moment later just in case.
+    const fallbackTimer = window.setTimeout(checkClamp, 300)
+
     const fontsReady = (document as any).fonts?.ready as Promise<unknown> | undefined
     fontsReady?.then(checkClamp).catch(() => {})
 
     const resizeObserver = new ResizeObserver(checkClamp)
     resizeObserver.observe(el)
+    window.addEventListener("resize", checkClamp)
+    window.addEventListener("orientationchange", checkClamp)
 
     return () => {
       window.cancelAnimationFrame(raf1)
       window.cancelAnimationFrame(raf2)
+      window.clearTimeout(fallbackTimer)
       resizeObserver.disconnect()
+      window.removeEventListener("resize", checkClamp)
+      window.removeEventListener("orientationchange", checkClamp)
     }
   }, [activeIndex])
 
@@ -331,6 +413,7 @@ useSEO({
         inset={0}
         overflow="hidden"
         bg="black"
+        style={{ ["--portfolio-text-h" as any]: `${textStackHeight}px` }}
       >
         {/* Keep only the active project and the project currently transitioning out mounted. */}
         {projectsData.map(({ Component }, i) => {
@@ -373,6 +456,7 @@ useSEO({
         {/* Shared text carousel */}
     
 <Box
+  ref={textStackRef}
   position="absolute"
   zIndex={5}
   color="white"
@@ -384,6 +468,9 @@ useSEO({
   pointerEvents="none"
   overflow="visible"
   css={{
+    // Tall/narrow phones (e.g. tall-screen mid-size devices): shrink the
+    // title/subtitle/description a touch so the whole text stack takes up
+    // less vertical room, leaving more space above the hero card.
     "@media (max-width: 767px) and (min-height: 900px)": {
       "& .portfolio-responsive-title": {
         fontSize: "36px",
@@ -392,7 +479,34 @@ useSEO({
         fontSize: "24px",
       },
       "& .portfolio-responsive-description": {
-        fontSize: "14px",
+        fontSize: "16px",
+      },
+    },
+    // Small AND short phones (~360x690 and similar). This is the case that
+    // was overlapping the hero card in testing: pull the whole stack up,
+    // tighten the vertical rhythm between title / location row /
+    // description, and shrink the title/subtitle further so there's enough
+    // headroom above the card even when the description text is running at
+    // the larger mobile font size.
+    "@media (max-width: 380px) and (max-height: 700px)": {
+      top: "66px",
+      "& .portfolio-responsive-title": {
+        fontSize: "24px",
+        lineHeight: "1",
+        marginTop: "4px !important",
+      },
+      "& .portfolio-responsive-subtitle": {
+        fontSize: "18px",
+      },
+      "& .portfolio-responsive-description": {
+        fontSize: "14.5px",
+      },
+      "& .portfolio-location-row": {
+        marginTop: "8px !important",
+      },
+      "& .description-wrapper": {
+        marginTop: "6px !important",
+        position: "relative",
       },
     },
   }}
@@ -440,6 +554,7 @@ useSEO({
               }}
             >
               <Text
+              className="portfolio-responsive-title"
               mt={{base: 6}}
               fontSize={{
                   base: activeIndex === 4 ? "26px" : "32px",
@@ -454,6 +569,7 @@ lineHeight="0.95"
               </Text>
 
               <Text
+                className="portfolio-responsive-subtitle"
                 mt={{ base: 1, md: 2, lg: 2 }}
                 fontSize={{
                   base: "22px",
@@ -467,8 +583,8 @@ lineHeight="0.95"
               </Text>
 
               <Flex
-               
-               mt={{ base: 3, md: 3, lg: 8 }}
+                className="portfolio-location-row"
+                mt={{ base: 3, md: 3, lg: 8 }}
                 gap={{ base: 3, md: 5, lg: 6 }}
                 fontSize={{ base: "14px", md: "15px", lg: "16px" }}
 
@@ -491,34 +607,90 @@ lineHeight="0.95"
                 </Flex>
               </Flex>
 
-              <Text
-                ref={descRef}
-                color="#F4F4F4"
-                mt={{ base: 2, md: 3, lg: 5 }}
-                fontSize={{ base: "13px", sm: "14px", md: "15px", lg: "15.5px" }}
-                lineHeight="1.8"
-                letterSpacing="0.02em"
-                css={
-                  isDescExpanded
-                    ? undefined
-                    : {
-                        display: "-webkit-box",
-                        WebkitLineClamp: 4,
-                        WebkitBoxOrient: "vertical",
-                        overflow: "hidden",
-                      }
-                }
-              >
-                {active.description}
-              </Text>
+              {/* Description + toggle.
 
-              {/* Hidden measurement clone — always clamped to 4 lines,
-                  never visible. Its only job is to let us detect overflow
-                  independent of the visible text's expanded state. Must
-                  share the same width, font size, line height and
-                  letter spacing as the visible text above. */}
+                  Expanded: "See less" is rendered inline, as the last thing
+                  in the text flow. It naturally lands after the final word
+                  on that line's baseline, and the paragraph keeps its full
+                  width — nothing is narrowed.
+
+                  Collapsed: -webkit-line-clamp would swallow an inline
+                  element, so the toggle is absolutely positioned at the
+                  bottom-right instead, and the paragraph reserves
+                  `toggleGutter` on its right edge for exactly that state so
+                  the clamped text ellipsises before the button rather than
+                  running underneath it. */}
+              <Box
+                className="description-wrapper"
+                position="relative"
+                mt={{ base: 2, md: 3, lg: 5 }}
+              >
+                <Text
+                  ref={descRef}
+                  className="portfolio-responsive-description"
+                  color="#F4F4F4"
+                  fontSize={descriptionFontSize}
+                  lineHeight={descriptionLineHeight}
+                  letterSpacing={descriptionLetterSpacing}
+                  pr={isDescClamped && !isDescExpanded ? toggleGutter : undefined}
+                  css={isDescExpanded ? undefined : descriptionClampCss}
+                >
+                  {active.description}
+
+                  {isDescClamped && isDescExpanded && (
+                    <Text
+                      as="button"
+                      className="see-more-toggle"
+                      data-expanded="true"
+                      onClick={() => setIsDescExpanded(false)}
+                      display="inline"
+                      ml="8px"
+                      whiteSpace="nowrap"
+                      verticalAlign="baseline"
+                      fontSize={descriptionFontSize}
+                      lineHeight={descriptionLineHeight}
+                      fontWeight="700"
+                      textDecoration="underline"
+                      color="white"
+                      cursor="pointer"
+                      pointerEvents="auto"
+                    >
+                      See less
+                    </Text>
+                  )}
+                </Text>
+
+                {isDescClamped && !isDescExpanded && (
+                  <Text
+                    as="button"
+                    className="see-more-toggle"
+                    data-expanded="false"
+                    onClick={() => setIsDescExpanded(true)}
+                    position="absolute"
+                    right={0}
+                    bottom={0}
+                    whiteSpace="nowrap"
+                    fontSize={descriptionFontSize}
+                    lineHeight={descriptionLineHeight}
+                    fontWeight="700"
+                    textDecoration="underline"
+                    color="white"
+                    cursor="pointer"
+                    pointerEvents="auto"
+                  >
+                    See more
+                  </Text>
+                )}
+              </Box>
+
+              {/* Hidden measurement clone — always clamped, never visible.
+                  Its only job is to let us detect overflow independent of
+                  the visible text's expanded state. Must share the same
+                  width, font size, line height, letter spacing and clamp
+                  breakpoints as the visible text above. */}
               <Text
                 ref={descMeasureRef}
+                className="portfolio-responsive-description"
                 aria-hidden="true"
                 position="absolute"
                 top={0}
@@ -527,34 +699,14 @@ lineHeight="0.95"
                 visibility="hidden"
                 pointerEvents="none"
                 mt={{ base: 2, md: 3, lg: 5 }}
-                fontSize={{ base: "13px", sm: "14px", md: "15px", lg: "15.5px" }}
-                lineHeight="1.8"
-                letterSpacing="0.02em"
-                css={{
-                  display: "-webkit-box",
-                  WebkitLineClamp: 4,
-                  WebkitBoxOrient: "vertical",
-                  overflow: "hidden",
-                }}
+                fontSize={descriptionFontSize}
+                lineHeight={descriptionLineHeight}
+                letterSpacing={descriptionLetterSpacing}
+                pr={toggleGutter}
+                css={descriptionClampCss}
               >
                 {active.description}
               </Text>
-
-              {isDescClamped && (
-                <Text
-                  as="button"
-                  onClick={() => setIsDescExpanded((v) => !v)}
-                  mt={1}
-                  fontSize={{ base: "12px", md: "13px" }}
-                  fontWeight="700"
-                  textDecoration="underline"
-                  color="white"
-                  cursor="pointer"
-                  pointerEvents="auto"
-                >
-                  {isDescExpanded ? "See less" : "See more"}
-                </Text>
-              )}
             </motion.div>
           </AnimatePresence>
         </Box>

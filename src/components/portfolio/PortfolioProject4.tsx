@@ -522,6 +522,9 @@ export default function PortfolioProject4({
                   "@media (max-width: 767px) and (min-height: 900px)": {
                     bottom: "18%",
                   },
+                  "@media (max-width: 380px) and (max-height: 700px)": {
+                    bottom: "2%",
+                  },
                 }}
                 >
                 <Box
@@ -541,6 +544,9 @@ export default function PortfolioProject4({
                     },
                     "@media (max-width: 479px) and (max-height: 800px)": {
                       height: "245px",
+                    },
+                    "@media (max-width: 380px) and (max-height: 700px)": {
+                      height: "215px",
                     },
                   }}
                   mt={{ base: 1, md: 2, lg: 0 }}

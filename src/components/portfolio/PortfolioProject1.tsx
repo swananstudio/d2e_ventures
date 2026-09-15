@@ -477,9 +477,25 @@ export default function PortfolioProject1({
                 fontWeight="300"
                 fontSize={{ base: "12px", md: "16px" }}
                 textShadow="0px 2px 6px rgba(0,0,0,.5)"
-                zIndex={5}
+                // Sits above the hero-cards stacking layer (zIndex 10) on
+                // purpose: on short/small phones the card block's bottom
+                // offset and this hint's bottom offset land only a few px
+                // apart, so the opaque card was painting directly over the
+                // top of this text and hiding it. Being above the cards is
+                // harmless — this is a single line of text with
+                // pointerEvents="none", so it never blocks taps on the
+                // card underneath it even where the two overlap.
+                zIndex={11}
                 whiteSpace="nowrap"
                 pointerEvents="none"
+                css={{
+                  // A little extra clearance from the true screen edge on
+                  // very small/short phones, where the default 0.5% leaves
+                  // the text sitting flush against the bottom safe area.
+                  "@media (max-width: 380px) and (max-height: 700px)": {
+                    bottom: "10px",
+                  },
+                }}
               >
                 Scroll To Explore More Projects
               </MotionText>
@@ -523,6 +539,10 @@ export default function PortfolioProject1({
     "@media (max-width: 767px) and (min-height: 900px)": {
       bottom: "18%",
     },
+           "@media (max-width: 380px) and (max-height: 700px)": {
+
+      bottom: "2%",
+       }
   }}
   
   >
@@ -543,6 +563,9 @@ export default function PortfolioProject1({
                     },
                     "@media (max-width: 479px) and (max-height: 800px)": {
                       height: "245px",
+                    },
+                    "@media (max-width: 380px) and (max-height: 700px)": {
+                      height: "215px",
                     },
                   }}
                   mt={{ base: 1, md: 2, lg: 0 }}

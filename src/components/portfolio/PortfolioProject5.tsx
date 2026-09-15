@@ -509,6 +509,13 @@ export default function PortfolioProject5({
                   "@media (max-width: 767px) and (min-height: 900px)": {
                     bottom: "18%",
                   },
+                  // Extra-small / short phones (e.g. 340x690): pull the card
+                  // stack lower so there's more headroom above it for a
+                  // fully expanded (4-line, or "See more" opened) description
+                  // to not collide with the cards.
+                  "@media (max-width: 380px) and (max-height: 700px)": {
+                    bottom: "2%",
+                  },
                 }}
                 
   flexShrink={0}>
@@ -529,6 +536,12 @@ export default function PortfolioProject5({
                     },
                     "@media (max-width: 479px) and (max-height: 800px)": {
                       height: "245px",
+                    },
+                    // Extra-small / short phones (e.g. 340x690): shrink the
+                    // card frame further so the description has room to
+                    // grow without overlapping it.
+                    "@media (max-width: 380px) and (max-height: 700px)": {
+                      height: "215px",
                     },
                   }}
                   mt={{ base: 1, md: 2, lg: 0 }}

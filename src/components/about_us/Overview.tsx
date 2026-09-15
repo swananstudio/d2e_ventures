@@ -287,6 +287,11 @@ const Overview = () => {
                             }}
                             lineHeight="1.15"
                             color="#080808"
+                              textAlign={{
+                            base: "left ",
+                            md: "center",
+                            lg: "left",   // restore desktop
+                        }}
                         >
                             A Commitment
                             <br />
@@ -312,6 +317,11 @@ const Overview = () => {
                             }}
                             lineHeight="1.4"
                             color="#444"
+                              textAlign={{
+                            base: "left ",
+                            md: "center",
+                            lg: "left",   // restore desktop
+                        }}
 
                         >
                             Every successful project is built on trust, precision, and collaboration.
@@ -354,6 +364,7 @@ const Overview = () => {
                             md: "center",
                             lg: "left",   // restore desktop
                         }}
+                      
                         fontWeight={500}
 
                     >
