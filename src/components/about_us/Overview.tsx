@@ -242,140 +242,134 @@ const Overview = () => {
 
                 {/* RIGHT CONTENT */}
 
-                <Flex
-                    direction="column"
-                    h={{
-                        base: "auto",
-                        md: "auto",
-                        lg: "300px",
-                    }}
-                    mb={{
-                        base: "0",
-                        md: "30px",
-                        lg: "55px",
-                    }}
-                    justifyContent="space-between"
-                    alignItems={{
-                        base: "center",
-                        md: "stretch",
-                        lg: "flex-start",
-                    }}
-                    textAlign={{
-                        base: "center",
-                        md: "left",
-                    }}
-                    maxW={{
-                        base: "100%",
-                        md: "100%",
-                        lg: "380px",
-                    }}
-                    mx={{
-                        base: "auto",
-                        md: "0",
-                    }}
+              <Flex
+    direction="column"
+    h={{
+        base: "auto",
+        md: "auto",
+        lg: "300px",
+    }}
+    mb={{
+        base: "0",
+        md: "30px",
+        lg: "55px",
+    }}
+    justifyContent="space-between"
+    alignItems={{
+        base: "flex-start",   // ← was "center" — this was the main culprit
+        md: "stretch",
+        lg: "flex-start",
+    }}
+    textAlign={{
+        base: "left",         // ← removed trailing space
+        md: "left",
+    }}
+    maxW={{
+        base: "100%",
+        md: "100%",
+        lg: "380px",
+    }}
+    mx={{
+        base: "0",             // ← don't auto-center the whole block on mobile
+        md: "0",
+    }}
+>
+    <Box w="100%">
+        <Text
+            fontSize={{
+                base: "28px",
+                sm: "30px",
+                md: "34px",
+                lg: "36px",
+                xl: "38px",
+            }}
+            lineHeight="1.15"
+            color="#080808"
+            textAlign={{
+                base: "left",   // ← removed trailing space
+                md: "center",
+                lg: "left",
+            }}
+        >
+            A Commitment
+            <br />
+            That Goes Beyond
+            <br />
+            Completion
+        </Text>
 
-                >
-                    <Box>
-                        <Text
+        <Text
+            mt={4}
+            mb={6}
+            fontSize={{
+                base: "14px",
+                sm: "16px",
+                md: "18px",
+                lg: "15px",
+            }}
+            maxW={{
+                base: "100%",
+                md: "100%",
+                lg: "380px",
+            }}
+            lineHeight="1.4"
+            color="#444"
+            textAlign={{
+                base: "left",   // ← removed trailing space
+                md: "center",
+                lg: "left",
+            }}
+        >
+            Every successful project is built on trust, precision, and collaboration.
+            From the first sketch to the final handover,
+            our integrated team ensures quality, transparency,
+            and timely execution at every stage.
+        </Text>
+    </Box>
 
-                            fontSize={{
-                                base: "28px",
-                                sm: "30px",
-                                md: "34px",
-                                lg: "36px",
-                                xl: "38px",
-                            }}
-                            lineHeight="1.15"
-                            color="#080808"
-                              textAlign={{
-                            base: "left ",
-                            md: "center",
-                            lg: "left",   // restore desktop
-                        }}
-                        >
-                            A Commitment
-                            <br />
-                            That Goes Beyond
-                            <br />
-                            Completion
-                        </Text>
-
-                        <Text
-                            mt={4}
-                            mb={6}
-                            fontSize={{
-                                base: "14px",
-                                sm: "16px",
-                                md: "18px",
-                                lg: "15px",   // restore
-                            }}
-
-                            maxW={{
-                                base: "100%",
-                                md: "100%",
-                                lg: "380px",   // restore
-                            }}
-                            lineHeight="1.4"
-                            color="#444"
-                              textAlign={{
-                            base: "left ",
-                            md: "center",
-                            lg: "left",   // restore desktop
-                        }}
-
-                        >
-                            Every successful project is built on trust, precision, and collaboration.
-                            From the first sketch to the final handover,
-                            our integrated team ensures quality, transparency,
-                            and timely execution at every stage.
-                        </Text>
-                    </Box>
-
-                    <SimpleGrid
-                        columns={{
-                            base: 1,
-                            md: 3,
-                            lg: 1,
-                        }}
-                        gapX={{
-                            base: 4,
-                            md: 12,
-                            lg: 4,
-                        }}
-                        gapY={{
-                            base: 4,
-                            md: 8,
-                            lg: 4,
-                        }}
-                        w="100%"
-                        maxW={{
-                            base: "95%",
-                            md: "100%",
-                            lg: "380px",
-                        }}
-                        fontSize={{
-                            base: "14px",
-                            sm: "16px",
-                            md: "18px",
-                            lg: "14px",   // restore
-                        }}
-                        textAlign={{
-                            base: "left ",
-                            md: "center",
-                            lg: "left",   // restore desktop
-                        }}
-                      
-                        fontWeight={500}
-
-                    >
-                        <Text>• Personalized Design Consultation.</Text>
-                        <Text>• Architectural Planning & Approvals</Text>
-                        <Text>• Interior & Landscape Design</Text>
-                        <Text>• End-to-End Turnkey Execution</Text>
-                        <Text>• Dedicated Site Supervision</Text>
-                        <Text>• Transparent Project Supervision</Text>
-                    </SimpleGrid>
-                </Flex>
+    <SimpleGrid
+        columns={{
+            base: 1,
+            md: 3,
+            lg: 1,
+        }}
+        gapX={{
+            base: 4,
+            md: 12,
+            lg: 4,
+        }}
+        gapY={{
+            base: 2.5,
+            md: 8,
+            lg: 4,
+        }}
+        w="100%"
+        maxW={{
+            base: "100%",   // ← was "95%" — matches Box width now
+            md: "100%",
+            lg: "380px",
+        }}
+        fontSize={{
+            base: "14px",
+            sm: "16px",
+            md: "18px",
+            lg: "14px",
+        }}
+        textAlign={{
+            base: "left",   // ← removed trailing space
+            md: "center",
+            lg: "left",
+        }}
+        fontWeight={500}
+    >
+        <Text>• Personalized Design Consultation.</Text>
+        <Text>• Architectural Planning & Approvals</Text>
+        <Text>• Interior & Landscape Design</Text>
+        <Text>• End-to-End Turnkey Execution</Text>
+        <Text>• Dedicated Site Supervision</Text>
+        <Text>• Transparent Project Supervision</Text>
+    </SimpleGrid>
+</Flex>
             </Grid>
         </Box>
     );
