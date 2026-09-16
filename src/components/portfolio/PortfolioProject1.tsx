@@ -128,34 +128,34 @@ const sectionDetailsMap: Record<
     title: "PROJECT",
     subtitle: "Overview",
     image: KP_ProjectOverview,
-    imageAlt: "Kalpadhan Farm project overview video",
+    imageAlt: "Kalpdhan Farm project overview video",
     isVideo: true,
   },
   section2: {
     title: "CLIENT",
     subtitle: "Vision",
     image: KP_ClientVision,
-    imageAlt: "Kalpadhan Farm client vision image",
+    imageAlt: "Kalpdhan Farm client vision image",
   },
   section3: {
     title: "PLANNING &",
     subtitle: "STRATEGY",
     image: [KP_Planning1, KP_Planning2, KP_Planning3],
-    imageAlt: "Kalpadhan Farm planning and strategy image",
+    imageAlt: "Kalpdhan Farm planning and strategy image",
     isCarousel: true,
   },
   section4: {
     title: "DESIGN",
     subtitle: "Development",
     image: [KP_DesignandDev1, KP_DesignandDev2, KP_DesignandDev3, KP_DesignandDev4, KP_DesignandDev5],
-    imageAlt: "Kalpadhan Farm design development image",
+    imageAlt: "Kalpdhan Farm design development image",
     isCarousel: true,
   },
   section5: {
     title: "Execution",
     subtitle: "& Delivery",
     image: [KP_DeliveryandExecution1, KP_DeliveryandExecution2, KP_DeliveryandExecution3, KP_DeliveryandExecution4, KP_DeliveryandExecution5, KP_DeliveryandExecution6],
-    imageAlt: "Kalpadhan Farm execution and delivery image",
+    imageAlt: "Kalpdhan Farm execution and delivery image",
     isCarousel: true,
   },
 };
@@ -753,7 +753,7 @@ export default function PortfolioProject1({
                             draggable={false}
                             position="relative"
                             zIndex={0}
-                            alt={`Kalpadhan Farm ${details.title.toLowerCase()} ${details.subtitle.toLowerCase()} image`}
+                            alt={`Kalpdhan Farm ${details.title.toLowerCase()} ${details.subtitle.toLowerCase()} image`}
                           />
                         )}
 

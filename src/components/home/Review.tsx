@@ -31,12 +31,20 @@ const reviews: ReviewType[] = [
         image: homereview2,
         dark: true,
     },
+    // {
+    //     review:
+    //         "Designing our first home was a big decision, and the whole team made the entire journey effortless. They understood our lifestyle, suggested practical solutions, and created interiors that matched our vision. They took care of everything while we focused on our family.",
+    //     name: "Neha & Aditya Patil",
+    //     location: "Kolhapur",
+    //     image: homereview3,
+    // },
     {
         review:
-            "Designing our first home was a big decision, and the whole team made the entire journey effortless. They understood our lifestyle, suggested practical solutions, and created interiors that matched our vision. They took care of everything while we focused on our family.",
-        name: "Neha & Aditya Patil",
-        location: "Kolhapur",
+            "Working with D2E Ventures has been a wonderful experience. They understood our vision for Kalpdhan Farms and helped us bring our ideas together with thoughtful planning and practical solutions. Their guidance and attention to detail made the entire process much easier for us. We truly appreciate the effort their team put into our project.",
+        name: "Kalpana & Dhananjay Patil",
+        location: "Nasrapur",
         image: homereview3,
+        dark: false,
     },
     {
         review:
@@ -216,7 +224,7 @@ const Review = () => {
                                             alignItems="center"
                                             gap={4}
                                         >
-                                            <Image
+                                            {/* <Image
                                                 src={review.image}
                                                 w={{
                                                     base: "45px",
@@ -228,7 +236,7 @@ const Review = () => {
                                                 }}
                                                 borderRadius="50%"
                                                 objectFit="cover"
-                                            />
+                                            /> */}
 
                                             <Box>
                                                 <Text

@@ -269,7 +269,7 @@ const Projects = () => {
                                 md: "16px",
                             }}
                         >
-                            Kalpadhan Farm, a thoughtfully designed weekend
+                            Kalpdhan Farm, a thoughtfully designed weekend
                             and holiday retreat where modern design,
                             vernacular architecture and Indian craftsmanship
                             come together in harmony with the landscape.

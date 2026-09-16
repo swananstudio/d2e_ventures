@@ -567,6 +567,57 @@ const ProjectLocations = () => {
                                 Chandrapur
                             </MotionText>
                         </Box>
+
+                        {/* Mahabaleshwar */}
+                        <Box
+                            position="absolute"
+                            left={{ base: "14%", md: "14%" }}
+                            top={{ base: "60%", md: "60%" }}
+                        >
+                            <MotionBox
+                                initial={{
+                                    scale: 0,
+                                    opacity: 0,
+                                }}
+                                whileInView={{
+                                    scale: 1,
+                                    opacity: 1,
+                                    transition: {
+                                        duration: 0.7,
+                                        delay: 4.5,
+                                    },
+                                }}
+                                viewport={{ once: true }}
+                                w={{ base: "10px", md: "14px" }}
+                                h={{ base: "10px", md: "14px" }}
+                                bg="#C8A96B"
+                                borderRadius="full"
+                                animation={`${pulse} 1.2s ease-in-out infinite`}
+                            />
+
+                            <MotionText
+                                initial={{ opacity: 0, x: 20 }}
+                                whileInView={{
+                                    opacity: 1,
+                                    x: 0,
+                                    transition: {
+                                        duration: 0.5,
+                                        delay: 4.5,
+                                    },
+                                }}
+                                viewport={{ once: true }}
+                                position="absolute"
+                                left={{ base: "-26px", md: "20px" }}
+                                top={{ base: "-16px", md: "-8px" }}
+                                // top="-8px"
+                                whiteSpace="nowrap"
+                                fontSize={{ base: "11px", md: "13px" }}
+                                color="#1E1E1E"
+                                fontWeight="500"
+                            >
+                                Mahabaleshwar
+                            </MotionText>
+                        </Box>
                     </Box>
                 </Flex>
             </Grid>

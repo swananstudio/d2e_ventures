@@ -30,7 +30,7 @@ const Project5Scene = memo(PortfolioProject5, areProjectScenePropsEqual)
 const projectsData = [
   {
     Component: Project1Scene,
-    titleLine1: "KALPADHAN",
+    titleLine1: "KALPDHAN",
     titleLine2: "FARM",
     location: "Pune, Maharashtra",
     type: "Luxury Farmhouse",
